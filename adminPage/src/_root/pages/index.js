@@ -1,0 +1,6 @@
+export { default as Home } from './Home'
+export { default as Allevents } from './Allevents'
+export { default as Addevents } from './Addevents'
+export { default as Deleteevents } from './Deleteevents'
+export { default as Updateevents } from './Updateevents'
+export { default as NotFound } from './NotFound'
