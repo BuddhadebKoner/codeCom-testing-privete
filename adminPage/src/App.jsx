@@ -9,7 +9,7 @@ import { Home, Allevents, Addevents, Deleteevents, NotFound, Updateevents } from
 function App() {
 
   return (
-    <main className="w-[100vw] lg:px-[15vw] md:px-[5rem] px-1">
+    <main className="w-[100vw]  px-1">
       <Routes>
         {/* private routes */}
         <Route element={<AuthLayout />}>

@@ -1,20 +1,22 @@
-import { Link } from "react-router-dom"
+import { NavLink } from "react-router-dom";
+
+// const login = await loginUser('jeet@gmail.com', 'admin123');
+// console.log(login);
 
 const Navbar = () => {
    return (
       <>
-         <nav
-            className="bg-white text-black w-full flex justify-between items-center py-5 px-4 border-b-2 border-[#D9D9D9]">
-            <Link className="lg:text-2xl font-normal" to={"/"}>&lt;/&gt; CodeCom</Link>
+         <nav className="bg-white text-black w-full flex justify-start items-center py-5 px-4 border-b-2 border-[#D9D9D9] gap-10">
+            <NavLink className="lg:text-2xl font-normal" to="/"> &lt;/&gt; CodeCom </NavLink>
             <div className="flex lg:gap-10 gap-2">
-               <Link to={"/Allevents"}>All Events</Link>
-               <Link to={"/Addevents"}>Add Event</Link>
-               <Link to={"/Updateevents"}>Update Event</Link>
-               <Link to={"/Deleteevents"}>Delete Event</Link>
+               <NavLink to="/Allevents" className={({ isActive }) => isActive ? 'underline' : ''}>All Events</NavLink>
+               <NavLink to="/Addevents" className={({ isActive }) => isActive ? 'underline' : ''}>Add Event</NavLink>
+               <NavLink to="/Updateevents" className={({ isActive }) => isActive ? 'underline' : ''}>Update Event</NavLink>
+               <NavLink to="/Deleteevents" className={({ isActive }) => isActive ? 'underline' : ''}>Delete Event</NavLink>
             </div>
-         </nav >
+         </nav>
       </>
    )
 }
 
-export default Navbar
+export default Navbar;
