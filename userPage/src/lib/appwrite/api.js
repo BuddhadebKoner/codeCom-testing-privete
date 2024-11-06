@@ -46,13 +46,13 @@ export async function signInUser(user) {
       const currentAccount = await getCurrentUser();
       if (currentAccount) {
          console.log("User already signed in");
-         return currentAccount; // Return the current account session if already signed in
+         return currentAccount;
       }
 
       // If no active session, create a new session using email and password
       const session = await account.createEmailPasswordSession(
-         user.email,  // Pass email as the first argument
-         user.password // Pass password as the second argument
+         user.email,  
+         user.password 
       );
 
       console.log("New session created:", session);

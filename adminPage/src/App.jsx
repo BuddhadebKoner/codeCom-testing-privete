@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router-dom"
 import AuthLayout from './_auth/AuthLayout'
 import RootLayout from './_root/RootLayout'
 import SignIn from './_auth/Forms/SignIn'
-import SignUp from './_auth/Forms/SignUp'
 
 import { Home, Allevents, Addevents, Deleteevents, NotFound, Updateevents } from './_root/pages/index'
 
@@ -14,7 +13,6 @@ function App() {
         {/* private routes */}
         <Route element={<AuthLayout />}>
           <Route path="sign-in" element={<SignIn />} />
-          <Route path="sign-up" element={<SignUp />} />
         </Route>
         {/* public routes */}
         <Route element={<RootLayout />}>

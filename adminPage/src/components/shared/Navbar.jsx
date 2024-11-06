@@ -1,8 +1,5 @@
 import { NavLink } from "react-router-dom";
 
-// const login = await loginUser('jeet@gmail.com', 'admin123');
-// console.log(login);
-
 const Navbar = () => {
    return (
       <>
