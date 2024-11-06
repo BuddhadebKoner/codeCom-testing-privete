@@ -24,7 +24,6 @@ export async function signInUser(user) {
    }
 }
 
-
 export async function getCurrentUser() {
    try {
       const currentAccount = await account.get();
@@ -42,5 +41,35 @@ export async function getCurrentUser() {
       return currentUser.documents[0];
    } catch (error) {
       console.error("Error fetching current user:", error);
+   }
+}
+
+export async function addEvent(event) {
+   try {
+      const newEvent = await database.createDocument(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId,
+         event
+      );
+      return newEvent;
+   } catch (error) {
+      console.error("Error adding event:", error);
+   }
+}
+
+// find user using email
+export async function findUserByEmail(email) {
+   try {
+      const user = await database.listDocuments(
+         appwriteConfig.databaseId,
+         appwriteConfig.userCollectionId,
+         [Query.equal('email', email)]
+      );
+      if (user.documents.length === 0) {
+         return null;
+      }
+      return user.documents[0];
+   } catch (error) {
+      console.error("Error finding user by email:", error);
    }
 }
