@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { findUserByEmail } from '../../lib/appwrite/api';
+import React, { useEffect, useState } from 'react';
+import { addEvent, findUserByEmail } from '../../lib/appwrite/api';
+import { useNavigate } from 'react-router-dom';
 
 const Addevents = () => {
   const [formData, setFormData] = useState({
@@ -9,12 +10,19 @@ const Addevents = () => {
     eventPlace: '',
     locationUrl: '',
     eventOrganizer: [],
-    maxCapacity: '',
+    maxCapacity: 0,
   });
+
+  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedOrganizer, setSelectedOrganizer] = useState({});
+
+
+  useEffect(() => {
+    console.log('Selected Organizer:', selectedOrganizer);
+  }, [selectedOrganizer]);
 
   // Handle search
   const handleSearch = async () => {
@@ -66,14 +74,41 @@ const Addevents = () => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: name === "maxCapacity" ? parseInt(value, 10) || 0 : value,
     }));
   };
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Event data:', formData);
+
+    const eventOrganizer = Array.isArray(selectedOrganizer)
+      ? selectedOrganizer.map(String)
+      : Object.keys(selectedOrganizer);
+
+
+    const event = {
+      title: formData.title,
+      desc: formData.desc,
+      eventTime: formData.eventTime,
+      eventPlace: formData.eventPlace,
+      maxCapacity: parseInt(formData.maxCapacity, 10),
+      locationUrl: formData.locationUrl,
+      eventOrganizer,
+    };
+
+    try {
+      const addingEvent = await addEvent(event);
+      if (addingEvent) {
+        navigate('/Allevents');
+        console.log('Event added:', addingEvent);
+      }
+    } catch (error) {
+      console.error('Error adding event:', error);
+    }
   };
+
+
 
   return (
     <div className="max-w-2xl mx-auto p-8 bg-white shadow-lg rounded-lg mt-10 border border-gray-200">
@@ -84,6 +119,7 @@ const Addevents = () => {
         <div>
           <label className="block text-gray-700 font-medium">Title:</label>
           <input type="text" name="title" value={formData.title} onChange={handleChange} required
+            placeholder='Event Title'
             className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-black" />
         </div>
 

@@ -22,6 +22,8 @@ const RootLayout = () => {
     }
   }, [isAuthenticated, isLoading, navigate, user]);
 
+  
+
   return (
     <>
       {isLoading ? (
