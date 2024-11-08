@@ -3,7 +3,7 @@ import AuthLayout from './_auth/AuthLayout'
 import RootLayout from './_root/RootLayout'
 import SignIn from './_auth/Forms/SignIn'
 
-import { Home, Allevents, Addevents, Deleteevents, NotFound, Updateevents } from './_root/pages/index'
+import { Home, Allevents, Addevents, Deleteevents, NotFound, AllTickets, EventDetails } from './_root/pages/index'
 
 function App() {
 
@@ -20,7 +20,8 @@ function App() {
           <Route path="Allevents" element={<Allevents />} />
           <Route path="Addevents" element={<Addevents />} />
           <Route path="Deleteevents" element={<Deleteevents />} />
-          <Route path="Updateevents" element={<Updateevents />} />
+          <Route path="AllTickets" element={<AllTickets />} />
+          <Route path="event/:id" element={<EventDetails />} />
           <Route path="not-found-page" element={<NotFound />} />
         </Route>
       </Routes>

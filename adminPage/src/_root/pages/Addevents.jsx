@@ -40,7 +40,7 @@ const Addevents = () => {
   const handleSelectOrganizer = (organizer) => {
     // Prevent adding the same organizer multiple times
     if (!selectedOrganizer[organizer.id]) {
-      const newSelectedOrganizer = { ...selectedOrganizer, [organizer.userId]: organizer.name };
+      const newSelectedOrganizer = { ...selectedOrganizer, [organizer.userId]: organizer.email };
 
       setSelectedOrganizer(newSelectedOrganizer);
       console.log('Selected Organizer:', selectedOrganizer);
@@ -82,11 +82,6 @@ const Addevents = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const eventOrganizer = Array.isArray(selectedOrganizer)
-      ? selectedOrganizer.map(String)
-      : Object.keys(selectedOrganizer);
-
-
     const event = {
       title: formData.title,
       desc: formData.desc,
@@ -94,7 +89,6 @@ const Addevents = () => {
       eventPlace: formData.eventPlace,
       maxCapacity: parseInt(formData.maxCapacity, 10),
       locationUrl: formData.locationUrl,
-      eventOrganizer,
     };
 
     try {
@@ -178,7 +172,7 @@ const Addevents = () => {
                 <li
                   key={result.id}
                   onClick={() => handleSelectOrganizer(result)}
-                  className="px-4 py-2 cursor-pointer hover:bg-indigo-100"
+                  className="px-4 py-2 cursor-pointer text-black hover:bg-indigo-100"
                 >
                   {result.name}
                 </li>

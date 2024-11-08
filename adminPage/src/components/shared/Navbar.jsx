@@ -8,7 +8,7 @@ const Navbar = () => {
             <div className="flex lg:gap-10 gap-2">
                <NavLink to="/Allevents" className={({ isActive }) => isActive ? 'underline' : ''}>All Events</NavLink>
                <NavLink to="/Addevents" className={({ isActive }) => isActive ? 'underline' : ''}>Add Event</NavLink>
-               <NavLink to="/Updateevents" className={({ isActive }) => isActive ? 'underline' : ''}>Update Event</NavLink>
+               <NavLink to="/AllTickets" className={({ isActive }) => isActive ? 'underline' : ''}>All Tickets</NavLink>
                <NavLink to="/Deleteevents" className={({ isActive }) => isActive ? 'underline' : ''}>Delete Event</NavLink>
             </div>
          </nav>

@@ -47,7 +47,7 @@ export async function getCurrentUser() {
 
 export async function addEvent(event) {
    // adding a unque event id thet is eventCollectionId + current timeStamp
-   const eventId = appwriteConfig.eventCollectionId + '-' + Date.now();
+   const eventId =  ID.unique() + '-' + Date.now();
    event = { ...event, eventId };
    try {
       const newEvent = await database.createDocument(
@@ -62,7 +62,7 @@ export async function addEvent(event) {
    }
 }
 
-// find user using email
+// find user using email 
 export async function findUserByEmail(email) {
    try {
       const user = await database.listDocuments(
@@ -90,4 +90,22 @@ export async function getAllEvents() {
    } catch (error) {
       console.error("Error fetching all events:", error);
    }
+}
+
+
+// active or inactive event
+
+export async function updateEvent(eventId, data) {
+   try {
+      const updatedEvent = await database.updateDocument(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId,
+         eventId,
+         data
+      );
+      return updatedEvent;
+   } catch (error) {
+      console.error("Error updating event:", error);
+   }
+   
 }
