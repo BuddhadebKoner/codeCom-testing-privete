@@ -63,7 +63,6 @@ export async function signInUser(user) {
    }
 }
 
-
 export async function getCurrentUser() {
    try {
       const currentAccount = await account.get();
@@ -81,5 +80,15 @@ export async function getCurrentUser() {
       return currentUser.documents[0];
    } catch (error) {
       console.error("Error fetching current user:", error);
+   }
+}
+
+export async function signOutUser() {
+   try {
+      const response = await account.deleteSession("current");
+      console.log("Sign out response:", response);
+      return response;
+   } catch (error) {
+      console.error("Error signing out user:", error);
    }
 }

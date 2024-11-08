@@ -11,7 +11,7 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    isSignInLoading(true);
+    setIsSignInLoading(true);
     const user = { email, password };
     const signIn = await signInUser(user);
     if (!signIn) {
@@ -21,7 +21,9 @@ const SignIn = () => {
     }
     setIsSignInLoading(false);
     // console.log("Sign in with:", signIn);
+    // refresh the window
     navigate("/");
+    window.location.reload();
   };
 
 
