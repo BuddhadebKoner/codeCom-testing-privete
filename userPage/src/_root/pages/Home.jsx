@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { getAllEvents } from "../../lib/appwrite/api";
+import EventCard from "../../components/shared/EventCard";
 
 const Home = () => {
   const [events, setEvents] = useState([]);
@@ -42,8 +43,12 @@ const Home = () => {
           <h1>Upcoming Events</h1>
           <Link to="/upcoming-events">View all</Link>
         </div>
-        <div className="flex flex-col gap-2">
-          
+        <div className="flex gap-2 mt-10">
+          {
+            events.map((event, index) => (
+              <EventCard key={index} event={event} />
+            ))
+          }
         </div>
       </div>
     </div>
