@@ -127,6 +127,23 @@ const EventCard = ({ event }) => {
                )}
             </div>
          </div>
+         {/* event organizers */}
+         <div className="p-8 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Organizers</h3>
+            <div className="w-full h-full flex flex-col items-start">
+               {event.organizers?.map((organizer) => (
+                  <div key={organizer.userId} className="flex items-center gap-5 pt-4">
+                     <img
+                        src={organizer.imageUrl}
+                        alt={organizer.name}
+                        className="w-8 h-8 rounded-full"
+                     />
+                     <p className="text-gray-800 dark:text-white font-semibold">{organizer.name}</p>
+                     <p className='bg-white text-black px-4 rounded-full font-semibold'>{organizer.role}</p>
+                  </div>
+               ))}
+            </div>
+         </div>
       </div>
    );
 };

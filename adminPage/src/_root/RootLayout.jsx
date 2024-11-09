@@ -2,27 +2,36 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Navbar from "../components/shared/Navbar";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
+import { signOutUser } from "../lib/appwrite/api";
 
 const RootLayout = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, user } = useAuth();
 
+  const handleSignOut = async () => {
+    await signOutUser();
+    console.log("User signed out successfully");
+    navigate("/sign-in");
+  };
+
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        if (user?.isAdmin) {
-          console.log("User is admin:");
+    const checkUserAccess = async () => {
+      if (!isLoading) {
+        if (isAuthenticated) {
+          if (user?.isAdmin) {
+            console.log("User is admin:", user);
+          } else {
+            console.log("User is not admin, signing out...");
+            await handleSignOut();
+          }
         } else {
-          console.log("User is not admin, redirecting to sign-in");
           navigate("/sign-in");
         }
-      } else {
-        navigate("/sign-in");
       }
-    }
-  }, [isAuthenticated, isLoading, navigate, user]);
+    };
 
-  
+    checkUserAccess();
+  }, [isAuthenticated, isLoading]);
 
   return (
     <>

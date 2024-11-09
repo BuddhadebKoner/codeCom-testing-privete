@@ -9,7 +9,7 @@ const Navbar = () => {
                <NavLink to="/Allevents" className={({ isActive }) => isActive ? 'underline' : ''}>All Events</NavLink>
                <NavLink to="/Addevents" className={({ isActive }) => isActive ? 'underline' : ''}>Add Event</NavLink>
                <NavLink to="/AllTickets" className={({ isActive }) => isActive ? 'underline' : ''}>All Tickets</NavLink>
-               <NavLink to="/Deleteevents" className={({ isActive }) => isActive ? 'underline' : ''}>Delete Event</NavLink>
+               <NavLink to="/ClubMembers" className={({ isActive }) => isActive ? 'underline' : ''}>Club Members</NavLink>
             </div>
          </nav>
       </>

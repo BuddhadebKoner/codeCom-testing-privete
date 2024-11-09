@@ -40,7 +40,7 @@ const Addevents = () => {
   const handleSelectOrganizer = (organizer) => {
     // Prevent adding the same organizer multiple times
     if (!selectedOrganizer[organizer.id]) {
-      const newSelectedOrganizer = { ...selectedOrganizer, [organizer.userId]: organizer.email };
+      const newSelectedOrganizer = { ...selectedOrganizer, [organizer.$id]: organizer.email };
 
       setSelectedOrganizer(newSelectedOrganizer);
       console.log('Selected Organizer:', selectedOrganizer);
@@ -81,6 +81,8 @@ const Addevents = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // extract id key from selectedOrganizer object, to a array organizers
+    const organizers = Object.keys(selectedOrganizer);
 
     const event = {
       title: formData.title,
@@ -89,6 +91,7 @@ const Addevents = () => {
       eventPlace: formData.eventPlace,
       maxCapacity: parseInt(formData.maxCapacity, 10),
       locationUrl: formData.locationUrl,
+      organizers,
     };
 
     try {

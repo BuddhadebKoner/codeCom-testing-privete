@@ -24,6 +24,16 @@ export async function signInUser(user) {
    }
 }
 
+// sign out user
+export async function signOutUser() {
+   try {
+      await account.deleteSession("current");
+      console.log("User signed out");
+   } catch (error) {
+      console.error("Error in signOutUser:", error);
+   }
+}
+
 export async function getCurrentUser() {
    try {
       const currentAccount = await account.get();
@@ -44,17 +54,26 @@ export async function getCurrentUser() {
    }
 }
 
-
+// add event
 export async function addEvent(event) {
    // adding a unque event id thet is eventCollectionId + current timeStamp
-   const eventId =  ID.unique() + '-' + Date.now();
+   const eventId = ID.unique() + '-' + Date.now();
    event = { ...event, eventId };
    try {
       const newEvent = await database.createDocument(
          appwriteConfig.databaseId,
          appwriteConfig.eventCollectionId,
          ID.unique(),
-         event,
+         {
+            eventId: event.eventId,
+            title: event.title,
+            desc: event.desc,
+            eventTime: event.eventTime,
+            eventPlace: event.eventPlace,
+            maxCapacity: event.maxCapacity,
+            locationUrl: event.locationUrl,
+            organizers: event.organizers,
+         }
       );
       return newEvent;
    } catch (error) {
@@ -92,9 +111,7 @@ export async function getAllEvents() {
    }
 }
 
-
 // active or inactive event
-
 export async function updateEvent(eventId, data) {
    try {
       const updatedEvent = await database.updateDocument(
@@ -107,5 +124,32 @@ export async function updateEvent(eventId, data) {
    } catch (error) {
       console.error("Error updating event:", error);
    }
-   
+
 }
+
+// get all clubMembers post 
+export async function getClubMembers() {
+   try {
+      const roles = [
+         'president',
+         'vice-president',
+         'tech-lead',
+         'design-lead',
+         'web-dev-lead',
+         'app-dev-lead',
+         'specializations-lead',
+         'marketing-content'
+      ];
+
+      const clubMembers = await database.listDocuments(
+         appwriteConfig.databaseId,
+         appwriteConfig.userCollectionId,
+         [Query.equal('role', roles)] // Use array to match any of these roles
+      );
+
+      return clubMembers.documents;
+   } catch (error) {
+      console.error("Error fetching club members:", error);
+   }
+}
+
