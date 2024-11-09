@@ -11,6 +11,7 @@ const Addevents = () => {
     locationUrl: '',
     eventOrganizer: [],
     maxCapacity: 0,
+    banner: null,
   });
 
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Addevents = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedOrganizer, setSelectedOrganizer] = useState({});
+  const [banner, setbanner] = useState(null);
 
 
   useEffect(() => {
@@ -78,11 +80,26 @@ const Addevents = () => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && !file.type.startsWith("image/")) {
+      console.error("Only image files are allowed");
+      return;
+    }
+    setbanner(file);
+  };
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // extract id key from selectedOrganizer object, to a array organizers
     const organizers = Object.keys(selectedOrganizer);
+
+    if (!banner) {
+      console.error("Banner file is missing");
+      return;
+    }
 
     const event = {
       title: formData.title,
@@ -92,6 +109,7 @@ const Addevents = () => {
       maxCapacity: parseInt(formData.maxCapacity, 10),
       locationUrl: formData.locationUrl,
       organizers,
+      banner,
     };
 
     try {
@@ -213,6 +231,16 @@ const Addevents = () => {
         <div>
           <label className="block text-gray-700 font-medium">Max Capacity:</label>
           <input type="number" name="maxCapacity" value={formData.maxCapacity} onChange={handleChange}
+            className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-black" />
+        </div>
+
+        {/* banner upload */}
+        <div className="mt-4">
+          <label className="block text-gray-700 font-medium">Upload Banner:</label>
+          <input
+            onChange={handleFileChange}
+            accept="image/*"
+            type="file"
             className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-black" />
         </div>
 

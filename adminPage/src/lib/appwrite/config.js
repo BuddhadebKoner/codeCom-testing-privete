@@ -11,7 +11,6 @@ export const appwriteConfig = {
    projectId: import.meta.env.VITE_APPWRITE_PROJECT_ID,
    url: import.meta.env.VITE_APPWRITE_ENDPOINT,
    // buckets
-   profileStorage: import.meta.env.VITE_APPWRITE_PROFILE_STORAGE_ID,
    bannerStorage: import.meta.env.VITE_APPWRITE_EVENT_BANNER_STORAGE_ID,
    // collections
    databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,

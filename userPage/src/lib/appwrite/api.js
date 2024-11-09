@@ -51,8 +51,8 @@ export async function signInUser(user) {
 
       // If no active session, create a new session using email and password
       const session = await account.createEmailPasswordSession(
-         user.email,  
-         user.password 
+         user.email,
+         user.password
       );
 
       console.log("New session created:", session);
@@ -90,5 +90,18 @@ export async function signOutUser() {
       return response;
    } catch (error) {
       console.error("Error signing out user:", error);
+   }
+}
+
+//  get all events data 
+export async function getAllEvents() {
+   try {
+      const events = await database.listDocuments(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId
+      );
+      return events.documents;
+   } catch (error) {
+      console.error("Error fetching all events:", error);
    }
 }

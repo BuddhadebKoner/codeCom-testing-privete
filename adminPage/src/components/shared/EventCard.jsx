@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
-import { updateEvent } from '../../lib/appwrite/api';
 import { Link } from 'react-router-dom';
 
 const EventCard = ({ event }) => {

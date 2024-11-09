@@ -1,5 +1,5 @@
-import { ID, Query } from "appwrite";
-import { account, appwriteConfig, avatar, database } from "./config";
+import { ID, ImageGravity, Query } from "appwrite";
+import { account, appwriteConfig, avatar, database, storage } from "./config";
 
 export async function signInUser(user) {
    try {
@@ -59,7 +59,17 @@ export async function addEvent(event) {
    // adding a unque event id thet is eventCollectionId + current timeStamp
    const eventId = ID.unique() + '-' + Date.now();
    event = { ...event, eventId };
+   console.log("Event data:", event);
    try {
+      const uploadedBanner = await uploadfile(event.banner);
+      if (!uploadedBanner) throw new Error("Error uploading banner");
+      // get the url
+      const fileUrl = getFilePreview(uploadedBanner.$id);
+      if (!fileUrl) {
+         await deleteFile(uploadedBanner.$id);
+         throw new Error("Error getting file URL");
+      }
+
       const newEvent = await database.createDocument(
          appwriteConfig.databaseId,
          appwriteConfig.eventCollectionId,
@@ -73,6 +83,8 @@ export async function addEvent(event) {
             maxCapacity: event.maxCapacity,
             locationUrl: event.locationUrl,
             organizers: event.organizers,
+            imageUrl: fileUrl,
+            imageId: uploadedBanner.$id
          }
       );
       return newEvent;
@@ -80,6 +92,55 @@ export async function addEvent(event) {
       console.error("Error adding event:", error);
    }
 }
+// supporting functions that many time will be used 
+export async function uploadfile(file) {
+   console.log("file receiving uploadfile:", file);
+   try {
+      if (!file) throw new Error("No file provided");
+
+      const uploadedFile = await storage.createFile(
+         appwriteConfig.bannerStorage,
+         ID.unique(),
+         file
+      );
+
+      console.log("Uploaded file:", uploadedFile);
+      return uploadedFile;
+   } catch (error) {
+      console.log('Error uploading file:', error);
+      throw new Error("File upload failed: " + error.message);
+   }
+}
+export function getFilePreview(fileId) {
+   try {
+      const fileUrl = storage.getFilePreview(
+         appwriteConfig.bannerStorage,
+         fileId,
+         2000,
+         2000,
+         ImageGravity.Top,
+         50,
+      );
+
+      if (!fileUrl) throw Error;
+
+      return fileUrl;
+   } catch (error) {
+      console.log(error);
+   }
+}
+export async function deleteFile(fileId) {
+   try {
+      const deletedFile = await storage.deleteFile(
+         appwriteConfig.bannerStorage,
+         fileId,
+      );
+      return deletedFile;
+   } catch (error) {
+      console.log(error);
+   }
+}
+
 
 // find user using email 
 export async function findUserByEmail(email) {
@@ -111,22 +172,6 @@ export async function getAllEvents() {
    }
 }
 
-// active or inactive event
-export async function updateEvent(eventId, data) {
-   try {
-      const updatedEvent = await database.updateDocument(
-         appwriteConfig.databaseId,
-         appwriteConfig.eventCollectionId,
-         eventId,
-         data
-      );
-      return updatedEvent;
-   } catch (error) {
-      console.error("Error updating event:", error);
-   }
-
-}
-
 // get all clubMembers post 
 export async function getClubMembers() {
    try {
@@ -152,4 +197,3 @@ export async function getClubMembers() {
       console.error("Error fetching club members:", error);
    }
 }
-
