@@ -6,6 +6,7 @@ const EventCard = ({ event }) => {
    const {
       eventId,
       title,
+      subtitle,
       desc,
       eventTime,
       eventPlace,
@@ -42,6 +43,7 @@ const EventCard = ({ event }) => {
                className="text-3xl font-bold text-gray-800 dark:text-white mb-4 hover:underline">
                {title}
             </Link>
+            <p className='"text-gray-600 dark:text-gray-300 text-lg mb-4'>{subtitle}</p>
             <p className="text-gray-600 dark:text-gray-300 text-lg mb-4">{desc}</p>
          </div>
 
@@ -138,7 +140,12 @@ const EventCard = ({ event }) => {
                         className="w-8 h-8 rounded-full"
                      />
                      <p className="text-gray-800 dark:text-white font-semibold">{organizer.name}</p>
-                     <p className='bg-white text-black px-4 rounded-full font-semibold'>{organizer.role}</p>
+                     <p className='bg-white text-black px-4 rounded-full font-semibold'>
+                        {organizer.role
+                           .replace(/-/g, ' ') // Replace hyphens with spaces
+                           .replace(/\b\w/g, (char) => char.toUpperCase())
+                        }
+                     </p>
                   </div>
                ))}
             </div>

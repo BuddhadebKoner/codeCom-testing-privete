@@ -77,6 +77,7 @@ export async function addEvent(event) {
          {
             eventId: event.eventId,
             title: event.title,
+            subtitle: event.subtitle,
             desc: event.desc,
             eventTime: event.eventTime,
             eventPlace: event.eventPlace,

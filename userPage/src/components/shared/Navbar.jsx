@@ -11,10 +11,10 @@ const Navbar = () => {
             <div className="flex justify-center items-center lg:gap-10 gap-2">
                <Link
                   className="lg:text-xl text-sm"
-                  to={"/about"}>About CodeCom</Link>
+                  to={"/about"}>About</Link>
                <Link
                   className="lg:text-xl text-sm"
-                  to={"/upcoming-events"}>Upcoming Events</Link>
+                  to={"/upcoming-events"}>Events</Link>
                {
                   isAuthenticated ? (
                      <img

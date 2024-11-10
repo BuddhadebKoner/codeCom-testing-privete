@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Addevents = () => {
   const [formData, setFormData] = useState({
     title: '',
+    subtitle: '',
     desc: '',
     eventTime: '',
     eventPlace: '',
@@ -103,6 +104,7 @@ const Addevents = () => {
 
     const event = {
       title: formData.title,
+      subtitle: formData.subtitle,
       desc: formData.desc,
       eventTime: formData.eventTime,
       eventPlace: formData.eventPlace,
@@ -137,7 +139,14 @@ const Addevents = () => {
             placeholder='Event Title'
             className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-black" />
         </div>
-
+        {/* subtitle */}
+        <div>
+          <label className="block text-gray-700 font-medium">subtitle:</label>
+          <input type="text" name="subtitle" value={formData.subtitle} onChange={handleChange} required
+            placeholder='Event subtitle'
+            className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-black" />
+        </div>
+        
         {/* Description */}
         <div>
           <label className="block text-gray-700 font-medium">Description:</label>
