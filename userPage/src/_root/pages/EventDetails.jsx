@@ -1,12 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Loader from "../../components/shared/Loader";
 import { getEventById } from "../../lib/appwrite/api";
+import BigLoader from "../../components/shared/BigLoader";
+import OrganizersProfile from "../../components/shared/OrganizersProfile";
+import { useEventById } from "../../lib/react-query/queriesAndMutation";
 
 const EventDetails = () => {
   // Get event id from the URL
-  // const { id } = useParams();
+  const { id } = useParams();
 
+  const { data: event, isPending } = useEventById(id || '');
 
   // const [event, setEvent] = useState(null);
 
@@ -24,100 +27,212 @@ const EventDetails = () => {
   //   handelEvent();
   // }, []);
 
-  // example data 
-  const event = {
-    "eventId": "6731a9eb001cf349be87-1731308011463",
-    "title": "this is the tile of first event",
-    "desc": " hibro",
-    "eventTime": "2024-11-15T03:04:00.000+00:00",
-    "eventPlace": "Sanaka Educational Trust's Group of Institutions",
-    "locationUrl": "https://maps.app.goo.gl/4KpToFAXnkF6tbKk7",
-    "isActive": false,
-    "maxCapacity": 50,
-    "imageUrl": "https://cloud.appwrite.io/v1/storage/buckets/672fab37002c43b391b0/files/6731a9eb001d040d6453/preview?width=2000&height=2000&gravity=top&quality=50&project=6726244600272c4dd73b&width=2000&height=2000&gravity=top&quality=50&project=6726244600272c4dd73b",
-    "imageId": "6731a9eb001d040d6453",
-    "subtitle": "Building Stronger Connections: Discover the Leaders Behind the Vision",
-    "city": "Malandighi, Durgapur",
-    "eventLength": 3,
-    "$id": "6731a9ec002e8d177b15",
-    "$createdAt": "2024-11-11T06:53:33.148+00:00",
-    "$updatedAt": "2024-11-11T06:53:33.148+00:00",
-    "$permissions": [
-      "read(\"user:672f0eb300054d1e6116\")",
-      "update(\"user:672f0eb300054d1e6116\")",
-      "delete(\"user:672f0eb300054d1e6116\")"
-    ],
-    "entryPass": [],
-    "organizers": [
-      {
-        "userId": "672f0eb300054d1e6116",
-        "name": "Buddhadeb Koner",
-        "email": "buddhadeb@gmail.com",
-        "imageId": null,
-        "imageUrl": "https://cloud.appwrite.io/v1/avatars/initials?name=Buddhadeb+Koner&project=6726244600272c4dd73b&name=Buddhadeb+Koner&project=6726244600272c4dd73b",
-        "Linkedin": null,
-        "instagram": null,
-        "isAdmin": true,
-        "role": "tech-lead",
-        "$id": "672f0eb40001247aa36b",
-        "$createdAt": "2024-11-09T07:26:44.545+00:00",
-        "$updatedAt": "2024-11-09T08:06:05.311+00:00",
-        "$permissions": [
-          "read(\"user:672f0e4b001dc6d0fea5\")",
-          "update(\"user:672f0e4b001dc6d0fea5\")",
-          "delete(\"user:672f0e4b001dc6d0fea5\")"
-        ],
-        "entryPass": [],
-        "$databaseId": "672624ee00287d736782",
-        "$collectionId": "672a512300298fad5cf4"
-      }
-    ],
-    "$databaseId": "672624ee00287d736782",
-    "$collectionId": "672a523500237ab87342"
+  // const event = {
+  //   "eventId": "6730d9f4003c9154a41b-1731254772969",
+  //   "title": "Know your Lead",
+  //   "desc": "Join us for an insightful event where you'll get the chance to meet and learn more about the leaders driving our mission forward. \"Know Your Lead\" is designed to foster open dialogue, share leadership experiences, and deepen the connection between teams and their leaders. Whether you're curious about leadership styles, decision-making processes, or simply want to know the people at the helm, this event is your opportunity to connect, ask questions, and be inspired.",
+  //   "eventTime": "2024-04-10T04:05:00.000+00:00",
+  //   "eventPlace": "sanaka educational trust",
+  //   "locationUrl": "https://maps.app.goo.gl/4KpToFAXnkF6tbKk7",
+  //   "isActive": false,
+  //   "maxCapacity": 100,
+  //   "imageUrl": "https://cloud.appwrite.io/v1/storage/buckets/672fab37002c43b391b0/files/6730d9f4003c9bc12abf/preview?width=2000&height=2000&gravity=top&quality=50&project=6726244600272c4dd73b&width=2000&height=2000&gravity=top&quality=50&project=6726244600272c4dd73b",
+  //   "imageId": "6730d9f4003c9bc12abf",
+  //   "subtitle": "Building Stronger Connections: Discover the Leaders Behind the Vision",
+  //   "city": null,
+  //   "eventLength": null,
+  //   "$id": "6730d9f9003c563dd734",
+  //   "$createdAt": "2024-11-10T16:06:19.410+00:00",
+  //   "$updatedAt": "2024-11-10T16:27:50.476+00:00",
+  //   "$permissions": [
+  //     "read(\"user:672f0eb300054d1e6116\")",
+  //     "update(\"user:672f0eb300054d1e6116\")",
+  //     "delete(\"user:672f0eb300054d1e6116\")"
+  //   ],
+  //   "entryPass": [],
+  //   "organizers": [
+  //     {
+  //       "userId": "672f0f3d000f0b103423",
+  //       "name": "Gourab ganguli",
+  //       "email": "gourab@gmail.com",
+  //       "imageId": null,
+  //       "imageUrl": "https://cloud.appwrite.io/v1/avatars/initials?name=Gourab+ganguli&project=6726244600272c4dd73b&name=Gourab+ganguli&project=6726244600272c4dd73b",
+  //       "Linkedin": null,
+  //       "instagram": null,
+  //       "isAdmin": false,
+  //       "role": "web-dev-lead",
+  //       "$id": "672f0f3e002708ddc70e",
+  //       "$createdAt": "2024-11-09T07:29:03.145+00:00",
+  //       "$updatedAt": "2024-11-09T08:05:27.420+00:00",
+  //       "$permissions": [
+  //         "read(\"user:672f0e4b001dc6d0fea5\")",
+  //         "update(\"user:672f0e4b001dc6d0fea5\")",
+  //         "delete(\"user:672f0e4b001dc6d0fea5\")"
+  //       ],
+  //       "entryPass": [],
+  //       "$databaseId": "672624ee00287d736782",
+  //       "$collectionId": "672a512300298fad5cf4"
+  //     },
+  //     {
+  //       "userId": "672f0f3d000f0b103423",
+  //       "name": "Gourab ganguli",
+  //       "email": "gourab@gmail.com",
+  //       "imageId": null,
+  //       "imageUrl": "https://cloud.appwrite.io/v1/avatars/initials?name=Gourab+ganguli&project=6726244600272c4dd73b&name=Gourab+ganguli&project=6726244600272c4dd73b",
+  //       "Linkedin": null,
+  //       "instagram": null,
+  //       "isAdmin": false,
+  //       "role": "web-dev-lead",
+  //       "$id": "672f0f3e002708ddc70e",
+  //       "$createdAt": "2024-11-09T07:29:03.145+00:00",
+  //       "$updatedAt": "2024-11-09T08:05:27.420+00:00",
+  //       "$permissions": [
+  //         "read(\"user:672f0e4b001dc6d0fea5\")",
+  //         "update(\"user:672f0e4b001dc6d0fea5\")",
+  //         "delete(\"user:672f0e4b001dc6d0fea5\")"
+  //       ],
+  //       "entryPass": [],
+  //       "$databaseId": "672624ee00287d736782",
+  //       "$collectionId": "672a512300298fad5cf4"
+  //     },
+  //     {
+  //       "userId": "672f0f3d000f0b103423",
+  //       "name": "Gourab ganguli",
+  //       "email": "gourab@gmail.com",
+  //       "imageId": null,
+  //       "imageUrl": "https://cloud.appwrite.io/v1/avatars/initials?name=Gourab+ganguli&project=6726244600272c4dd73b&name=Gourab+ganguli&project=6726244600272c4dd73b",
+  //       "Linkedin": null,
+  //       "instagram": null,
+  //       "isAdmin": false,
+  //       "role": "web-dev-lead",
+  //       "$id": "672f0f3e002708ddc70e",
+  //       "$createdAt": "2024-11-09T07:29:03.145+00:00",
+  //       "$updatedAt": "2024-11-09T08:05:27.420+00:00",
+  //       "$permissions": [
+  //         "read(\"user:672f0e4b001dc6d0fea5\")",
+  //         "update(\"user:672f0e4b001dc6d0fea5\")",
+  //         "delete(\"user:672f0e4b001dc6d0fea5\")"
+  //       ],
+  //       "entryPass": [],
+  //       "$databaseId": "672624ee00287d736782",
+  //       "$collectionId": "672a512300298fad5cf4"
+  //     },
+  //     {
+  //       "userId": "672f0f3d000f0b103423",
+  //       "name": "Gourab ganguli",
+  //       "email": "gourab@gmail.com",
+  //       "imageId": null,
+  //       "imageUrl": "https://cloud.appwrite.io/v1/avatars/initials?name=Gourab+ganguli&project=6726244600272c4dd73b&name=Gourab+ganguli&project=6726244600272c4dd73b",
+  //       "Linkedin": null,
+  //       "instagram": null,
+  //       "isAdmin": false,
+  //       "role": "web-dev-lead",
+  //       "$id": "672f0f3e002708ddc70e",
+  //       "$createdAt": "2024-11-09T07:29:03.145+00:00",
+  //       "$updatedAt": "2024-11-09T08:05:27.420+00:00",
+  //       "$permissions": [
+  //         "read(\"user:672f0e4b001dc6d0fea5\")",
+  //         "update(\"user:672f0e4b001dc6d0fea5\")",
+  //         "delete(\"user:672f0e4b001dc6d0fea5\")"
+  //       ],
+  //       "entryPass": [],
+  //       "$databaseId": "672624ee00287d736782",
+  //       "$collectionId": "672a512300298fad5cf4"
+  //     },
+  //     {
+  //       "userId": "672f0f3d000f0b103423",
+  //       "name": "Gourab ganguli",
+  //       "email": "gourab@gmail.com",
+  //       "imageId": null,
+  //       "imageUrl": "https://cloud.appwrite.io/v1/avatars/initials?name=Gourab+ganguli&project=6726244600272c4dd73b&name=Gourab+ganguli&project=6726244600272c4dd73b",
+  //       "Linkedin": null,
+  //       "instagram": null,
+  //       "isAdmin": false,
+  //       "role": "web-dev-lead",
+  //       "$id": "672f0f3e002708ddc70e",
+  //       "$createdAt": "2024-11-09T07:29:03.145+00:00",
+  //       "$updatedAt": "2024-11-09T08:05:27.420+00:00",
+  //       "$permissions": [
+  //         "read(\"user:672f0e4b001dc6d0fea5\")",
+  //         "update(\"user:672f0e4b001dc6d0fea5\")",
+  //         "delete(\"user:672f0e4b001dc6d0fea5\")"
+  //       ],
+  //       "entryPass": [],
+  //       "$databaseId": "672624ee00287d736782",
+  //       "$collectionId": "672a512300298fad5cf4"
+  //     },
+  //   ],
+  //   "$databaseId": "672624ee00287d736782",
+  //   "$collectionId": "672a523500237ab87342"
+  // }
+  // Fallback for event fields if they are null/undefined
+
+  if (isPending) {
+    return (
+      <>
+        <div className="w-full h-full flex justify-center items-center mt-10">
+          <BigLoader />
+        </div>
+      </>
+    );
   }
-  const eventDate = new Date(event.eventTime);
-  const timeString = eventDate.toLocaleString('en-US', {
+
+  // Ensure event fields are defined
+  const eventDate = event.eventTime ? new Date(event.eventTime) : null;
+  const timeString = eventDate ? eventDate.toLocaleString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: true,
-  });
+  }) : 'N/A';
 
-  const endTime = new Date(event.eventTime);
-  endTime.setHours(eventDate.getHours() + event.eventLength);
-
-  const endTimeString = endTime.toLocaleString('en-US', {
+  const endTime = event.eventLength ? new Date(event.eventTime) : null;
+  if (endTime) {
+    endTime.setHours(eventDate.getHours() + event.eventLength);
+  }
+  const endTimeString = endTime ? endTime.toLocaleString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: true,
-  });
+  }) : 'N/A';
 
   const timezoneOffset = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-
 
   return (
     <>
       <div className="w-full h-full">
         <img
           className="w-full max-h-[500px] object-cover rounded-lg"
-          src={event.imageUrl}
-          alt={event.title} />
+          src={event.imageUrl || '/default-image.jpg'} // Provide fallback image
+          alt={event.title || 'Event Image'}
+        />
         <div className="w-full h-fit flex flex-col py-10 px-3">
-          <h1 className="text-2xl font-semibold">{event.title}</h1>
-          <p className="text-xl">{event.subtitle}</p>
-          <p className="text-xl font-semibold mt-10">{event.eventPlace},{event.city}</p>
+          <h1 className="text-2xl font-semibold">{event.title || 'Event Title'}</h1>
+          <p className="text-xl">{event.subtitle || 'Event Subtitle'}</p>
+          <p className="text-xl font-semibold mt-10">
+            {event.eventPlace || 'Event Place'}, {event.city || 'City'}
+          </p>
         </div>
         <div className="w-full h-fit bg-white px-5 py-2">
-          {/* date and time */}
+          {/* Date and time */}
           <p className="text-black text-xl font-bold">
-            {eventDate.toLocaleString('en-US', { month: 'short' })}{' '}
-            {eventDate.getDate()},{' '}
+            {eventDate ? `${eventDate.toLocaleString('en-US', { month: 'short' })} ${eventDate.getDate()}` : 'N/A'},
             {timeString} – {endTimeString} ({timezoneOffset})
           </p>
         </div>
-        <div className="w-full h-fit flex flex-col gap-5 mt-20">
+        <div className="w-full h-fit flex flex-col gap-5 mt-[5rem]">
           <p className="text-4xl font-normal">About this event</p>
-          <p className="text-lg">{event.desc}</p>
+          <p className="text-lg">{event.desc || 'Event description not available.'}</p>
+        </div>
+        <div className="w-full h-fit flex items-center flex-col flex-wrap gap-5 mt-[10rem]">
+          <h1 className="text-center text-5xl">Organizers</h1>
+          <div className="w-full h-fit flex justify-evenly flex-wrap gap-[150px] mt-[5rem]">
+            {event.organizers.map((organizer) => (
+              <OrganizersProfile
+                key={organizer.$id}
+                organizer={organizer}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </>

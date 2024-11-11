@@ -40,7 +40,7 @@ const Home = () => {
         </div>
 
         {/* Display events */}
-        <div className="w-full flex justify-around gap-2 mt-10">
+        <div className="w-full flex flex-wrap justify-around gap-6 mt-10">
           {isLoading && <Loader />}
           {isError && navigate('/not-found-page')}
           {events.length > 0 ? (

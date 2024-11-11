@@ -57,11 +57,11 @@ export const useGetAllEvents = () => {
    });
 };
 
-
-export async function useGetEventById(id) {
+// get events by id
+export const useEventById = (id) => {
    return useQuery({
       queryKey: [QUERY_KEYS.GET_EVENT_BY_ID, id],
       queryFn: () => getEventById(id),
-      enabled: !!id, 
+      enabled: !!id,
    })
-}
+};

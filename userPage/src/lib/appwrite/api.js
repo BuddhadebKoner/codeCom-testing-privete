@@ -115,7 +115,7 @@ export async function getEventById(id) {
          appwriteConfig.eventCollectionId,
          id
       ); 
-      console.log("Event fetched by id:", event);
+      // console.log("Event fetched by id:", event);
       return event;
    } catch (error) {
       console.error("Error fetching event by id:", error);
