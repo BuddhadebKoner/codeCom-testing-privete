@@ -100,8 +100,24 @@ export async function getAllEvents() {
          appwriteConfig.databaseId,
          appwriteConfig.eventCollectionId
       );
+      // console.log("All events fetched:", events);
       return events.documents;
    } catch (error) {
       console.error("Error fetching all events:", error);
+   }
+}
+
+// get event by id
+export async function getEventById(id) {
+   try {
+      const event = await database.getDocument(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId,
+         id
+      ); 
+      console.log("Event fetched by id:", event);
+      return event;
+   } catch (error) {
+      console.error("Error fetching event by id:", error);
    }
 }

@@ -11,12 +11,12 @@ const EventCard = ({ event }) => {
          />
          <div className="mt-10 flex flex-col gap-3">
             <Link
-               to={`/event/${event.eventId}`}
+               to={`/events/${event.$id}`}
                className="text-xl font-semibold text-gray-800 underline"
             >
                {event.title.replace(/\b\w/g, char => char.toUpperCase())}
             </Link>
-            <div className="mt-4 flex justify-between items-center">
+            <div className="w-full mt-4 flex justify-between items-center">
                <p className="text-sm text-black">
                   {event.eventPlace
                      .split(' ')
@@ -27,7 +27,9 @@ const EventCard = ({ event }) => {
                   <img
                      width={20}
                      src="/assets/calender-logo.svg" alt="event-icon" />
-                  <p className="text-sm text-black">{new Date(event.eventTime).toDateString()}</p>
+                  <p className="text-sm text-black">
+                     {new Date(event.eventTime).toDateString().split(' ').slice(0, 3).join(' ')}
+                  </p>
                </div>
             </div>
          </div>

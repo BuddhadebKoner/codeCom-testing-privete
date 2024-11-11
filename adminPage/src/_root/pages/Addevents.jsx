@@ -13,6 +13,8 @@ const Addevents = () => {
     eventOrganizer: [],
     maxCapacity: 0,
     banner: null,
+    city: '',
+    eventLength: null,
   });
 
   const navigate = useNavigate();
@@ -112,6 +114,8 @@ const Addevents = () => {
       locationUrl: formData.locationUrl,
       organizers,
       banner,
+      city: formData.city,
+      eventLength: parseInt(formData.eventLength, 10),
     };
 
     try {
@@ -146,7 +150,7 @@ const Addevents = () => {
             placeholder='Event subtitle'
             className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-black" />
         </div>
-        
+
         {/* Description */}
         <div>
           <label className="block text-gray-700 font-medium">Description:</label>
@@ -160,11 +164,25 @@ const Addevents = () => {
           <input type="datetime-local" name="eventTime" value={formData.eventTime} onChange={handleChange} required
             className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-black" />
         </div>
+        {/* event how long */}
+        <div>
+          <label className="block text-gray-700 font-medium">Event Length:</label>
+          <input type="number" name="eventLength" value={formData.eventLength} onChange={handleChange}
+            placeholder='Event Length in hours'
+            className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-black" />
+        </div>
 
         {/* Event Place */}
         <div>
           <label className="block text-gray-700 font-medium">Event Place:</label>
           <input type="text" name="eventPlace" value={formData.eventPlace} onChange={handleChange} required
+            className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-black" />
+        </div>
+        {/* city */}
+        <div>
+          <label className="block text-gray-700 font-medium">City:</label>
+          <input type="text" name="city" value={formData.city} onChange={handleChange} required
+            placeholder='City'
             className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-black" />
         </div>
 

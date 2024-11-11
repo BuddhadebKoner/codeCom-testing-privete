@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
    const checkAuthUser = async () => {
       try {
          const currentUser = await getCurrentUser();
-         console.log(currentUser);
+         // console.log(currentUser);
          setIsAuthenticated(false);
          if (currentUser) {
             setUser(currentUser);

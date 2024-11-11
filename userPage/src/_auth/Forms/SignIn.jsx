@@ -1,31 +1,32 @@
 import { useState } from "react";
-import { signInUser } from "../../lib/appwrite/api";
+import { useSignInUser } from "../../lib/react-query/queriesAndMutation"; // Ensure correct path to your mutation hook
 import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignInLoading, setIsSignInLoading] = useState(false);
-
   const navigate = useNavigate();
+
+  // Use the custom mutation hook for signing in
+  const { mutate: signInUser, isLoading: isSignInLoading, isError } = useSignInUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSignInLoading(true);
-    const user = { email, password };
-    const signIn = await signInUser(user);
-    if (!signIn) {
-      console.error("Error signing in");
-      setIsSignInLoading(false);
-      return;
-    }
-    setIsSignInLoading(false);
-    // console.log("Sign in with:", signIn);
-    // refresh the window
-    navigate("/");
-    window.location.reload();
-  };
 
+    // Trigger the mutation with user data
+    signInUser(
+      { email, password },
+      {
+        onSuccess: () => {
+          navigate("/");
+          window.location.reload();
+        },
+        onError: () => {
+          console.error("Error signing in");
+        },
+      }
+    );
+  };
 
   return (
     <div className="sign-in-container bg-white p-6 rounded shadow-md w-80">
@@ -49,11 +50,13 @@ const SignIn = () => {
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className={`bg-blue-500 text-white py-2 rounded hover:bg-blue-600 ${isSignInLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={isSignInLoading}
         >
-          Sign In
+          {isSignInLoading ? "Signing In..." : "Sign In"}
         </button>
       </form>
+      {isError && <p className="text-red-500 mt-4">Failed to sign in. Please try again.</p>}
     </div>
   );
 };

@@ -4,7 +4,7 @@ import RootLayout from './_root/RootLayout'
 import SignIn from './_auth/Forms/SignIn'
 import SignUp from './_auth/Forms/SignUp'
 
-import { Home, About, Event, UpcomingEvents, NotFound } from './_root/pages/index'
+import { Home, About, Event, UpcomingEvents, EventDetails, NotFound, Profile } from './_root/pages/index'
 
 function App() {
 
@@ -19,10 +19,12 @@ function App() {
         {/* public routes */}
         <Route element={<RootLayout />}>
           <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="event" element={<Event />} />
-          <Route path="upcoming-events" element={<UpcomingEvents />} />
-          <Route path="not-found-page" element={<NotFound />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/profile/:userId" element={<Profile />} />
+          <Route path="/event" element={<Event />} />
+          <Route path="/events/:id" element={<EventDetails />} />
+          <Route path="/upcoming-events" element={<UpcomingEvents />} />
+          <Route path="/not-found-page" element={<NotFound />} />
         </Route>
       </Routes>
     </main>

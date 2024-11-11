@@ -85,7 +85,9 @@ export async function addEvent(event) {
             locationUrl: event.locationUrl,
             organizers: event.organizers,
             imageUrl: fileUrl,
-            imageId: uploadedBanner.$id
+            imageId: uploadedBanner.$id,
+            city: event.city,
+            eventLength: event.eventLength
          }
       );
       return newEvent;
