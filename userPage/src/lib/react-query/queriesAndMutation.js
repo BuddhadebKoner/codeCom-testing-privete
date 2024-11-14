@@ -3,8 +3,9 @@ import {
    createUserAccount,
    signInUser,
    signOutUser,
-   getAllEvents,
    getEventById,
+   getRecentEvents,
+   getUpcommingEvents,
 } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -44,11 +45,25 @@ export const useSignInUser = () => {
    });
 };
 
+// get recent events
+export const useGetRecentEvents = () => {
+   return useQuery({
+      queryKey: [QUERY_KEYS.GET_RECENT_EVENTS],
+      queryFn: getRecentEvents,
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+      onError: (error) => {
+         console.error("Error fetching recent events:", error);
+      },
+   });
+};
+
+
 // Hook for fetching all events
-export const useGetAllEvents = () => {
+export const useGetUpcommingEvents = () => {
    return useQuery({
       queryKey: [QUERY_KEYS.GET_ALL_EVENTS],
-      queryFn: getAllEvents,
+      queryFn: getUpcommingEvents,
       staleTime: 1000 * 60 * 5,
       refetchOnWindowFocus: false,
       onError: (error) => {

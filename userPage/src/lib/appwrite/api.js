@@ -93,8 +93,27 @@ export async function signOutUser() {
    }
 }
 
+// get recent three events
+export async function getRecentEvents() {
+   try {
+      const events = await database.listDocuments(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId,
+         [
+            Query.orderDesc("eventTime"), 
+            Query.limit(3)                
+         ]
+      );
+      // console.log("Recent 3 events fetched:", events);
+      return events.documents;
+   } catch (error) {
+      console.error("Error fetching recent events:", error);
+   }
+}
+
+
 //  get all events data 
-export async function getAllEvents() {
+export async function getUpcommingEvents() {
    try {
       const events = await database.listDocuments(
          appwriteConfig.databaseId,
@@ -114,7 +133,7 @@ export async function getEventById(id) {
          appwriteConfig.databaseId,
          appwriteConfig.eventCollectionId,
          id
-      ); 
+      );
       // console.log("Event fetched by id:", event);
       return event;
    } catch (error) {

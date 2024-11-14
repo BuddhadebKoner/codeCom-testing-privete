@@ -1,12 +1,12 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import EventCard from "../../components/shared/EventCard";
-import { useGetAllEvents } from "../../lib/react-query/queriesAndMutation";
+import { useGetRecentEvents } from "../../lib/react-query/queriesAndMutation";
 import Loader from "../../components/shared/Loader";
 
 const Home = () => {
   // Using the custom hook from React Query
-  const { data: events = [], isLoading, isError } = useGetAllEvents();
+  const { data: events = [], isLoading, isError } = useGetRecentEvents();
   const navigate = useNavigate();
 
 
