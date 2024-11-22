@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const OrganizersProfile = ({ organizer }) => {
-   console.log(organizer)
+   // console.log(organizer)
    return (
       <div
          key={organizer.userId}

@@ -3,6 +3,7 @@ import { useUserById } from "../../lib/react-query/queriesAndMutation";
 import { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import NotFound from "./NotFound";
+import BigLoader from "../../components/shared/BigLoader";
 
 const Profile = () => {
   const { isAuthenticated, user: currentUser, isLoading: authLoading } = useAuth();
@@ -14,8 +15,8 @@ const Profile = () => {
   // Handle loading and error states
   if (authLoading || userLoading) {
     return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <p>Loading...</p>
+      <div className="w-full h-fit flex items-start justify-center">
+        <BigLoader />
       </div>
     );
   }

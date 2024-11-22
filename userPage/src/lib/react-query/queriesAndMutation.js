@@ -7,6 +7,7 @@ import {
    getRecentEvents,
    getUpcommingEvents,
    getUserById,
+   generateEntryPass,
 } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -93,3 +94,22 @@ export const useUserById = (id) => {
       enabled: !!id,
    });
 };
+
+// register to an event
+
+export const useGenerateEntryPass = (passData) => {
+   const queryClient = useQueryClient();
+
+   return useMutation({
+      mutationKey: [QUERY_KEYS.GENERATE_ENTRY_PASS],
+      mutationFn: () => generateEntryPass(passData),
+      onSuccess: (newPass) => {
+         // Invalidate the cache for the current user and update with the new user
+         queryClient.invalidateQueries([QUERY_KEYS.GET_ENTRY_PASS]);
+         queryClient.setQueryData([QUERY_KEYS.GET_ENTRY_PASS], newPass);
+      },
+      onError: (error) => {
+         console.error("Error creating user account:", error);
+      },
+   })
+}

@@ -17,6 +17,7 @@ export const appwriteConfig = {
    databaseId: import.meta.env.VITE_APPWRITE_DATABASE_ID,
    userCollectionId: import.meta.env.VITE_APPWRITE_USER_COLLECTION_ID,
    eventCollectionId: import.meta.env.VITE_APPWRITE_EVENT_COLLECTION_ID,
+   entryPassCollectionId: import.meta.env.VITE_APPWRITE_ENTRY_PASS_COLLECTION_ID,
 };
 
 export const client = new Client();

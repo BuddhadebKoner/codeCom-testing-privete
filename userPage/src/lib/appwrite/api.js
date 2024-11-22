@@ -100,8 +100,8 @@ export async function getRecentEvents() {
          appwriteConfig.databaseId,
          appwriteConfig.eventCollectionId,
          [
-            Query.orderDesc("eventTime"), 
-            Query.limit(3)                
+            Query.orderDesc("eventTime"),
+            Query.limit(3)
          ]
       );
       // console.log("Recent 3 events fetched:", events);
@@ -154,5 +154,122 @@ export async function getUserById(id) {
       return user;
    } catch (error) {
       console.error("Error fetching user by id:", error);
+   }
+}
+
+// Generate Entry Pass
+export async function generateEntryPass(passData) {
+   console.log(passData);
+   try {
+      const {
+         entryId,
+         users,
+         events,
+         purpus,
+         stream,
+         department,
+         phone,
+         institute,
+      } = passData;
+
+      // Validate input data
+      if (!entryId || !users || !events || !purpus || !stream || !department || !phone || !institute) {
+         throw new Error("All fields are required.");
+      }
+
+      // Check event capacity
+      const eventStatus = await checkEventCapacity(events);
+      console.log(eventStatus);
+
+      if (eventStatus.status === "inactive") {
+         throw new Error(`Event is inactive: ${eventStatus.message}`);
+      }
+
+      if (eventStatus.status === "full") {
+         throw new Error(`Event is full: ${eventStatus.message}`);
+      }
+
+      // Update seat count in the event document
+      const availableSeats = eventStatus.remainingSpots || 0;
+      if (availableSeats <= 0) {
+         throw new Error("No seats available.");
+      }
+
+      await database.updateDocument(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId,
+         events,
+         {
+            seatsAvailable: availableSeats - 1,
+            entryPass: [...eventStatus.entryPass, entryId], // Add entry ID to the list
+         }
+      );
+
+      // Store entry pass in the database
+      const entryPass = await database.createDocument(
+         appwriteConfig.databaseId,
+         appwriteConfig.entryPassCollectionId,
+         entryId,
+         {
+            users,
+            events,
+            purpus,
+            stream,
+            department,
+            phone,
+            institute,
+            createdAt: new Date().toISOString(),
+         }
+      );
+
+      return entryPass;
+   } catch (error) {
+      console.error("Error generating entry pass:", error.message);
+      throw new Error(error.message || "Failed to generate entry pass.");
+   }
+}
+
+
+
+async function checkEventCapacity(eventId) {
+   try {
+      // Fetch event data from the database
+      const eventData = await database.getDocument(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId,
+         eventId
+      );
+
+      // Destructure relevant fields
+      const { isActive, maxCapacity, entryPass = [], title } = eventData;
+
+      // Check if the event is active
+      if (!isActive) {
+         return {
+            eventId,
+            status: "inactive",
+            message: `The event "${title}" is not active.`,
+         };
+      }
+
+      // Compare entryPass count and maxCapacity
+      const entryCount = entryPass.length;
+      if (entryCount >= maxCapacity) {
+         return {
+            eventId,
+            status: "full",
+            message: `The event "${title}" has reached its maximum capacity of ${maxCapacity}.`,
+         };
+      }
+
+      // If the event is active and not full
+      return {
+         eventId,
+         status: "open",
+         message: `The event "${title}" is active and has ${maxCapacity - entryCount} spots left.`,
+      };
+   } catch (error) {
+      console.error("Error checking event capacity:", error.message);
+      throw new Error(error.message || "Failed to check event capacity.");
    }
 }

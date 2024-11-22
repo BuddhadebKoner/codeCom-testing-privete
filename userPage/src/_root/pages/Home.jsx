@@ -8,6 +8,7 @@ const Home = () => {
   // Using the custom hook from React Query
   const { data: events = [], isLoading, isError } = useGetRecentEvents();
   const navigate = useNavigate();
+  console.log(events)
 
   // Shortlist up to three active events sorted by eventTime
   const shortlistedEvents = events
