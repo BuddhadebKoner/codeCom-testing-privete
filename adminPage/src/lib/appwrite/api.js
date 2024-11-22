@@ -119,10 +119,6 @@ export function getFilePreview(fileId) {
       const fileUrl = storage.getFilePreview(
          appwriteConfig.bannerStorage,
          fileId,
-         2000,
-         2000,
-         ImageGravity.Top,
-         50,
       );
 
       if (!fileUrl) throw Error;
@@ -172,6 +168,20 @@ export async function getAllEvents() {
       return events.documents;
    } catch (error) {
       console.error("Error fetching all events:", error);
+   }
+}
+//  update event data
+export async function updateEvent(eventId, data) {
+   try {
+      const updatedEvent = await database.updateDocument(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId,
+         eventId,
+         data
+      );
+      return updatedEvent;
+   } catch (error) {
+      console.error("Error updating event:", error);
    }
 }
 

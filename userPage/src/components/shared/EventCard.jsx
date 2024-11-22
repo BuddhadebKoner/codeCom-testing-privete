@@ -2,11 +2,13 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const EventCard = ({ event }) => {
+   // console.log(event.imageUrl);
+
 
    return (
-      <div className="min-w-[300px] flex items-center flex-col rounded-lg overflow-hidden shadow-lg border-2  p-4">
+      <div className="min-w-[300px] max-w-[310px] flex items-center flex-col rounded-lg overflow-hidden shadow-lg border-2  p-4">
          <img
-            className="max-h-[200px] max-w-[200px] object-cover rounded-full"
+            className="h-[200px] w-[200px] object-cover rounded-full"
             src={event.imageUrl} alt="event-banner"
          />
          <div className="w-full mt-10 flex flex-col gap-3">
@@ -25,7 +27,7 @@ const EventCard = ({ event }) => {
                </p>
                <div className='w-fit flex items-center justify-center gap-2'>
                   <img
-                     width={20}
+                     className='w-4 h-4'
                      src="/assets/calender-logo.svg" alt="event-icon" />
                   <p className="text-sm  text-white">
                      {new Date(event.eventTime).toDateString().split(' ').slice(0, 3).join(' ')}

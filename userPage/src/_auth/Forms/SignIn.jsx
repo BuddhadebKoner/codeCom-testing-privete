@@ -29,7 +29,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="sign-in-container bg-white p-6 rounded shadow-md w-80">
+    <div className="bg-black p-6 rounded shadow-md w-80">
       <h2 className="text-xl font-bold mb-4">Sign In</h2>
       <form onSubmit={handleSubmit} className="flex flex-col">
         <label className="mb-2">Email:</label>
@@ -37,7 +37,7 @@ const SignIn = () => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="p-2 border rounded mb-4"
+          className="p-2 border rounded mb-4 text-black"
           required
         />
         <label className="mb-2">Password:</label>
@@ -45,7 +45,7 @@ const SignIn = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border rounded mb-4"
+          className="p-2 border rounded mb-4  text-black"
           required
         />
         <button

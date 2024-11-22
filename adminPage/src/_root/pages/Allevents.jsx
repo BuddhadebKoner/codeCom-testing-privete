@@ -26,7 +26,7 @@ const Allevents = () => {
   return (
     <div className="w-full p-4 flex-col">
       <h1 className="text-3xl font-bold mb-6">Upcoming Events</h1>
-      <div className='w-full h-fit flex flex-wrap'>
+      <div className='w-full h-fit flex flex-col justify-center items-center'>
         {events.map((event) => (
           <EventCard key={event.eventId} event={event} />
         ))}

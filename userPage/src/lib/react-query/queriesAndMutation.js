@@ -6,6 +6,7 @@ import {
    getEventById,
    getRecentEvents,
    getUpcommingEvents,
+   getUserById,
 } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -79,4 +80,16 @@ export const useEventById = (id) => {
       queryFn: () => getEventById(id),
       enabled: !!id,
    })
+};
+
+
+// get user details by id
+export const useUserById = (id) => {
+   return useQuery({
+      queryKey: [QUERY_KEYS.GET_USER_BY_ID, id],
+      queryFn: () => getUserById(id),
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+      enabled: !!id,
+   });
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { Link } from 'react-router-dom';
+import { updateEvent } from '../../lib/appwrite/api';
 
 const EventCard = ({ event }) => {
    const {
@@ -35,7 +36,7 @@ const EventCard = ({ event }) => {
    }
 
    return (
-      <div className="w-full max-w-lg mx-auto dark:bg-gray-900 shadow-xl rounded-2xl  my-8">
+      <div className="w-full max-w-[50vw] dark:bg-gray-900 shadow-xl rounded-2xl  my-8">
          {/* Event Header */}
          <div className="p-8 border-b border-gray-200 dark:border-gray-700">
             <Link

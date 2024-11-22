@@ -30,7 +30,7 @@ const Navbar = () => {
    };
 
    return (
-      <nav className="bg-black text-white w-full flex justify-between items-center py-5 px-4 border-b-2 border-[#D9D9D9]">
+      <nav className="bg-black text-white w-full flex justify-between items-center py-5 px-4">
          <Link className="lg:text-2xl font-normal" to={"/"}>&lt;/&gt; CodeCom</Link>
          <div className="flex justify-center items-center lg:gap-10 gap-2">
             <Link className="lg:text-xl text-sm" to={"/about"}>About</Link>
@@ -48,15 +48,15 @@ const Navbar = () => {
                         className="rounded-full"
                         width={40}
                         src={user.imageUrl}
-                        alt={user.fullName || "Profile Picture"}  // Improved alt text
+                        alt={user.fullName || "Profile Picture"}
                      />
                   </button>
 
                   {/* Dropdown Menu */}
                   {isDropdownOpen && (
-                     <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-md">
+                     <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-md z-50">
                         <Link
-                           to={`/profile/${user.userId}`}  // Fixed the profile URL
+                           to={`/profile/${user.$id}`}
                            className="block px-4 py-2 text-sm hover:bg-gray-200"
                            onClick={() => setIsDropdownOpen(false)}
                         >

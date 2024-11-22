@@ -9,6 +9,11 @@ const Home = () => {
   const { data: events = [], isLoading, isError } = useGetRecentEvents();
   const navigate = useNavigate();
 
+  // Shortlist up to three active events sorted by eventTime
+  const shortlistedEvents = events
+    .filter((event) => event.isActive) // Filter active events
+    .sort((a, b) => new Date(a.eventTime) - new Date(b.eventTime)) // Sort by eventTime
+    .slice(0, 3); // Take the first 3 events
 
   return (
     <div className="w-full flex flex-col py-5">
@@ -43,8 +48,10 @@ const Home = () => {
         <div className="w-full flex flex-wrap justify-around gap-6 mt-10">
           {isLoading && <Loader />}
           {isError && navigate('/not-found-page')}
-          {events.length > 0 ? (
-            events.map((event, index) => <EventCard key={index} event={event} />)
+          {shortlistedEvents.length > 0 ? (
+            shortlistedEvents.map((event, index) => (
+              <EventCard key={index} event={event} />
+            ))
           ) : (
             !isLoading && <p>No upcoming events available.</p>
           )}

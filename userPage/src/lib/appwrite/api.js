@@ -140,3 +140,19 @@ export async function getEventById(id) {
       console.error("Error fetching event by id:", error);
    }
 }
+
+//  get user by ID
+export async function getUserById(id) {
+   // console.log("getUserById id:", id);
+   try {
+      const user = await database.getDocument(
+         appwriteConfig.databaseId,
+         appwriteConfig.userCollectionId,
+         id
+      );
+      // console.log("User fetched by id:", user);
+      return user;
+   } catch (error) {
+      console.error("Error fetching user by id:", error);
+   }
+}
