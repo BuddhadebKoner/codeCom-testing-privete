@@ -159,117 +159,76 @@ export async function getUserById(id) {
 
 // Generate Entry Pass
 export async function generateEntryPass(passData) {
-   console.log(passData);
+
    try {
-      const {
+      // Generate a valid entryId (UUID ensures uniqueness and validity)
+      const entryId = ID.unique();
+
+      const entryPassData = {
          entryId,
-         users,
-         events,
-         purpus,
-         stream,
-         department,
-         phone,
-         institute,
-      } = passData;
+         users: passData.users,
+         events: passData.events,
+         purpus: passData.purpus,
+         stream: passData.stream,
+         department: passData.department,
+         phone: passData.phone,
+         institute: passData.institute,
+      };
 
-      // Validate input data
-      if (!entryId || !users || !events || !purpus || !stream || !department || !phone || !institute) {
-         throw new Error("All fields are required.");
+      const checkForElegable = checkEventForEntryPass(passData.events);
+      if (checkForElegable == false) {
+         throw Error;
       }
-
-      // Check event capacity
-      const eventStatus = await checkEventCapacity(events);
-      console.log(eventStatus);
-
-      if (eventStatus.status === "inactive") {
-         throw new Error(`Event is inactive: ${eventStatus.message}`);
-      }
-
-      if (eventStatus.status === "full") {
-         throw new Error(`Event is full: ${eventStatus.message}`);
-      }
-
-      // Update seat count in the event document
-      const availableSeats = eventStatus.remainingSpots || 0;
-      if (availableSeats <= 0) {
-         throw new Error("No seats available.");
-      }
-
-      await database.updateDocument(
-         appwriteConfig.databaseId,
-         appwriteConfig.eventCollectionId,
-         events,
-         {
-            seatsAvailable: availableSeats - 1,
-            entryPass: [...eventStatus.entryPass, entryId], // Add entry ID to the list
-         }
-      );
-
-      // Store entry pass in the database
       const entryPass = await database.createDocument(
          appwriteConfig.databaseId,
          appwriteConfig.entryPassCollectionId,
          entryId,
-         {
-            users,
-            events,
-            purpus,
-            stream,
-            department,
-            phone,
-            institute,
-            createdAt: new Date().toISOString(),
-         }
+         entryPassData,
       );
 
+      console.log("Entry pass generated:", entryPass);
       return entryPass;
    } catch (error) {
-      console.error("Error generating entry pass:", error.message);
-      throw new Error(error.message || "Failed to generate entry pass.");
+      console.error("Error generating entry pass:", error);
    }
 }
 
-
-
-async function checkEventCapacity(eventId) {
+// check the event is for elegable for entry pass
+export async function checkEventForEntryPass(eventId) {
    try {
-      // Fetch event data from the database
-      const eventData = await database.getDocument(
-         appwriteConfig.databaseId,
-         appwriteConfig.eventCollectionId,
-         eventId
-      );
-
-      // Destructure relevant fields
-      const { isActive, maxCapacity, entryPass = [], title } = eventData;
-
-      // Check if the event is active
-      if (!isActive) {
-         return {
-            eventId,
-            status: "inactive",
-            message: `The event "${title}" is not active.`,
-         };
+      // fetch the event by id
+      const event = await getEventById(eventId);
+      if (!event) {
+         return false;
       }
 
-      // Compare entryPass count and maxCapacity
-      const entryCount = entryPass.length;
-      if (entryCount >= maxCapacity) {
-         return {
-            eventId,
-            status: "full",
-            message: `The event "${title}" has reached its maximum capacity of ${maxCapacity}.`,
-         };
+      // check the event is active or not
+      if (!event.isActive == false) {
+         return false;
+      }
+      // check the event is not ended
+      const eventTime = event.eventTime;
+      let currentTime = new Date().getTime();
+      if (eventTime < currentTime) {
+         return false;
+      }
+      // check the event is not full
+      const totalSeats = event.maxCapacity;
+      const sizeOfentryPass = event.entryPass.length;
+      if (sizeOfentryPass >= totalSeats) {
+         return false;
+      }
+      // check the event is not started
+      const eventStartTime = event.eventTime;
+      currentTime = new Date().getTime();
+      if (eventStartTime > currentTime) {
+         return false;
       }
 
-      // If the event is active and not full
-      return {
-         eventId,
-         status: "open",
-         message: `The event "${title}" is active and has ${maxCapacity - entryCount} spots left.`,
-      };
+      return true;
+
    } catch (error) {
-      console.error("Error checking event capacity:", error.message);
-      throw new Error(error.message || "Failed to check event capacity.");
+      console.error("Error checking event for entry pass:", error);
+      return false;
    }
 }

@@ -96,20 +96,23 @@ export const useUserById = (id) => {
 };
 
 // register to an event
-
-export const useGenerateEntryPass = (passData) => {
+export const useGenerateEntryPass = () => {
    const queryClient = useQueryClient();
 
    return useMutation({
       mutationKey: [QUERY_KEYS.GENERATE_ENTRY_PASS],
-      mutationFn: () => generateEntryPass(passData),
+      mutationFn: async ({ passData, }) => {
+         if (!passData) {
+            throw new Error("Missing passData or event for generating entry pass.");
+         }
+         await generateEntryPass(passData);
+      },
       onSuccess: (newPass) => {
-         // Invalidate the cache for the current user and update with the new user
          queryClient.invalidateQueries([QUERY_KEYS.GET_ENTRY_PASS]);
          queryClient.setQueryData([QUERY_KEYS.GET_ENTRY_PASS], newPass);
       },
       onError: (error) => {
          console.error("Error creating user account:", error);
       },
-   })
-}
+   });
+};
