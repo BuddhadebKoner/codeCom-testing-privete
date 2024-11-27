@@ -105,7 +105,7 @@ export const useGenerateEntryPass = () => {
          if (!passData) {
             throw new Error("Missing passData or event for generating entry pass.");
          }
-         await generateEntryPass(passData);
+         return await generateEntryPass(passData);
       },
       onSuccess: (newPass) => {
          queryClient.invalidateQueries([QUERY_KEYS.GET_ENTRY_PASS]);

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import BigLoader from "../../components/shared/BigLoader";
 import OrganizersProfile from "../../components/shared/OrganizersProfile";
 import { useEventById, useGenerateEntryPass } from "../../lib/react-query/queriesAndMutation";
@@ -10,6 +10,12 @@ const EventDetails = () => {
   const { data: event, isPending } = useEventById(id || ""); // Ensure `id` is always a string
   const { mutateAsync: generateEntryPass } = useGenerateEntryPass();
   const { isAuthenticated, user } = useAuth();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("Event Details:", event);
+  }, [event]);
 
   const [formLoading, setFormLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -40,9 +46,21 @@ const EventDetails = () => {
     };
 
     try {
-      await generateEntryPass({ passData }); 
-      alert("Registration successful!");
+      const responce = await generateEntryPass({ passData });
+      console.log("Entry pass generated:", responce);
+      alert("Entry pass generated successfully!");
       togglePopup();
+      // redirect to this root /entry-pass/:userId/:eventId:entryId
+      if (!user?.$id || !event?.$id || !responce?.entryId) {
+        console.error("Navigation failed: Missing required data.", {
+          userId: user?.$id,
+          eventId: event?.$id,
+          entryId: responce?.entryId,
+        });
+        throw new Error("Missing required data for navigation.");
+      }
+      console.log(`Navigating to: /entry-pass/${user.$id}/${event.$id}/${responce.entryId}`);
+      navigate(`/entry-pass/${user.$id}/${event.$id}/${responce.entryId}`);
     } catch (error) {
       console.error("Error generating entry pass:", error);
     } finally {
@@ -100,15 +118,29 @@ const EventDetails = () => {
             <h1 className="text-2xl font-semibold">{event?.title || "Event Title"}</h1>
             <p className="text-xl">{event?.subtitle || "Event Subtitle"}</p>
           </div>
-          {isAuthenticated ? (
-            <button onClick={togglePopup} className="border-2 px-5 py-2 rounded-xl">
-              Register
-            </button>
-          ) : (
-            <Link to="/sign-in" className="text-blue-500 underline">
-              Login to Register
-            </Link>
-          )}
+
+          {
+            isAuthenticated ? (
+              // Check if the user has already registered for this event
+              event.entryPass.some(
+                (entry) => entry.users?.userId === user.userId
+              ) ? (
+                <p className="text-green-500">You have already registered for this event.</p>
+              ) : (
+                <button
+                  onClick={togglePopup}
+                  className="border-2 px-5 py-2 rounded-xl"
+                >
+                  Register
+                </button>
+              )
+            ) : (
+              <Link to="/sign-in" className="text-blue-500 underline">
+                Login to Register
+              </Link>
+            )
+          }
+
         </div>
         <p className="text-xl font-semibold mt-10">
           {event?.eventPlace || "Event Place"}, {event?.city || "City"}

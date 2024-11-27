@@ -5,6 +5,7 @@ import SignIn from './_auth/Forms/SignIn'
 import SignUp from './_auth/Forms/SignUp'
 
 import { Home, About, Event, UpcomingEvents, EventDetails, NotFound, Profile } from './_root/pages/index'
+import EntryPass from "./_protected/EntryPass"
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/upcoming-events" element={<UpcomingEvents />} />
           <Route path="/not-found-page" element={<NotFound />} />
         </Route>
+        <Route path="/entry-pass/:userId/:eventId/:entryId" element={<EntryPass />} />
       </Routes>
     </main>
   )

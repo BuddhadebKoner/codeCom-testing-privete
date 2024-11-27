@@ -179,14 +179,15 @@ export async function generateEntryPass(passData) {
       if (checkForElegable == false) {
          throw Error;
       }
+
       const entryPass = await database.createDocument(
          appwriteConfig.databaseId,
          appwriteConfig.entryPassCollectionId,
          entryId,
          entryPassData,
       );
-
-      console.log("Entry pass generated:", entryPass);
+   
+      // console.log("Entry pass generated:", entryPass);
       return entryPass;
    } catch (error) {
       console.error("Error generating entry pass:", error);
