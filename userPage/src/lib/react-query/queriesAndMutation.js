@@ -8,6 +8,7 @@ import {
    getUpcommingEvents,
    getUserById,
    generateEntryPass,
+   getEntryPassById,
 } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -60,7 +61,6 @@ export const useGetRecentEvents = () => {
    });
 };
 
-
 // Hook for fetching all events
 export const useGetUpcommingEvents = () => {
    return useQuery({
@@ -82,7 +82,6 @@ export const useEventById = (id) => {
       enabled: !!id,
    })
 };
-
 
 // get user details by id
 export const useUserById = (id) => {
@@ -114,5 +113,14 @@ export const useGenerateEntryPass = () => {
       onError: (error) => {
          console.error("Error creating user account:", error);
       },
+   });
+};
+
+// get entry pass by id
+export const useGetEntryPass = (id) => {
+   return useQuery({
+      queryKey: [QUERY_KEYS.GET_ENTRY_PASS, id],
+      queryFn: () => getEntryPassById(id),
+      enabled: !!id,
    });
 };

@@ -233,3 +233,18 @@ export async function checkEventForEntryPass(eventId) {
       return false;
    }
 }
+
+// get entry pass by id
+export async function getEntryPassById(id) {
+   try {
+      const entryPass = await database.getDocument(
+         appwriteConfig.databaseId,
+         appwriteConfig.entryPassCollectionId,
+         id
+      );
+      // console.log("Entry pass fetched by id:", entryPass);
+      return entryPass;
+   } catch (error) {
+      console.error("Error fetching entry pass by id:", error);
+   }
+}
