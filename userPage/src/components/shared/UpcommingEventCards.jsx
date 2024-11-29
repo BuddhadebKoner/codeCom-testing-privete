@@ -3,6 +3,11 @@ import { useNavigate } from 'react-router-dom'
 
 const UpcommingEventCards = ({ event }) => {
    const navigate = useNavigate();
+
+   if (event.isActive === false) {
+      return null;
+   }
+   
    return (
       <>
          <div

@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { useGetUpcommingEvents } from "../../lib/react-query/queriesAndMutation";
 import UpcommingEventCards from "../../components/shared/UpcommingEventCards";
+import BigLoader from "../../components/shared/BigLoader";
 
 const UpcomingEvents = () => {
-  const { data: events, fetchNextPage, hasNextPage } = useGetUpcommingEvents();
+  const { data: events, fetchNextPage, hasNextPage, isFetching: isLoading } = useGetUpcommingEvents();
   const { ref, inView } = useInView();
 
   useEffect(() => {
@@ -12,6 +13,14 @@ const UpcomingEvents = () => {
       fetchNextPage();
     }
   }, [inView, hasNextPage]);
+
+  if (isLoading && !events) {
+    return (
+      <div className="w-full h-fit flex justify-center items-center">
+        <BigLoader />
+      </div>
+    );
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8">

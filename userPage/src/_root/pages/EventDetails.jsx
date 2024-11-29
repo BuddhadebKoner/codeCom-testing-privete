@@ -7,15 +7,11 @@ import { useAuth } from "../../context/AuthContext";
 
 const EventDetails = () => {
   const { id } = useParams();
-  const { data: event, isPending } = useEventById(id || ""); // Ensure `id` is always a string
+  const { data: event, isPending } = useEventById(id || ""); 
   const { mutateAsync: generateEntryPass } = useGenerateEntryPass();
   const { isAuthenticated, user } = useAuth();
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log("Event Details:", event);
-  }, [event]);
 
   const [formLoading, setFormLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -47,19 +43,19 @@ const EventDetails = () => {
 
     try {
       const responce = await generateEntryPass({ passData });
-      console.log("Entry pass generated:", responce);
+      // console.log("Entry pass generated:", responce);
       alert("Entry pass generated successfully!");
       togglePopup();
       // redirect to this root /entry-pass/:userId/:eventId:entryId
       if (!user?.$id || !event?.$id || !responce?.entryId) {
-        console.error("Navigation failed: Missing required data.", {
-          userId: user?.$id,
-          eventId: event?.$id,
-          entryId: responce?.entryId,
-        });
+        // console.error("Navigation failed: Missing required data.", {
+        //   userId: user?.$id,
+        //   eventId: event?.$id,
+        //   entryId: responce?.entryId,
+        // });
         throw new Error("Missing required data for navigation.");
       }
-      console.log(`Navigating to: /entry-pass/${user.$id}/${event.$id}/${responce.entryId}`);
+      // console.log(`Navigating to: /entry-pass/${user.$id}/${event.$id}/${responce.entryId}`);
       navigate(`/entry-pass/${user.$id}/${event.$id}/${responce.entryId}`);
     } catch (error) {
       console.error("Error generating entry pass:", error);

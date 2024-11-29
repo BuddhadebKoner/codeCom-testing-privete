@@ -140,7 +140,6 @@ export async function deleteFile(fileId) {
    }
 }
 
-
 // find user using email 
 export async function findUserByEmail(email) {
    try {

@@ -100,16 +100,25 @@ export async function getRecentEvents() {
          appwriteConfig.databaseId,
          appwriteConfig.eventCollectionId,
          [
-            Query.orderDesc("eventTime"),
-            Query.limit(3)
+            Query.orderAsc("eventTime"),
+            Query.equal("isActive", true),
+            Query.limit(3) // Adjusted to fetch only the three most recent events
          ]
       );
-      // console.log("Recent 3 events fetched:", events);
-      return events.documents;
+
+      // Clean up data to remove unwanted fields
+      const sanitizedEvents = events.documents.map(event => {
+         const { entryPass, organizers, $permissions, $createdAt, $updatedAt, ...cleanedEvent } = event;
+         return cleanedEvent;
+      });
+
+      // console.log("Recent 3 sanitized events fetched:", sanitizedEvents);
+      return sanitizedEvents;
    } catch (error) {
       console.error("Error fetching recent events:", error);
    }
 }
+
 
 // get event by id
 export async function getEventById(id) {
@@ -247,7 +256,7 @@ export async function getInfiniteEvents({ pageParam }) {
          queries
       )
       if (!events) throw Error;
-      
+
       return events;
    } catch (error) {
       console.error("Error fetching infinite events:", error);

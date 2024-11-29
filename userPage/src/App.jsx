@@ -4,7 +4,7 @@ import RootLayout from './_root/RootLayout'
 import SignIn from './_auth/Forms/SignIn'
 import SignUp from './_auth/Forms/SignUp'
 
-import { Home, About, Event, UpcomingEvents, EventDetails, NotFound, Profile } from './_root/pages/index'
+import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo } from './_root/pages/index'
 import EntryPass from "./_protected/EntryPass"
 
 function App() {
@@ -17,16 +17,22 @@ function App() {
           <Route path="sign-in" element={<SignIn />} />
           <Route path="sign-up" element={<SignUp />} />
         </Route>
+
         {/* public routes */}
         <Route element={<RootLayout />}>
           <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/profile/:userId" element={<Profile />} />
-          <Route path="/event" element={<Event />} />
+          <Route path="/profile/:userId" element={<Profile />}>
+            <Route index element={<ProfileInfo />} />
+            <Route path="attended" element={<AttendedEvents />} />
+            <Route path="organized" element={<OrganizedEvents />} />
+          </Route>
           <Route path="/events/:id" element={<EventDetails />} />
           <Route path="/upcoming-events" element={<UpcomingEvents />} />
           <Route path="/not-found-page" element={<NotFound />} />
         </Route>
+
+        {/* Entry Pass route */}
         <Route path="/entry-pass/:userId/:eventId/:entryId" element={<EntryPass />} />
       </Routes>
     </main>
