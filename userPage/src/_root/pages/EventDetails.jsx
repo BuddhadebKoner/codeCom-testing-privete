@@ -121,8 +121,9 @@ const EventDetails = () => {
 
           {
             isAuthenticated ? (
-              // Check if the user has already registered for this event
-              event.entryPass.some(
+              new Date() > endTime ? (
+                <p className="text-red-500">Registration Closed</p>
+              ) : event.entryPass.some(
                 (entry) => entry.users?.userId === user.userId
               ) ? (
                 <p className="text-green-500">You have already registered for this event.</p>
@@ -140,6 +141,7 @@ const EventDetails = () => {
               </Link>
             )
           }
+
 
         </div>
         <p className="text-xl font-semibold mt-10">

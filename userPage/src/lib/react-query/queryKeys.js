@@ -12,6 +12,7 @@ export const QUERY_KEYS = {
    // EVENT KEYS
    GET_ALL_EVENTS: "getAllEvents",
    GET_EVENT_BY_ID: "getEventById",
+   GET_UPCOMMING_EVENTS: "getUpcommingEvents",
 
    // ENTRY PASS 
    GENERATE_ENTRY_PASS: "generateEntryPass",

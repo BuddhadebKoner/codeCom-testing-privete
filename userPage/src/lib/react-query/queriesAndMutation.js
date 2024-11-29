@@ -1,14 +1,14 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
    createUserAccount,
    signInUser,
    signOutUser,
    getEventById,
    getRecentEvents,
-   getUpcommingEvents,
    getUserById,
    generateEntryPass,
    getEntryPassById,
+   getInfiniteEvents,
 } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -61,18 +61,7 @@ export const useGetRecentEvents = () => {
    });
 };
 
-// Hook for fetching all events
-export const useGetUpcommingEvents = () => {
-   return useQuery({
-      queryKey: [QUERY_KEYS.GET_ALL_EVENTS],
-      queryFn: getUpcommingEvents,
-      staleTime: 1000 * 60 * 5,
-      refetchOnWindowFocus: false,
-      onError: (error) => {
-         console.error("Error fetching all events:", error);
-      },
-   });
-};
+
 
 // get events by id
 export const useEventById = (id) => {
@@ -123,4 +112,20 @@ export const useGetEntryPass = (id) => {
       queryFn: () => getEntryPassById(id),
       enabled: !!id,
    });
+};
+
+// get upcomming events infinte
+export const useGetUpcommingEvents = () => {
+   return useInfiniteQuery({
+      queryKey: [QUERY_KEYS.GET_UPCOMMING_EVENTS],
+      queryFn: getInfiniteEvents,
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+      getNextPageParam: (lastPage) => {
+         if (lastPage && lastPage.documents.length === 0) return null;
+         const lastId = lastPage?.documents[lastPage.documents.length - 1].$id;
+         return lastId ?? null;
+      },
+      initialPageParam: null,
+   })
 };

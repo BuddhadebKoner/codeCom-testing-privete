@@ -111,21 +111,6 @@ export async function getRecentEvents() {
    }
 }
 
-
-//  get all events data 
-export async function getUpcommingEvents() {
-   try {
-      const events = await database.listDocuments(
-         appwriteConfig.databaseId,
-         appwriteConfig.eventCollectionId
-      );
-      // console.log("All events fetched:", events);
-      return events.documents;
-   } catch (error) {
-      console.error("Error fetching all events:", error);
-   }
-}
-
 // get event by id
 export async function getEventById(id) {
    try {
@@ -186,7 +171,7 @@ export async function generateEntryPass(passData) {
          entryId,
          entryPassData,
       );
-   
+
       // console.log("Entry pass generated:", entryPass);
       return entryPass;
    } catch (error) {
@@ -247,4 +232,26 @@ export async function getEntryPassById(id) {
    } catch (error) {
       console.error("Error fetching entry pass by id:", error);
    }
+}
+
+// get infinte events
+export async function getInfiniteEvents({ pageParam }) {
+   const queries = [Query.orderDesc('$updatedAt'), Query.limit(5)];
+   if (pageParam) {
+      queries.push(Query.cursorAfter(pageParam.toString()));
+   }
+   try {
+      const events = await database.listDocuments(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId,
+         queries
+      )
+      if (!events) throw Error;
+      
+      return events;
+   } catch (error) {
+      console.error("Error fetching infinite events:", error);
+      throw error;
+   }
+
 }

@@ -48,12 +48,16 @@ const EntryPass = () => {
 
   const { events, users } = entryPass || {};
   const eventTime = events?.eventTime ? new Date(events.eventTime) : null;
+  const isExpired = eventTime && eventTime < new Date(); // Check if the ticket is expired
   const eventEndTime = eventTime
     ? new Date(eventTime.getTime() + (events?.eventLength || 0) * 60 * 60 * 1000)
     : null;
 
   return (
-    <div className="flex flex-col md:flex-row w-full max-w-full lg:max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div
+      className={`flex flex-col md:flex-row w-full max-w-full lg:max-w-4xl mx-auto shadow-lg rounded-lg overflow-hidden ${isExpired ? "bg-gray-300 text-gray-500" : "bg-white"
+        } no-select`}
+    >
       {/* Left Section: QR Code */}
       <div className="flex items-center justify-center bg-gray-100 p-6 md:w-1/3">
         {entryPass?.entryId ? (
@@ -65,23 +69,32 @@ const EntryPass = () => {
             level="H"
           />
         ) : (
-          <p className="text-red-500">QR code data is missing</p>
+          <p className="text-red-500">QR code data is missing<br /> contact to admin</p>
         )}
       </div>
 
       {/* Right Section: Event Details */}
-      <div className="flex-1 p-6 md:p-8">
+      <div className="flex-1 p-6 md:p-8 text-black">
+        {/* Expired Tag */}
+        {isExpired && (
+          <div className="mb-4 text-center">
+            <span className="inline-block px-4 py-1 text-sm font-bold text-red-600  rounded-full">
+              EXPIRED
+            </span>
+          </div>
+        )}
+
         {/* Event Title */}
-        <h2 className="text-xl md:text-2xl font-bold text-gray-800">{events?.title || "Event Title"}</h2>
+        <h2 className="text-xl md:text-2xl font-bold">{events?.title || "Event Title"} :</h2>
 
         {/* Event Place */}
-        <p className="text-sm md:text-base text-gray-600 mt-2">
+        <p className="text-sm md:text-base mt-2">
           {events?.eventPlace}, {events?.city}
         </p>
 
         {/* Event Time */}
         {eventTime && (
-          <p className="text-sm md:text-base text-gray-600 mt-2">
+          <p className="text-sm md:text-base mt-2">
             {eventTime.toLocaleString("en-US", {
               timeZone: "Asia/Kolkata",
               month: "short",
@@ -101,22 +114,26 @@ const EntryPass = () => {
         )}
 
         {/* Issued To */}
-        <p className="text-sm md:text-base text-gray-700 mt-4">
+        <p className="text-sm md:text-base mt-4">
           <span className="font-bold">ISSUED TO: </span>
           {users?.name || "User Name"}
         </p>
 
         {/* Order Number */}
-        <p className="text-sm md:text-base text-gray-700 mt-2">
+        <p className="text-sm md:text-base mt-2">
           <span className="font-bold">ORDER NUMBER: </span>
           {entryPass?.entryId || "N/A"}
         </p>
 
         {/* Status */}
-        <p className="text-sm md:text-base text-green-600 mt-4 font-bold">STATUS: FREE</p>
+        <p
+          className={`text-sm md:text-base mt-4 font-bold ${isExpired ? "text-gray-500" : "text-green-600"
+            }`}
+        >
+          STATUS: {isExpired ? "EXPIRED" : "FREE"}
+        </p>
       </div>
     </div>
-
   );
 };
 

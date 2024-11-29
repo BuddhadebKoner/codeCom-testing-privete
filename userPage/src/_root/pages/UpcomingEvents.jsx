@@ -1,45 +1,59 @@
-import React from "react";
-import UpcommingEventCards from "../../components/shared/UpcommingEventCards";
+import React, { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { useGetUpcommingEvents } from "../../lib/react-query/queriesAndMutation";
 
 const UpcomingEvents = () => {
-  const { data: events = [], isLoading, isError } = useGetUpcommingEvents();
+  const { data: events, fetchNextPage, hasNextPage } = useGetUpcommingEvents();
+  const { ref, inView } = useInView();
 
-  // Get the current date
-  const today = new Date();
-
-  // Filter and sort events
-  const filteredAndSortedEvents = events
-    .filter((event) => new Date(event.eventTime) > today) // Only events after today
-    .sort((a, b) => new Date(a.eventTime) - new Date(b.eventTime)); // Sort by eventTime
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage]);
 
   return (
-    <div>
-      {isLoading && <p>Loading...</p>}
-      {isError && <p>Error loading events. Please try again later.</p>}
-
-      {!isLoading && filteredAndSortedEvents.length === 0 && (
-        <p>No upcoming events available.</p>
-      )}
-
-      {/* Display date for each section */}
-      {!isLoading &&
-        filteredAndSortedEvents.map((eventItem) => {
-          const eventDate = new Date(eventItem.eventTime);
-          const formattedDate = eventDate.toLocaleDateString("en-GB", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-          });
-
-          return (
-            <div className="w-full my-10" key={eventItem.eventId}>
-              <p className="text-lg font-medium">{formattedDate}</p>
-              <UpcommingEventCards eventItem={eventItem} />
+    <div className="w-full max-w-7xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">Upcoming Events</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {events?.pages.map((page, pageIndex) =>
+          page?.documents.map((event) => (
+            <div
+              key={event.eventId}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4"
+            >
+              <img
+                src={event.imageUrl}
+                alt={event.title}
+                className="w-full h-40 object-cover rounded-md mb-4"
+              />
+              <h2 className="text-lg font-semibold">{event.title}</h2>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
+                {event.subtitle}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                {new Date(event.eventTime).toLocaleString()} | {event.city}
+              </p>
+              <a
+                href={event.locationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline mt-2 block"
+              >
+                View Location
+              </a>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                Organized by: {event.organizers[0]?.name}
+              </p>
             </div>
-          );
-        })}
+          ))
+        )}
+      </div>
+      {hasNextPage && (
+        <div ref={ref} className="flex justify-center mt-8">
+          loading more events...
+        </div>
+      )}
     </div>
   );
 };
