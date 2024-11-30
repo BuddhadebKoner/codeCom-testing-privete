@@ -5,6 +5,10 @@ const AttendedEvents = () => {
    const { attendedEvents } = useOutletContext();
    console.log(attendedEvents);
 
+   if(attendedEvents.length === 0) {
+      return <div>No events attended</div>
+   }
+
    return (
       <div>
          <h2>Attended Events</h2>

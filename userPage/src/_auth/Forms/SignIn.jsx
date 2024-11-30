@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSignInUser } from "../../lib/react-query/queriesAndMutation"; // Ensure correct path to your mutation hook
+import { useSignInUser } from "../../lib/react-query/queriesAndMutation"; 
 import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
@@ -8,10 +8,11 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   // Use the custom mutation hook for signing in
-  const { mutate: signInUser, isLoading: isSignInLoading, isError } = useSignInUser();
+  const { mutate: signInUser, isPending: isSignInLoading, isError } = useSignInUser();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    if (!email || !password) return; // Validate required fields
 
     // Trigger the mutation with user data
     signInUser(
@@ -21,42 +22,68 @@ const SignIn = () => {
           navigate("/");
           window.location.reload();
         },
-        onError: () => {
-          console.error("Error signing in");
+        onError: (error) => {
+          console.error("Error signing in:", error);
         },
       }
     );
   };
 
   return (
-    <div className="bg-black p-6 rounded shadow-md w-80">
-      <h2 className="text-xl font-bold mb-4">Sign In</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col">
-        <label className="mb-2">Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="p-2 border rounded mb-4 text-black"
-          required
-        />
-        <label className="mb-2">Password:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border rounded mb-4  text-black"
-          required
-        />
-        <button
-          type="submit"
-          className={`bg-blue-500 text-white py-2 rounded hover:bg-blue-600 ${isSignInLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          disabled={isSignInLoading}
-        >
-          {isSignInLoading ? "Signing In..." : "Sign In"}
-        </button>
-      </form>
-      {isError && <p className="text-red-500 mt-4">Failed to sign in. Please try again.</p>}
+    <div className="relative">
+      {/* Loading Overlay */}
+      {isSignInLoading && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+          <img
+            className="animate-spin"
+            width={50}
+            height={50}
+            src="/loader.svg"
+            alt="Loading..."
+          />
+        </div>
+      )}
+
+      {/* Sign In Form */}
+      <div
+        className={`bg-black p-6 rounded shadow-md w-80 relative ${isSignInLoading ? "pointer-events-none opacity-50" : ""
+          }`}
+      >
+        <h2 className="text-xl font-bold mb-4 text-white">Sign In</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          <label className="mb-2 text-white">Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="p-2 border rounded mb-4 text-black"
+            required
+            disabled={isSignInLoading}
+          />
+          <label className="mb-2 text-white">Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="p-2 border rounded mb-4 text-black"
+            required
+            disabled={isSignInLoading}
+          />
+          <button
+            type="submit"
+            className={`bg-blue-500 text-white py-2 rounded ${isSignInLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
+              }`}
+            disabled={isSignInLoading}
+          >
+            {isSignInLoading ? "Signing In..." : "Sign In"}
+          </button>
+        </form>
+        {isError && (
+          <p className="text-red-500 mt-4">
+            Failed to sign in. Please check your credentials and try again.
+          </p>
+        )}
+      </div>
     </div>
   );
 };

@@ -15,7 +15,7 @@ const UpcommingEventCards = ({ event }) => {
                () => navigate(`/events/${event.$id}`)
             }
             key={event.eventId}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4"
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 cursor-pointer"
          >
             <img
                src={event.imageUrl}

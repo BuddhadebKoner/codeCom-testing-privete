@@ -264,3 +264,29 @@ export async function getInfiniteEvents({ pageParam }) {
    }
 
 }
+
+// get all clubMembers post 
+export async function getClubMembers() {
+   try {
+      const roles = [
+         'president',
+         'vice-president',
+         'tech-lead',
+         'design-lead',
+         'web-dev-lead',
+         'app-dev-lead',
+         'specializations-lead',
+         'marketing-content'
+      ];
+
+      const clubMembers = await database.listDocuments(
+         appwriteConfig.databaseId,
+         appwriteConfig.userCollectionId,
+         [Query.equal('role', roles)]
+      );
+
+      return clubMembers.documents;
+   } catch (error) {
+      console.error("Error fetching club members:", error);
+   }
+}

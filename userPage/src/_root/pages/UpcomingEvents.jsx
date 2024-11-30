@@ -3,10 +3,13 @@ import { useInView } from "react-intersection-observer";
 import { useGetUpcommingEvents } from "../../lib/react-query/queriesAndMutation";
 import UpcommingEventCards from "../../components/shared/UpcommingEventCards";
 import BigLoader from "../../components/shared/BigLoader";
+import { useNavigate } from "react-router-dom";
 
 const UpcomingEvents = () => {
   const { data: events, fetchNextPage, hasNextPage, isFetching: isLoading } = useGetUpcommingEvents();
   const { ref, inView } = useInView();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -23,8 +26,13 @@ const UpcomingEvents = () => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Upcoming Events</h1>
+    <div className="w-full max-w-7xl py-8">
+      <div className="text-2xl font-bold mb-6 flex gap-5">
+        <button onClick={() => navigate(-1)}>
+          <img src="/assets/arrow_back.svg" alt="" />
+        </button>
+        <h2>Upcoming Events</h2>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {events?.pages.map((page, pageIndex) =>
           page?.documents.map((event) => (

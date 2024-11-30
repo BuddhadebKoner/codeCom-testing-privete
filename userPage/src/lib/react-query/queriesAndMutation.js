@@ -9,6 +9,7 @@ import {
    generateEntryPass,
    getEntryPassById,
    getInfiniteEvents,
+   getClubMembers,
 } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -128,4 +129,14 @@ export const useGetUpcommingEvents = () => {
       },
       initialPageParam: null,
    })
+};
+
+// get club members 
+export const useGetClubMembers = () => {
+   return useQuery({
+      queryKey: [QUERY_KEYS.GET_CLUB_MEMBERS],
+      queryFn: getClubMembers,
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+   });
 };

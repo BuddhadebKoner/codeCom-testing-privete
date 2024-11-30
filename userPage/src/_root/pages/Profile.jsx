@@ -78,14 +78,14 @@ const Profile = () => {
       </div>
 
       {/* Navigation Links */}
-      <div className="flex gap-5 justify-center mt-5">
+      <div className="flex gap-5 justify-start items-center mt-5">
         <NavLink
           to={''}
-          className={({ isActive }) =>
-            `px-4 py-2 rounded-lg`
-          }
         >
-          User Info
+          <img
+            width={30}
+            height={30}
+            src="/assets/person.svg" alt="person" />
         </NavLink>
         <NavLink
           to={`/profile/${userId}/attended`}
