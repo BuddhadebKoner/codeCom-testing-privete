@@ -29,7 +29,7 @@ const Profile = () => {
     organizedEvents: user?.events,
   };
 
-  const { imageUrl, name, city, Linkedin, instagram, $id: userIdFromData } = user;
+  const { imageUrl, name, city, linkedin, x, $id: userIdFromData } = user;
 
   return (
     <>
@@ -49,21 +49,21 @@ const Profile = () => {
 
         {/* Social Links */}
         <div className="flex gap-3 mt-4">
-          {Linkedin && (
-            <a href={Linkedin} target="_blank" rel="noopener noreferrer">
+          {linkedin && (
+            <a href={linkedin} target="_blank" rel="noopener noreferrer">
               <img
-                className="w-10 h-10"
-                src="https://img.icons8.com/color/48/000000/linkedin.png"
+                className="w-10 h-10 "
+                src="/assets/icons/linkedin.png"
                 alt="LinkedIn"
               />
             </a>
           )}
-          {instagram && (
-            <a href={instagram} target="_blank" rel="noopener noreferrer">
+          {x && (
+            <a href={x} target="_blank" rel="noopener noreferrer">
               <img
                 className="w-10 h-10"
-                src="https://img.icons8.com/color/48/000000/instagram-new--v2.png"
-                alt="Instagram"
+                src="/assets/icons/x.png"
+                alt="x"
               />
             </a>
           )}
@@ -71,9 +71,11 @@ const Profile = () => {
 
         {/* Edit Button for Authenticated User */}
         {isAuthenticated && currentUser?.$id === userIdFromData && (
-          <button className="absolute top-5 right-5 bg-blue-500 text-white px-4 py-2 rounded-lg">
+          <Link
+            to={`/profile/${currentUser.$id}/edit`}
+            className="absolute top-5 right-5 bg-blue-500 text-white px-4 py-2 rounded-lg">
             Edit
-          </button>
+          </Link>
         )}
       </div>
 

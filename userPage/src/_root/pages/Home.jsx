@@ -17,7 +17,7 @@ const Home = () => {
     .slice(0, 3); // Take the first 3 events
 
   return (
-    <div className="w-full flex flex-col py-5">
+    <div className="w-full flex flex-col pb-5">
       <img
         className="w-full lg:h-[350px] object-cover lg:rounded-3xl"
         src="/assets/event-default-banner.webp"

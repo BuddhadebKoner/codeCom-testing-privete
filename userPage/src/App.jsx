@@ -4,7 +4,7 @@ import RootLayout from './_root/RootLayout'
 import SignIn from './_auth/Forms/SignIn'
 import SignUp from './_auth/Forms/SignUp'
 
-import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo } from './_root/pages/index'
+import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo, EditProfile } from './_root/pages/index'
 import EntryPass from "./_protected/EntryPass"
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
         <Route element={<RootLayout />}>
           <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/profile/:userId/edit" element={<EditProfile />} />
           <Route path="/profile/:userId" element={<Profile />}>
             <Route index element={<ProfileInfo />} />
             <Route path="attended" element={<AttendedEvents />} />

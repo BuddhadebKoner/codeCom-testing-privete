@@ -1,5 +1,5 @@
 import React from "react";
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 
 const AttendedEvents = () => {
    const { attendedEvents } = useOutletContext();
@@ -32,10 +32,14 @@ const AttendedEvents = () => {
                   {upcomingEvents.map((event, index) => (
                      <li
                         key={index}
-                        className="flex justify-between items-center border-b border-gray-600 pb-2"
+                        className="p-4 border border-gray-600 rounded-lg flex justify-between items-start"
                      >
                         <div className="flex flex-col">
-                           <h3 className="text-lg font-bold hover:underline">{event.events.title}</h3>
+                           <Link
+                              to={`/events/${event.events.$id}`}
+                           >
+                              <h3 className="text-lg font-bold hover:underline">{event.events.title}</h3>
+                           </Link>
                            <p className="text-sm text-gray-400">
                               {new Date(event.events.eventTime).toLocaleDateString("en-US", {
                                  day: "2-digit",
