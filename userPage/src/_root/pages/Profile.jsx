@@ -1,15 +1,17 @@
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 import { useUserById } from "../../lib/react-query/queriesAndMutation";
-import { useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import NotFound from "./NotFound";
 import BigLoader from "../../components/shared/BigLoader";
+import ProfileModel from "../../components/shared/ProfileModel";
 
 const Profile = () => {
   const { isAuthenticated, user: currentUser, isLoading: authLoading } = useAuth();
   const { userId } = useParams();
-
   const { data: user, isLoading: userLoading, isError } = useUserById(userId || "");
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (authLoading || userLoading) {
     return (
@@ -23,13 +25,19 @@ const Profile = () => {
     return <NotFound />;
   }
 
-  const outletContext = {
-    userInfo: user,
-    attendedEvents: user?.entryPass,
-    organizedEvents: user?.events,
+  const { imageUrl, name, city, linkedin, x, $id: userIdFromData } = user;
+
+  const handleImageClick = () => {
+    setIsModalOpen(true);
+    // diable scroll and scrollbar
+    document.body.style.overflow = "hidden";
   };
 
-  const { imageUrl, name, city, linkedin, x, $id: userIdFromData } = user;
+  const closeModal = () => {
+    setIsModalOpen(false);
+    // enable scroll and scrollbar
+    document.body.style.overflow = "auto";
+  };
 
   return (
     <>
@@ -39,20 +47,21 @@ const Profile = () => {
           <img
             width={80}
             height={80}
-            className="rounded-full"
+            className="rounded-full cursor-pointer"
             src={imageUrl}
             alt={`${name || "User"}'s profile`}
+            onClick={handleImageClick} // Add click handler
           />
         )}
         <h2 className="font-bold text-2xl">{name || "User"}</h2>
-        <p className="font-normal text-xl">{city || "City not specified"}</p>
+        <p className="font-normal text-xl">{city || null}</p>
 
         {/* Social Links */}
         <div className="flex gap-3 mt-4">
           {linkedin && (
             <a href={linkedin} target="_blank" rel="noopener noreferrer">
               <img
-                className="w-10 h-10 "
+                className="w-10 h-10"
                 src="/assets/icons/linkedin.png"
                 alt="LinkedIn"
               />
@@ -79,15 +88,13 @@ const Profile = () => {
         )}
       </div>
 
+      {/* Modal for Full-Size Image */}
+      {isModalOpen && <ProfileModel imageUrl={imageUrl} onClose={closeModal} />}
+
       {/* Navigation Links */}
       <div className="flex gap-5 justify-start items-center mt-5">
-        <NavLink
-          to={''}
-        >
-          <img
-            width={30}
-            height={30}
-            src="/assets/person.svg" alt="person" />
+        <NavLink to="">
+          <img width={30} height={30} src="/assets/person.svg" alt="person" />
         </NavLink>
         <NavLink
           to={`/profile/${userId}/attended`}
@@ -110,7 +117,7 @@ const Profile = () => {
       </div>
       <div className="w-full h-fit py-10">
         {/* Nested Routes */}
-        <Outlet context={outletContext} />
+        <Outlet context={{ userInfo: user, attendedEvents: user?.entryPass, organizedEvents: user?.events }} />
       </div>
     </>
   );

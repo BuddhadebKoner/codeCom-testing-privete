@@ -10,7 +10,7 @@ import EntryPass from "./_protected/EntryPass"
 function App() {
 
   return (
-    <main className="w-[100vw] lg:px-[15vw] md:px-[5rem] px-1">
+    <main >
       <Routes>
         {/* private routes */}
         <Route element={<AuthLayout />}>

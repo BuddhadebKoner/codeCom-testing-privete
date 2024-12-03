@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import NotFound from './NotFound';
 import { useUpdateProfile } from '../../lib/react-query/queriesAndMutation';
+import { useParams } from 'react-router-dom';
+import BigLoader from '../../components/shared/BigLoader';
 
 const EditProfile = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const { mutateAsync: updateProfile, isPending: isUpdateLoading } = useUpdateProfile();
+
+  const { userId } = useParams();
+
+  // Ensure user exists and is authenticated before rendering
+  if (!user || !isAuthenticated) {
+    return <NotFound />;
+  }
+  if (user.$id !== userId) { 
+    return <NotFound />;
+  }
 
   const [formData, setFormData] = useState({
     userId: user.$id,
@@ -18,10 +30,6 @@ const EditProfile = () => {
   });
 
   const [imageFile, setImageFile] = useState(null);
-
-  if (!isAuthenticated) {
-    return <NotFound />;
-  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
