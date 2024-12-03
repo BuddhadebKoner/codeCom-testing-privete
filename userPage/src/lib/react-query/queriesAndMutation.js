@@ -10,6 +10,7 @@ import {
    getEntryPassById,
    getInfiniteEvents,
    getClubMembers,
+   getUpdateUserProfile,
 } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -139,4 +140,18 @@ export const useGetClubMembers = () => {
       staleTime: 1000 * 60 * 5,
       refetchOnWindowFocus: false,
    });
+};
+
+// get update profile
+export const useUpdateProfile = () => {
+   const queryClient = useQueryClient();
+
+   return useMutation({
+      mutationFn: (user) => getUpdateUserProfile(user),
+      onSuccess: () => {
+         queryClient.invalidateQueries({
+            queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+         });
+      },
+   })
 };

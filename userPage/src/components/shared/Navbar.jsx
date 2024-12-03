@@ -38,7 +38,7 @@ const Navbar = () => {
 
             {/* Profile Section */}
             {isAuthenticated ? (
-               <div className="relative">
+               <div className="relative flex items-center justify-center">
                   <button
                      className="rounded-full"
                      onClick={toggleDropdown}
@@ -54,7 +54,7 @@ const Navbar = () => {
 
                   {/* Dropdown Menu */}
                   {isDropdownOpen && (
-                     <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-md z-50">
+                     <div className="absolute top-10 right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-md z-50">
                         <Link
                            to={`/profile/${user.$id}`}
                            className="block px-4 py-2 text-sm hover:bg-gray-200"

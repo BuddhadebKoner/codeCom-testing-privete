@@ -1,5 +1,5 @@
-import { ID, Query } from "appwrite";
-import { account, appwriteConfig, avatar, database } from "./config";
+import { ID, ImageGravity, Query } from "appwrite";
+import { account, appwriteConfig, avatar, database, storage } from "./config";
 
 export async function createUserAccount(user) {
    try {
@@ -288,5 +288,116 @@ export async function getClubMembers() {
       return clubMembers.documents;
    } catch (error) {
       console.error("Error fetching club members:", error);
+   }
+}
+
+// upload file 
+export async function uploadfile(file) {
+   console.log("File to upload:", file);
+   try {
+      if (!file) throw ("file not provided");
+
+      const uploadFile = await storage.createFile(
+         appwriteConfig.profileStorage,
+         ID.unique(),
+         file,
+      )
+
+      console.log("File uploaded:", uploadFile);
+      return uploadFile;
+   } catch (error) {
+      console.error("Error uploading file:", error);
+   }
+}
+
+// preview file 
+export async function getFilePreview(fileId) {
+   try {
+      const fileUrl = storage.getFilePreview(
+         appwriteConfig.profileStorage,
+         fileId,
+         2000,
+         2000,
+         ImageGravity.Top,
+         50,
+      );
+
+      if (!fileUrl) throw ("File not found");
+      return fileUrl;
+   } catch (error) {
+      console.error("Error fetching file preview:", error);
+   }
+}
+// delete file
+export async function deleteFile(fileId) {
+   try {
+      const deleteFile = await storage.deleteFile(
+         appwriteConfig.profileStorage,
+         fileId
+      );
+
+      console.log("File deleted:", deleteFile);
+      return deleteFile;
+   } catch (error) {
+      console.error("Error deleting file:", error);
+   }
+}
+
+export async function getUpdateUserProfile(user) {
+   console.log("User to update:", user);
+   const hasFileToUpdate = user.imageFile && user.imageFile.size > 0;
+
+   try {
+      let image = {
+         imageUrl: user.imageUrl,
+         imageId: user.imageId,
+      };
+
+      // Handle file upload if a new file is provided
+      if (hasFileToUpdate) {
+         const uploadFile = await uploadfile(user.imageFile);
+         if (!uploadFile) throw new Error("Failed to upload file.");
+
+         const fileUrl = await getFilePreview(uploadFile.$id);
+         if (!fileUrl) {
+            await deleteFile(uploadFile.$id);
+            throw new Error("Failed to generate file preview URL.");
+         }
+
+         image = { imageUrl: fileUrl, imageId: uploadFile.$id };
+      }
+
+      // Patch request for updating the user profile
+      const updatedUser = await database.updateDocument(
+         appwriteConfig.databaseId,
+         appwriteConfig.userCollectionId,
+         user.userId, // Document ID to update
+         {
+            name: user.name,
+            city: user.city,
+            linkedin: user.linkedin,
+            x: user.x,
+            aboutMe: user.aboutMe,
+            imageUrl: image.imageUrl,
+            imageId: image.imageId,
+         }
+      );
+
+      if (!updatedUser) {
+         if (hasFileToUpdate) {
+            await deleteFile(image.imageId);
+         }
+         throw new Error("Failed to update user profile.");
+      }
+
+      // Delete old file if a new one was uploaded
+      if (hasFileToUpdate && user.imageId) {
+         await deleteFile(user.imageId);
+      }
+
+      return updatedUser;
+   } catch (error) {
+      console.error("Error updating user profile:", error.message);
+      throw error; // Ensure the error propagates for the UI to handle
    }
 }
