@@ -1,16 +1,18 @@
-import { Route, Routes } from "react-router-dom"
-import AuthLayout from './_auth/AuthLayout'
-import RootLayout from './_root/RootLayout'
-import SignIn from './_auth/Forms/SignIn'
-import SignUp from './_auth/Forms/SignUp'
+import { Route, Routes } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';  // Import ToastContainer
+import 'react-toastify/dist/ReactToastify.css';  // Import toast styles
 
-import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo, EditProfile } from './_root/pages/index'
-import EntryPass from "./_protected/EntryPass"
+import AuthLayout from './_auth/AuthLayout';
+import RootLayout from './_root/RootLayout';
+import SignIn from './_auth/Forms/SignIn';
+import SignUp from './_auth/Forms/SignUp';
+
+import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo, EditProfile } from './_root/pages/index';
+import EntryPass from "./_protected/EntryPass";
 
 function App() {
-
   return (
-    <main >
+    <main>
       <Routes>
         {/* private routes */}
         <Route element={<AuthLayout />}>
@@ -36,8 +38,21 @@ function App() {
         {/* Entry Pass route */}
         <Route path="/entry-pass/:userId/:eventId/:entryId" element={<EntryPass />} />
       </Routes>
+
+      {/* ToastContainer goes here */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </main>
-  )
+  );
 }
 
-export default App
+export default App;

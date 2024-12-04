@@ -4,6 +4,7 @@ import BigLoader from "../../components/shared/BigLoader";
 import OrganizersProfile from "../../components/shared/OrganizersProfile";
 import { useEventById, useGenerateEntryPass } from "../../lib/react-query/queriesAndMutation";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -35,6 +36,18 @@ const EventDetails = () => {
     e.preventDefault();
     setFormLoading(true);
 
+    if (
+      !registerForm.purpus ||
+      !registerForm.stream ||
+      !registerForm.department ||
+      !registerForm.phone ||
+      !registerForm.institute
+    ) {
+      toast.error("Please fill all the fields.");
+      setFormLoading(false);
+      return;
+    }
+
     const passData = {
       users: user.$id,
       events: event.$id,
@@ -44,7 +57,7 @@ const EventDetails = () => {
     try {
       const responce = await generateEntryPass({ passData });
       // console.log("Entry pass generated:", responce);
-      alert("Entry pass generated successfully!");
+      toast.success("Successfully registered for the event.");
       togglePopup();
       // redirect to this root /entry-pass/:userId/:eventId:entryId
       if (!user?.$id || !event?.$id || !responce?.entryId) {
@@ -53,11 +66,13 @@ const EventDetails = () => {
         //   eventId: event?.$id,
         //   entryId: responce?.entryId,
         // });
+        toast.error("Error generating entry pass. Please try again.");
         throw new Error("Missing required data for navigation.");
       }
       // console.log(`Navigating to: /entry-pass/${user.$id}/${event.$id}/${responce.entryId}`);
       navigate(`/entry-pass/${user.$id}/${event.$id}/${responce.entryId}`);
     } catch (error) {
+      toast.error("Error generating entry pass. Please try");
       console.error("Error generating entry pass:", error);
     } finally {
       setFormLoading(false);

@@ -61,7 +61,7 @@ const EntryPass = () => {
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`CodeComm-${users.name}.pdf`);
+      pdf.save(`CodeCommm-${users.name}.pdf`);
     } catch (error) {
       console.error("Error downloading the ticket:", error);
     }

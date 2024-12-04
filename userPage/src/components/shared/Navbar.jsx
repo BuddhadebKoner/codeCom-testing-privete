@@ -4,7 +4,7 @@ import { useState } from "react";
 import { signOutUser } from "../../lib/appwrite/api";
 
 const Navbar = () => {
-   const { user, isAuthenticated, isLoading } = useAuth();
+   const { user, isAuthenticated, isLoading, checkAuthUser } = useAuth();
    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
    const [isSignOutLoading, setIsSignOutLoading] = useState(false);
 
@@ -20,8 +20,7 @@ const Navbar = () => {
          // Call signOutUser mutation
          await signOutUser();
          setIsDropdownOpen(false);
-         // Reload the page after successful sign-out
-         window.location.reload();
+         checkAuthUser();
       } catch (err) {
          console.error("Sign out failed", err);
       } finally {
@@ -31,7 +30,7 @@ const Navbar = () => {
 
    return (
       <nav className="bg-black text-white w-full flex justify-between items-center py-5 px-4">
-         <Link className="lg:text-2xl font-normal" to={"/"}>&lt;/&gt; CodeCom</Link>
+         <Link className="lg:text-2xl font-normal" to={"/"}>&lt;/&gt; CodeComm</Link>
          <div className="flex justify-center items-center lg:gap-10 gap-2">
             <Link className="lg:text-xl text-sm" to={"/about"}>About</Link>
             <Link className="lg:text-xl text-sm" to={"/upcoming-events"}>Events</Link>

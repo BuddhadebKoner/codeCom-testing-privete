@@ -17,9 +17,9 @@ const AuthLayout = () => {
    }, []);
 
    return (
-      <div className="w-[100vw] h-full flex lg:px-0 md:px-0 px-0 bg-gray-100 dark:bg-gray-900">
+      <div className="w-[100vw] h-full flex lg:px-0 md:px-0 px-0 bg-primary-100">
          {/* Left Section */}
-         <div className="h-screen w-1/2 bg-black">
+         <div className="hidden xl:block h-screen w-1/2 object-cover bg-no-repeat bg-black">
             {/* Conditionally render for non-mobile */}
             {!isMobile && (
                <Suspense fallback={<BigLoader />}>
@@ -33,7 +33,7 @@ const AuthLayout = () => {
          </div>
 
          {/* Right Section */}
-         <section className="flex flex-1 flex-col justify-center items-center bg-white dark:bg-gray-800 shadow-lg py-10 px-5 lg:px-20 md:px-10 rounded-md">
+         <section className="flex flex-1 flex-col justify-center items-center bg-primary-100 py-10 px-5 lg:px-20 md:px-10 rounded-md">
             <Outlet />
          </section>
       </div>

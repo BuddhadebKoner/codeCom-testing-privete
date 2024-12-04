@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { createUserAccount } from "../../lib/appwrite/api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useCreateUserAccount } from "../../lib/react-query/queriesAndMutation";
+import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -9,75 +11,120 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const { mutate: signUpUser, isPending: isSignInLoading } = useCreateUserAccount();
+  const { checkAuthUser } = useAuth();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (!name || !email || !password) return;
 
-    try {
-      const user = { name, email, password };
-      const createUser = await createUserAccount(user);
+    setLoading(true);  // Set loading to true when the request starts
 
-      if (!createUser) {
-        console.error("Error creating user account");
-        setLoading(false);
-        return;
+    signUpUser(
+      { name, email, password },
+      {
+        onSuccess: () => {
+          toast.success("Successfully signed up!");
+          setLoading(false);
+          navigate("/sign-in");
+        },
+        onError: (error) => {
+          setLoading(false);  // Set loading to false in case of error
+          const errorMessage = error?.response?.data?.message || error?.message || "An unknown error occurred. Please try again.";
+          toast.error(errorMessage);
+        },
       }
-
-      navigate("/");
-    } catch (error) {
-      console.error("An error occurred:", error);
-    } finally {
-      setLoading(false);
-    }
+    );
   };
 
   return (
-    <div
-      className={`sign-up-container p-6 rounded shadow-md w-80 ${loading ? "pointer-events-none opacity-50" : ""
-        }`}
-    >
+    <div className="relative w-full max-w-sm mx-auto mt-10">
+      {/* Loading Overlay */}
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75">
-          <div className="spinner border-4 border-t-green-500 rounded-full w-10 h-10 animate-spin"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-5 flex items-center justify-center z-10">
+          <img
+            className="animate-spin"
+            width={50}
+            height={50}
+            src="/loader.svg"
+            alt="Loading..."
+          />
         </div>
       )}
-      <h2 className="text-xl font-bold mb-4">Sign Up</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col">
-        <label className="mb-2">Name:</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="p-2 border rounded mb-4"
-          required
-          disabled={loading}
-        />
-        <label className="mb-2">Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="p-2 border rounded mb-4"
-          required
-          disabled={loading}
-        />
-        <label className="mb-2">Password:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border rounded mb-4"
-          required
-          disabled={loading}
-        />
-        <button
-          type="submit"
-          className="bg-green-500 text-white py-2 rounded hover:bg-green-600 disabled:bg-gray-400"
-          disabled={loading}
-        >
-          {loading ? "Signing Up..." : "Sign Up"}
-        </button>
-      </form>
+
+      {/* Sign Up Form */}
+      <div
+        className={`p-6 bg-gray-800 text-white relative ${loading ? "pointer-events-none opacity-50" : ""}`}
+      >
+        <h2 className="h1-bold mb-4 text-center">Sign Up</h2>
+        <h3 className="base-semibold text-center mb-6">Create your account</h3>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Name Input */}
+          <div>
+            <label htmlFor="name" className="small-semibold block mb-2">
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none"
+              placeholder="Enter your name"
+              required
+              disabled={loading}
+              autoComplete="off"
+            />
+          </div>
+
+          {/* Email Input */}
+          <div>
+            <label htmlFor="email" className="small-semibold block mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none"
+              placeholder="Enter your email"
+              required
+              disabled={loading}
+            />
+          </div>
+
+          {/* Password Input */}
+          <div>
+            <label htmlFor="password" className="small-semibold block mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none"
+              placeholder="Enter your password"
+              required
+              disabled={loading}
+            />
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className={`w-full p-3 rounded-lg bg-blue-500 text-white base-semibold ${loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"}`}
+            disabled={loading}
+          >
+            {loading ? "Signing Up..." : "Sign Up"}
+          </button>
+        </form>
+        <p className="small-regular text-center mt-2">
+          Already have an account?
+          <Link to="/sign-in" className="text-primary-500 ml-2">Sign in</Link>
+        </p>
+      </div>
     </div>
   );
 };

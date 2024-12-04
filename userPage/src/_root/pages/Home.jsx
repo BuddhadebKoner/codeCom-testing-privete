@@ -24,7 +24,7 @@ const Home = () => {
         alt="Event Banner"
       />
       <div className="flex flex-col py-8 gap-3">
-        <h1 className="lg:text-3xl text-xl font-medium">Welcome to our Coding Club : CodeCom</h1>
+        <h1 className="lg:text-3xl text-xl font-medium">Welcome to our Coding Club : CodeComm</h1>
         <a
           className="underline lg:text-xl text-sm w-fit"
           target="_blank"

@@ -32,7 +32,6 @@ export const useCreateUserAccount = () => {
    });
 };
 
-// Hook for signing in a user
 export const useSignInUser = () => {
    const queryClient = useQueryClient();
 
@@ -49,6 +48,7 @@ export const useSignInUser = () => {
       },
    });
 };
+
 
 // get recent events
 export const useGetRecentEvents = () => {

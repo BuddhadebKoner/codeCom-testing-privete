@@ -8,8 +8,9 @@ export async function createUserAccount(user) {
          user.email,
          user.password,
          user.name
-      )
-      if (!newAcount) throw Error;
+      );
+      if (!newAcount) throw new Error("Account creation failed");
+
       const imageUrl = avatar.getInitials(user.name);
 
       const newUser = await saveUserToDatabase({
@@ -17,13 +18,14 @@ export async function createUserAccount(user) {
          email: newAcount.email,
          name: newAcount.name,
          imageUrl: imageUrl,
-      })
+      });
       return newUser;
-
    } catch (error) {
-      console.error(error);
+      console.error("Error during account creation:", error);
+      throw error; 
    }
 }
+
 
 export async function saveUserToDatabase(user) {
    try {
@@ -39,17 +41,14 @@ export async function saveUserToDatabase(user) {
       console.error(error);
    }
 };
-
 export async function signInUser(user) {
    try {
-      // Check if the user is already logged in
       const currentAccount = await getCurrentUser();
       if (currentAccount) {
          console.log("User already signed in");
          return currentAccount;
       }
 
-      // If no active session, create a new session using email and password
       const session = await account.createEmailPasswordSession(
          user.email,
          user.password
@@ -59,9 +58,11 @@ export async function signInUser(user) {
       return session;
    } catch (error) {
       console.error("Error in signInUser:", error);
-      return null;
+
+      throw error;
    }
 }
+
 
 export async function getCurrentUser() {
    try {
