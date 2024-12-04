@@ -79,11 +79,12 @@ export const useUserById = (id) => {
    return useQuery({
       queryKey: [QUERY_KEYS.GET_USER_BY_ID, id],
       queryFn: () => getUserById(id),
-      staleTime: 1000 * 60 * 5,
-      refetchOnWindowFocus: false,
-      enabled: !!id,
+      staleTime: 1000 * 60 * 2, 
+      refetchOnWindowFocus: true,   
+      enabled: !!id,  
    });
 };
+
 
 // register to an event
 export const useGenerateEntryPass = () => {
@@ -142,16 +143,18 @@ export const useGetClubMembers = () => {
    });
 };
 
-// get update profile
 export const useUpdateProfile = () => {
    const queryClient = useQueryClient();
 
    return useMutation({
       mutationFn: (user) => getUpdateUserProfile(user),
-      onSuccess: () => {
+      onSuccess: (_, variables) => {
          queryClient.invalidateQueries({
             queryKey: [QUERY_KEYS.GET_CURRENT_USER],
          });
+         queryClient.invalidateQueries({
+            queryKey: [QUERY_KEYS.GET_USER_BY_ID, variables.userId],
+         });
       },
-   })
+   });
 };

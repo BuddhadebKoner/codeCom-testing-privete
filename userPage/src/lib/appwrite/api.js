@@ -345,7 +345,7 @@ export async function deleteFile(fileId) {
 }
 
 export async function getUpdateUserProfile(user) {
-   console.log("User to update:", user);
+   // console.log("User to update:", user);
    const hasFileToUpdate = user.imageFile && user.imageFile.size > 0;
 
    try {

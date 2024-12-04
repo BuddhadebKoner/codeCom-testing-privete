@@ -40,6 +40,13 @@ body {
   user-drag: none;
 }
 
+/* admin-profile */
+.admin-profile{
+  border-radius: 10%;
+  border: 3px solid #ffffff;
+}
+
+
 @layer utilities {
   /* TYPOGRAPHY */
   .h1-bold {

@@ -9,7 +9,10 @@ import ProfileModel from "../../components/shared/ProfileModel";
 const Profile = () => {
   const { isAuthenticated, user: currentUser, isLoading: authLoading } = useAuth();
   const { userId } = useParams();
-  const { data: user, isLoading: userLoading, isError } = useUserById(userId || "");
+  const { data: user, isLoading: userLoading, isError } = useUserById(userId, {
+    refetchOnWindowFocus: true,
+  });
+
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -25,7 +28,7 @@ const Profile = () => {
     return <NotFound />;
   }
 
-  const { imageUrl, name, city, linkedin, x, $id: userIdFromData } = user;
+  const { imageUrl, name, city, linkedin, x, $id: userIdFromData, role } = user;
 
   const handleImageClick = () => {
     setIsModalOpen(true);
@@ -47,13 +50,19 @@ const Profile = () => {
           <img
             width={80}
             height={80}
-            className="rounded-full cursor-pointer"
+            className={`${user.role !== 'user' ? 'admin-profile' : 'rounded-full'}  cursor-pointer`}
             src={imageUrl}
             alt={`${name || "User"}'s profile`}
-            onClick={handleImageClick} // Add click handler
+            onClick={handleImageClick}
           />
         )}
-        <h2 className="font-bold text-2xl">{name || "User"}</h2>
+
+        <h2 className="font-bold h3-bold">
+          {name || "User"} &nbsp;
+          <span className="small-semibold">
+            ({role || null})
+          </span>
+        </h2>
         <p className="font-normal text-xl">{city || null}</p>
 
         {/* Social Links */}
@@ -105,15 +114,19 @@ const Profile = () => {
         >
           Attended Events
         </NavLink>
-        <NavLink
-          to={`/profile/${userId}/organized`}
-          className={({ isActive }) =>
-            `px-4 py-2 rounded-lg ${isActive ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
-            }`
-          }
-        >
-          Organized Events
-        </NavLink>
+        {
+          user.events.length !== 0 ? (
+            <NavLink
+              to={`/profile/${userId}/organized`}
+              className={({ isActive }) =>
+                `px-4 py-2 rounded-lg ${isActive ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
+                }`
+              }
+            >
+              Organized Events
+            </NavLink>
+          ) : (null)
+        }
         {
           isAuthenticated && currentUser?.$id === userIdFromData && (
             <NavLink
