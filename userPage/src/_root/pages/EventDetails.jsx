@@ -178,43 +178,45 @@ const EventDetails = () => {
         </div>
       </section>
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white w-[90%] max-w-[500px] rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-center mb-6 text-black">Register for Event</h2>
-            <form onSubmit={handleRegisterOnEvent}>
-              {Object.keys(initialFormState).map((field) => (
-                <div key={field} className="mb-4">
-                  <label htmlFor={field} className="block text-gray-700 font-semibold capitalize">
-                    {field}
-                  </label>
-                  <input
-                    value={registerForm[field]}
-                    onChange={handleInputChange}
-                    type="text"
-                    id={field}
-                    placeholder={`Enter your ${field}`}
-                    className="w-full border rounded-lg px-4 py-2 mt-2 focus:outline-none text-black"
-                  />
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white w-[90%] max-w-[500px] rounded-lg shadow-lg p-8">
+              <h2 className="text-2xl font-bold text-center mb-6 text-black">Register for Event</h2>
+              <form onSubmit={handleRegisterOnEvent}>
+                {Object.keys(initialFormState).map((field) => (
+                  <div key={field} className="mb-4">
+                    <label htmlFor={field} className="block text-gray-700 font-semibold capitalize">
+                      {field}
+                    </label>
+                    <input
+                      value={registerForm[field]}
+                      onChange={handleInputChange}
+                      type="text"
+                      id={field}
+                      placeholder={`Enter your ${field}`}
+                      className="w-full border rounded-lg px-4 py-2 mt-2 focus:outline-none text-black"
+                    />
+                  </div>
+                ))}
+                <div className="flex justify-between mt-6">
+                  <button
+                    type="button"
+                    onClick={togglePopup}
+                    className="px-6 py-2 bg-gray-500 text-white rounded-lg"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+                  >
+                    Register
+                  </button>
                 </div>
-              ))}
-              <div className="flex justify-between mt-6">
-                <button
-                  type="button"
-                  onClick={togglePopup}
-                  className="px-6 py-2 bg-gray-500 text-white rounded-lg"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-blue-500 text-white rounded-lg"
-                >
-                  Register
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

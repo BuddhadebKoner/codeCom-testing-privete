@@ -1,6 +1,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import BigLoader from "../components/shared/BigLoader";
+import { Helmet } from "react-helmet";
 
 const AuthLayout = () => {
    const [isMobile, setIsMobile] = useState(false);
@@ -16,8 +17,13 @@ const AuthLayout = () => {
       };
    }, []);
 
+
    return (
       <div className="w-[100vw] h-full flex lg:px-0 md:px-0 px-0 bg-primary-100">
+         <Helmet>
+            <meta charSet="utf-8" />
+            <title>User Authentication</title>
+         </Helmet>
          {/* Left Section */}
          <div className="hidden xl:block h-screen w-1/2 object-cover bg-no-repeat bg-black">
             {/* Conditionally render for non-mobile */}
@@ -25,7 +31,7 @@ const AuthLayout = () => {
                <Suspense fallback={<BigLoader />}>
                   <img
                      className="h-full w-full object-cover"
-                     src="abstract-image.webp"
+                     src="public/pexels-pixabay-87009.jpg"
                      alt="Abstract Art"
                   />
                </Suspense>

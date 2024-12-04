@@ -11,6 +11,10 @@ import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedE
 import EntryPass from "./_protected/EntryPass";
 
 function App() {
+  // right click not allowed
+  document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+  });
   return (
     <main>
       <Routes>
