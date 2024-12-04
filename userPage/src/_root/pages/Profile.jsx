@@ -114,10 +114,28 @@ const Profile = () => {
         >
           Organized Events
         </NavLink>
+        {
+          isAuthenticated && currentUser?.$id === userIdFromData && (
+            <NavLink
+              to={`/profile/${userId}/active-tickets`}
+              className={({ isActive }) =>
+                `px-4 py-2 rounded-lg ${isActive ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
+                }`
+              }
+            >
+              Active Tickets
+            </NavLink>
+          )
+        }
       </div>
       <div className="w-full h-fit py-10">
         {/* Nested Routes */}
-        <Outlet context={{ userInfo: user, attendedEvents: user?.entryPass, organizedEvents: user?.events }} />
+        <Outlet context={
+          {
+            userInfo: user,
+            attendedEvents: user?.entryPass,
+            organizedEvents: user?.events,
+          }} />
       </div>
     </>
   );

@@ -7,7 +7,7 @@ import RootLayout from './_root/RootLayout';
 import SignIn from './_auth/Forms/SignIn';
 import SignUp from './_auth/Forms/SignUp';
 
-import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo, EditProfile } from './_root/pages/index';
+import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo, EditProfile, ActiveTickets } from './_root/pages/index';
 import EntryPass from "./_protected/EntryPass";
 
 function App() {
@@ -33,6 +33,7 @@ function App() {
             <Route index element={<ProfileInfo />} />
             <Route path="attended" element={<AttendedEvents />} />
             <Route path="organized" element={<OrganizedEvents />} />
+            <Route path="active-tickets" element={<ActiveTickets />}/>
           </Route>
           <Route path="/events/:id" element={<EventDetails />} />
           <Route path="/upcoming-events" element={<UpcomingEvents />} />
