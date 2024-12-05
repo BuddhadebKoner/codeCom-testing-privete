@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const { mutate: signInUser, isPending: isSignInLoading } = useSignInUser();
@@ -21,12 +22,12 @@ const SignIn = () => {
       {
         onSuccess: () => {
           toast.success("Successfully signed in!");
-          checkAuthUser(); 
+          checkAuthUser();
           navigate("/");
         },
         onError: (error) => {
           const errorMessage = error?.response?.data?.message || error?.message || "An unknown error occurred. Please try again.";
-          toast.error(errorMessage); 
+          toast.error(errorMessage);
         },
       }
     );
@@ -78,16 +79,40 @@ const SignIn = () => {
             <label htmlFor="password" className="small-semibold block mb-2">
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none"
-              placeholder="Enter your password"
-              required
-              disabled={isSignInLoading}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none"
+                placeholder="Enter your password"
+                required
+                disabled={isSignInLoading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-4"
+                aria-label={showPassword ? "Hide Password" : "Show Password"}
+              >
+                {
+                  showPassword ? (
+                    <img
+                      width={20}
+                      height={20}
+                      src="/assets/icons/show_pass.svg"
+                      alt="show_password" />
+                  ) : (
+                    <img
+                      width={20}
+                      height={20}
+                      src="/assets/icons/hide_pass.svg"
+                      alt="hide_password" />
+                  )
+                }
+              </button>
+            </div>
           </div>
 
           {/* Submit Button */}

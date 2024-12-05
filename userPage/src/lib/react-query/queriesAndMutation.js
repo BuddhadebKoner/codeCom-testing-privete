@@ -11,6 +11,7 @@ import {
    getInfiniteEvents,
    getClubMembers,
    getUpdateUserProfile,
+   searchEvents,
 } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -79,9 +80,9 @@ export const useUserById = (id) => {
    return useQuery({
       queryKey: [QUERY_KEYS.GET_USER_BY_ID, id],
       queryFn: () => getUserById(id),
-      staleTime: 1000 * 60 * 2, 
-      refetchOnWindowFocus: true,   
-      enabled: !!id,  
+      staleTime: 1000 * 60 * 2,
+      refetchOnWindowFocus: true,
+      enabled: !!id,
    });
 };
 
@@ -158,3 +159,13 @@ export const useUpdateProfile = () => {
       },
    });
 };
+
+
+// search post useSearchPost
+export const useSearchEvents = (searchTurm) => {
+   return useQuery({
+      queryKey: [QUERY_KEYS.SEARCH_EVENTS, searchTurm],
+      queryFn: () => searchEvents(searchTurm),
+      enabled: !!searchTurm
+   })
+}

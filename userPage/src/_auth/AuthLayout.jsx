@@ -31,7 +31,7 @@ const AuthLayout = () => {
                <Suspense fallback={<BigLoader />}>
                   <img
                      className="h-full w-full object-cover"
-                     src="public/pexels-pixabay-87009.jpg"
+                     src="/pexels-pixabay-87009.jpg"
                      alt="Abstract Art"
                   />
                </Suspense>

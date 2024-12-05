@@ -8,11 +8,11 @@ const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const { mutate: signUpUser, isPending: isSignInLoading } = useCreateUserAccount();
-  const { checkAuthUser } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,16 +99,40 @@ const SignUp = () => {
             <label htmlFor="password" className="small-semibold block mb-2">
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none"
-              placeholder="Enter your password"
-              required
-              disabled={loading}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none"
+                placeholder="Enter your password"
+                required
+                disabled={isSignInLoading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-4"
+                aria-label={showPassword ? "Hide Password" : "Show Password"}
+              >
+                {
+                  showPassword ? (
+                    <img
+                      width={20}
+                      height={20}
+                      src="/assets/icons/show_pass.svg"
+                      alt="show_password" />
+                  ) : (
+                    <img
+                      width={20}
+                      height={20}
+                      src="/assets/icons/hide_pass.svg"
+                      alt="hide_password" />
+                  )
+                }
+              </button>
+            </div>
           </div>
 
           {/* Submit Button */}

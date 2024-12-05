@@ -5,6 +5,7 @@ import OrganizersProfile from "../../components/shared/OrganizersProfile";
 import { useEventById, useGenerateEntryPass } from "../../lib/react-query/queriesAndMutation";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
+import { formData } from "../../_data/basicData";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -22,7 +23,9 @@ const EventDetails = () => {
     stream: "",
     department: "",
     phone: "",
-    institute: "",
+    institute: "Sanaka Educational Trust Group Of Institutions",
+    year: "",
+    specialization: "",
   };
 
   const [registerForm, setRegisterForm] = useState(initialFormState);
@@ -41,9 +44,10 @@ const EventDetails = () => {
       !registerForm.stream ||
       !registerForm.department ||
       !registerForm.phone ||
-      !registerForm.institute
+      !registerForm.institute ||
+      !registerForm.year
     ) {
-      toast.error("Please fill all the fields.");
+      toast.warn("Please fill all the fields.");
       setFormLoading(false);
       return;
     }
@@ -141,7 +145,7 @@ const EventDetails = () => {
               ) : (
                 <button
                   onClick={togglePopup}
-                  className="border-2 px-5 py-2 rounded-xl"
+                  className="w-fit h-fit px-6 py-3 bg-blue-500 text-white rounded-lg small-medium "
                 >
                   Register
                 </button>
@@ -181,39 +185,158 @@ const EventDetails = () => {
         <>
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white w-[90%] max-w-[500px] rounded-lg shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-center mb-6 text-black">Register for Event</h2>
-              <form onSubmit={handleRegisterOnEvent}>
-                {Object.keys(initialFormState).map((field) => (
-                  <div key={field} className="mb-4">
-                    <label htmlFor={field} className="block text-gray-700 font-semibold capitalize">
-                      {field}
-                    </label>
-                    <input
-                      value={registerForm[field]}
-                      onChange={handleInputChange}
-                      type="text"
-                      id={field}
-                      placeholder={`Enter your ${field}`}
-                      className="w-full border rounded-lg px-4 py-2 mt-2 focus:outline-none text-black"
-                    />
+              {isAuthenticated ? (
+                <>
+                  <h2 className="text-2xl font-bold text-center mb-6 text-black">Register for Event</h2>
+                  <form onSubmit={handleRegisterOnEvent}>
+                    {/* Purpose Field */}
+                    <div className="mb-4">
+                      <label htmlFor="purpus" className="block text-gray-700 font-semibold capitalize">
+                        Purpose <span className="text-red-400">*</span>
+                      </label>
+                      <input
+                        value={registerForm.purpus}
+                        onChange={handleInputChange}
+                        type="text"
+                        id="purpus"
+                        placeholder="Enter your purpose"
+                        className="w-full border rounded-lg px-4 py-2 mt-2 focus:outline-none text-black"
+                      />
+                    </div>
+
+                    {/* Stream Dropdown */}
+                    <div className="mb-4">
+                      <label htmlFor="stream" className="block text-gray-700 font-semibold capitalize">
+                        Stream <span className="text-red-400">*</span>
+                      </label>
+                      <select
+                        value={registerForm.stream}
+                        onChange={handleInputChange}
+                        id="stream"
+                        className="w-full border rounded-lg px-4 py-2 mt-2 focus:outline-none text-black"
+                      >
+                        <option value="" disabled>Select your stream</option>
+                        {formData.stream.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Department Dropdown */}
+                    <div className="mb-4">
+                      <label htmlFor="department" className="block text-gray-700 font-semibold capitalize">
+                        Department <span className="text-red-400">*</span>
+                      </label>
+                      <select
+                        value={registerForm.department}
+                        onChange={handleInputChange}
+                        id="department"
+                        className="w-full border rounded-lg px-4 py-2 mt-2 focus:outline-none text-black"
+                      >
+                        <option value="" disabled>Select your department</option>
+                        {formData.department.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Phone Field */}
+                    <div className="mb-4">
+                      <label htmlFor="phone" className="block text-gray-700 font-semibold capitalize">
+                        Phone <span className="text-red-400">*</span>
+                      </label>
+                      <input
+                        value={registerForm.phone}
+                        onChange={handleInputChange}
+                        type="text"
+                        id="phone"
+                        placeholder="Enter your phone number"
+                        className="w-full border rounded-lg px-4 py-2 mt-2 focus:outline-none text-black"
+                      />
+                    </div>
+
+                    {/* Institute Field */}
+                    <div className="mb-4">
+                      <label htmlFor="institute" className="block text-gray-700 font-semibold capitalize">
+                        Institute <span className="text-red-400">*</span>
+                      </label>
+                      <input
+                        value={registerForm.institute}
+                        onChange={handleInputChange}
+                        type="text"
+                        id="institute"
+                        placeholder="Enter your institute name"
+                        className="w-full border rounded-lg px-4 py-2 mt-2 focus:outline-none text-black"
+                      />
+                    </div>
+
+                    {/* Year Dropdown */}
+                    <div className="mb-4">
+                      <label htmlFor="year" className="block text-gray-700 font-semibold capitalize">
+                        Year <span className="text-red-400">*</span>
+                      </label>
+                      <select
+                        value={registerForm.year}
+                        onChange={handleInputChange}
+                        id="year"
+                        className="w-full border rounded-lg px-4 py-2 mt-2 focus:outline-none text-black"
+                      >
+                        <option value="" disabled>Select your year</option>
+                        {formData.year.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Specialization Field */}
+                    <div className="mb-4">
+                      <label htmlFor="specialization" className="block text-gray-700 font-semibold capitalize">
+                        Specialization
+                      </label>
+                      <input
+                        value={registerForm.specialization}
+                        onChange={handleInputChange}
+                        type="text"
+                        id="specialization"
+                        placeholder="Enter your specialization"
+                        className="w-full border rounded-lg px-4 py-2 mt-2 focus:outline-none text-black"
+                      />
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex justify-between mt-6">
+                      <button
+                        type="button"
+                        onClick={togglePopup}
+                        className="px-6 py-2 bg-gray-500 text-white rounded-lg"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+                      >
+                        Register
+                      </button>
+                    </div>
+                  </form>
+                </>
+              ) : (
+                <div className="flex justify-center items-center">
+                  <p className="text-center text-lg">Please login to register for the event.</p>
+                  <div className="flex justify-center mt-4">
+                    <Link to="/sign-in" className="px-6 py-2 bg-blue-500 text-white rounded-lg">
+                      Login
+                    </Link>
                   </div>
-                ))}
-                <div className="flex justify-between mt-6">
-                  <button
-                    type="button"
-                    onClick={togglePopup}
-                    className="px-6 py-2 bg-gray-500 text-white rounded-lg"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-6 py-2 bg-blue-500 text-white rounded-lg"
-                  >
-                    Register
-                  </button>
                 </div>
-              </form>
+              )}
             </div>
           </div>
         </>

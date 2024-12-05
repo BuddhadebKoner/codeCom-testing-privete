@@ -22,7 +22,7 @@ export async function createUserAccount(user) {
       return newUser;
    } catch (error) {
       console.error("Error during account creation:", error);
-      throw error; 
+      throw error;
    }
 }
 
@@ -168,6 +168,8 @@ export async function generateEntryPass(passData) {
          department: passData.department,
          phone: passData.phone,
          institute: passData.institute,
+         year: passData.year,
+         specialization: passData.specialization,
       };
 
       const checkForElegable = checkEventForEntryPass(passData.events);
@@ -400,5 +402,24 @@ export async function getUpdateUserProfile(user) {
    } catch (error) {
       console.error("Error updating user profile:", error.message);
       throw error; // Ensure the error propagates for the UI to handle
+   }
+}
+
+
+// search events
+export async function searchEvents(searchTerm) {
+   try {
+      const events = await database.listDocuments(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId,
+         [
+            Query.search('title', searchTerm)
+         ]
+      )
+
+      if (!events) throw Error;
+      return events;
+   } catch (error) {
+      console.log(error)
    }
 }
