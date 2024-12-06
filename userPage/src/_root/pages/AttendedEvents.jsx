@@ -3,7 +3,7 @@ import { Link, useOutletContext } from "react-router-dom";
 
 const AttendedEvents = () => {
    const { attendedEvents } = useOutletContext();
-   console.log(attendedEvents);
+   // console.log(attendedEvents);
 
    if (!attendedEvents || attendedEvents.length === 0) {
       return (

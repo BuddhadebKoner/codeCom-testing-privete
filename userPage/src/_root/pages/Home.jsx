@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import EventCard from "../../components/shared/EventCard";
 import { useGetRecentEvents } from "../../lib/react-query/queriesAndMutation";
 import Loader from "../../components/shared/Loader";
 import { Helmet } from "react-helmet";
+import { useAuth } from "../../context/AuthContext";
 
 const Home = () => {
   // Using the custom hook from React Query
@@ -13,9 +14,10 @@ const Home = () => {
 
   // Shortlist up to three active events sorted by eventTime
   const shortlistedEvents = events
-    .filter((event) => event.isActive) // Filter active events
-    .sort((a, b) => new Date(a.eventTime) - new Date(b.eventTime)) // Sort by eventTime
-    .slice(0, 3); // Take the first 3 events
+    .filter((event) => event.isActive)
+    .sort((a, b) => new Date(a.eventTime) - new Date(b.eventTime))
+    .slice(0, 3);
+
 
   return (
     <>

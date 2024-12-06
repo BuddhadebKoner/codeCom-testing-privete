@@ -28,6 +28,22 @@ body {
   min-height: 100vh;
 }
 
+.animated-border svg line {
+  animation: draw-border 10s linear infinite;
+  animation-delay: 2s;
+}
+
+@keyframes draw-border {
+  0% {
+    stroke-dashoffset: 98;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+
+
 .no-select {
   user-select: none;
 }

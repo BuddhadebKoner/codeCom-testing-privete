@@ -18,7 +18,7 @@ const SignUp = () => {
     e.preventDefault();
     if (!name || !email || !password) return;
 
-    setLoading(true);  // Set loading to true when the request starts
+    setLoading(true); 
 
     signUpUser(
       { name, email, password },
@@ -29,7 +29,7 @@ const SignUp = () => {
           navigate("/sign-in");
         },
         onError: (error) => {
-          setLoading(false);  // Set loading to false in case of error
+          setLoading(false);  
           const errorMessage = error?.response?.data?.message || error?.message || "An unknown error occurred. Please try again.";
           toast.error(errorMessage);
         },

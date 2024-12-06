@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect } from "react";
 import { signOutUser } from "../../lib/appwrite/api";
-import { useSearchEvents } from "../../lib/react-query/queriesAndMutation";
+import { useGetRecentEvents, useSearchEvents } from "../../lib/react-query/queriesAndMutation";
 import { useInView } from "react-intersection-observer";
 import useDebounce from "../../hooks/useDbounce";
+import Loader from "./Loader";
+import SearchEventcard from "./SearchEventcard";
 
 const Navbar = () => {
    const { user, isAuthenticated, isLoading, checkAuthUser } = useAuth();
@@ -12,19 +14,17 @@ const Navbar = () => {
    const [isSignOutLoading, setIsSignOutLoading] = useState(false);
    const [isSearchOpen, setIsSearchOpen] = useState(false);
    const [searchQuery, setSearchQuery] = useState("");
+   const navigate = useNavigate();
 
-   // Debounce the search query to optimize API calls
    const deBouncedValue = useDebounce(searchQuery, 1000);
-
-   // Fetch search results
-   const { data: searchEvents, isFetching: isSearchFetching } = useSearchEvents(deBouncedValue);
+   const { data: searchEvents, isFetching: isSearchFetching, isError: searchError } = useSearchEvents(deBouncedValue);
    const documents = searchEvents?.documents || [];
 
-   // Infinite scrolling
    const { ref, inView } = useInView();
+
    useEffect(() => {
       if (inView && !searchQuery) {
-         // Add pagination fetching logic if needed
+         // Implement pagination if needed.
       }
    }, [inView, searchQuery]);
 
@@ -45,6 +45,14 @@ const Navbar = () => {
       setIsSearchOpen((prev) => !prev);
       document.body.style.overflow = isSearchOpen ? "auto" : "hidden";
    };
+   if (isSearchOpen) {
+      // then i press the esc key in keybord
+      document.addEventListener("keydown", (e) => {
+         if (e.key === "Escape") {
+            toggleSearch();
+         }
+      });   
+   }
 
    return (
       <nav className="bg-black text-white w-full flex justify-between items-center py-5 px-4">
@@ -55,45 +63,60 @@ const Navbar = () => {
                onClick={toggleSearch}
             >
                <div
-                  className="w-full max-w-md bg-white text-black rounded-lg shadow-lg mt-10"
+                  className="w-full max-w-4xl mt-20 bg-black rounded-lg shadow-lg p-6 relative overflow-hidden border-2 border-white"
                   onClick={(e) => e.stopPropagation()}
                >
+                  <button className="w-fit h-fit bg-white text-black m-2 px-2 rounded-sm"
+                  onClick={toggleSearch}
+                  >
+                     Esc
+                  </button>
+                  {/* Search Input */}
                   <input
                      type="text"
-                     placeholder="Search..."
+                     placeholder="Search by event title"
                      value={searchQuery}
                      onChange={(e) => setSearchQuery(e.target.value)}
-                     className="w-full px-4 py-2 border-b border-gray-300 outline-none"
+                     className="w-full px-4 py-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                     aria-label="Search Events"
                   />
-                  <ul className="max-h-48 overflow-y-auto">
+
+                  {/* Results Section */}
+                  <div className="overflow-y-auto max-h-[60vh]">
                      {isSearchFetching ? (
-                        <li className="px-4 py-2 text-gray-500">Searching...</li>
+                        <div className="text-center text-gray-500">Searching...</div>
                      ) : documents.length > 0 ? (
                         documents.map((doc, index) => (
-                           <li key={index} className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
-                              {doc.title} {/* Adjust based on your API response */}
-                           </li>
+                           <SearchEventcard key={index} event={doc} toggleSearch={toggleSearch} />
                         ))
                      ) : (
-                        <li className="px-4 py-2 text-gray-500">No results found</li>
+                        <div className="flex flex-col items-center justify-center space-y-4 text-gray-500">
+                           <h2>No results found.</h2>
+                           <p>Try a different search term or browse recent events.</p>
+                        </div>
                      )}
-                  </ul>
+                  </div>
                </div>
             </div>
          )}
+
          <Link className="lg:text-2xl font-normal" to={"/"}>&lt;/&gt; CodeComm</Link>
          <div className="flex gap-10">
-            <div className="flex justify-center items-center lg:gap-10 gap-2">
+            <div className="flex items-center gap-2 lg:gap-10">
                <Link className="lg:text-xl text-sm" to={"/about"}>About</Link>
                <Link className="lg:text-xl text-sm" to={"/upcoming-events"}>Events</Link>
-               <button onClick={toggleSearch}>
+               <button onClick={toggleSearch} aria-label="Open Search">
                   <img src="/assets/icons/search_icon.svg" alt="search-icon" />
                </button>
             </div>
             {/* Profile Section */}
             {isAuthenticated ? (
-               <div className="relative flex items-center justify-center">
-                  <button className="rounded-full" onClick={() => setIsDropdownOpen((prev) => !prev)}>
+               <div className="relative flex items-center">
+                  <button
+                     className="rounded-full"
+                     onClick={() => setIsDropdownOpen((prev) => !prev)}
+                     aria-label="Toggle Dropdown"
+                  >
                      <img
                         className="rounded-full"
                         width={40}
@@ -121,7 +144,7 @@ const Navbar = () => {
                   )}
                </div>
             ) : isLoading ? (
-               <img width={40} src="/loader.svg" alt="loader" />
+               <img width={40} src="/loader.svg" alt="Loading" />
             ) : (
                <Link className="lg:text-xl text-sm" to={"/sign-in"}>Sign In</Link>
             )}

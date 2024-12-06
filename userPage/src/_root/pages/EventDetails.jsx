@@ -74,7 +74,8 @@ const EventDetails = () => {
         throw new Error("Missing required data for navigation.");
       }
       // console.log(`Navigating to: /entry-pass/${user.$id}/${event.$id}/${responce.entryId}`);
-      navigate(`/entry-pass/${user.$id}/${event.$id}/${responce.entryId}`);
+      toast.success("Wait for the approval of your entry pass.");
+      // navigate(`/entry-pass/${user.$id}/${event.$id}/${responce.entryId}`);
     } catch (error) {
       toast.error("Error generating entry pass. Please try");
       console.error("Error generating entry pass:", error);
@@ -141,7 +142,7 @@ const EventDetails = () => {
               ) : event.entryPass.some(
                 (entry) => entry.users?.userId === user.userId
               ) ? (
-                <p className="text-green-500">You have already registered for this event.</p>
+                <p className="text-yellow-300">Wait for approval</p>
               ) : (
                 <button
                   onClick={togglePopup}

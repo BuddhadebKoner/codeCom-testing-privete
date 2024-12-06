@@ -413,13 +413,14 @@ export async function searchEvents(searchTerm) {
          appwriteConfig.databaseId,
          appwriteConfig.eventCollectionId,
          [
-            Query.search('title', searchTerm)
+            Query.search('title', searchTerm),
+            Query.limit(10)
          ]
-      )
+      );
 
-      if (!events) throw Error;
+      if (!events) throw new Error("No events found.");
       return events;
    } catch (error) {
-      console.log(error)
+      console.error("Error while searching events:", error);
    }
 }

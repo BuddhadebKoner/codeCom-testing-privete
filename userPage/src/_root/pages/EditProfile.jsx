@@ -48,8 +48,8 @@ const EditProfile = () => {
   };
 
   const handleFormSubmit = async () => {
-    if (!formData.name || !formData.city) {
-      toast.error("Name and City are required fields.");
+    if (!formData.name) {
+      toast.warn("Name required");
       return;
     }
 
