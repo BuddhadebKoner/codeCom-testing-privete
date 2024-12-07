@@ -3,6 +3,7 @@ import { useSignInUser } from "../../lib/react-query/queriesAndMutation";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { useAuth } from "../../context/AuthContext";
+import BigLoader from "../../components/shared/BigLoader";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -33,6 +34,13 @@ const SignIn = () => {
     );
   };
 
+  if (isSignInLoading) {
+    return (
+      <div className="fixed w-screen h-screen bg-gray-800 text-gray-200 flex items-center justify-center z-50">
+        <BigLoader />
+      </div>
+    );
+  }
 
 
   return (

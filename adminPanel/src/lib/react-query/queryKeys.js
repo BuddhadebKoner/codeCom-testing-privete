@@ -9,6 +9,7 @@ export const QUERY_KEYS = {
    GET_CURRENT_USER: "getCurrentUser",
    GET_USER_BY_ID: "getUserById",
    GET_CLUB_MEMBERS: "getClubMembers",
+   FIND_USER_BY_EMAIL: "findUserByEmail",
 
    // EVENT KEYS
    GET_ALL_EVENTS: "getAllEvents",

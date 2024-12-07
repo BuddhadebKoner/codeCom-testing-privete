@@ -13,12 +13,20 @@ const RootLayout = () => {
     navigate('/sign-in');
   }
 
+  if (isLoading) {
+    return (
+      <div className="fixed w-screen h-screen bg-gray-800 text-gray-200 flex items-center justify-center z-50">
+        <BigLoader />
+      </div>
+    );
+  }
+
 
   return (
     <>
       {
         isLoading ? (
-          <div className='w-screen h-screen overflow-hidden flex justify-center items-center'>
+          <div className='w-screen h-screen overflow-hidden flex justify-center items-center z-50'>
             <BigLoader />
           </div>
         ) : (
@@ -26,7 +34,7 @@ const RootLayout = () => {
             {/* Sidebar */}
             <Sidebar />
             {/* Main Content */}
-            <div className="w-screen h-screen flex-1 p-6 bg-gray-100">
+            <div className="w-[80vw] h-screen flex-1 p-6 bg-gray-100 overflow-auto">
               <Outlet />
             </div>
           </div>

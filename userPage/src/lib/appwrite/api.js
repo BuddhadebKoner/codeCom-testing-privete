@@ -54,7 +54,7 @@ export async function signInUser(user) {
          user.password
       );
 
-      console.log("New session created:", session);
+      // console.log("New session created:", session);
       return session;
    } catch (error) {
       console.error("Error in signInUser:", error);
