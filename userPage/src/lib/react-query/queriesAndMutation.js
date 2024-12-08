@@ -102,9 +102,11 @@ export const useGenerateEntryPass = () => {
       onSuccess: (newPass) => {
          queryClient.invalidateQueries([QUERY_KEYS.GET_ENTRY_PASS]);
          queryClient.setQueryData([QUERY_KEYS.GET_ENTRY_PASS], newPass);
+         return newPass;
       },
       onError: (error) => {
          console.error("Error creating user account:", error);
+         return error;
       },
    });
 };

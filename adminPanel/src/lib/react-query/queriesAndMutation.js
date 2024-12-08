@@ -63,18 +63,3 @@ export const useFindUserByEmail = () => {
       },
    });
 };
-
-
-// add event 
-export const useAddEvent = () => { 
-   return useMutation({
-      mutationKey: [QUERY_KEYS.ADD_EVENT],
-      mutationFn: (event) => addEvent(event),
-      onSuccess: (newEvent) => {
-         console.log("Event added successfully:", newEvent);
-      },
-      onError: (error) => {
-         console.error("Error adding event:", error);
-      },
-   });
-}

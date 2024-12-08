@@ -6,7 +6,7 @@ import { useEventById, useGenerateEntryPass } from "../../lib/react-query/querie
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import TicketGenerateForm from "../../components/shared/TicketGenerateForm";
-import { formatEventTimeIndian, initialFormState } from "../../lib/utils";
+import { initialFormState } from "../../lib/utils";
 import RegisterBtn from "../../components/shared/RegisterBtn";
 
 const EventDetails = () => {
@@ -63,8 +63,8 @@ const EventDetails = () => {
         </p>
       </div>
       <div className="bg-white px-5 py-2">
-        <p className="text-black text-xl font-bold">
-          {formatEventTimeIndian(event?.eventTime)}
+        <p className="text-black text-xl font-bold flex justify-between">
+          {new Date(event?.eventTime).toLocaleString('en-IN')}
         </p>
       </div>
       <section className="my-16">
@@ -95,6 +95,7 @@ const EventDetails = () => {
               setRegisterForm={setRegisterForm}
               registerForm={registerForm}
               eventId={event.$id}
+              registerationEndsAt={event.registerationEndsAt}
             />
           </div>
         </div>

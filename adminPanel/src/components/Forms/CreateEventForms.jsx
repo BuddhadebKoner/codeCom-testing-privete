@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { useAddEvent, useFindUserByEmail } from '../../lib/react-query/queriesAndMutation';
+import { useFindUserByEmail } from '../../lib/react-query/queriesAndMutation';
 import BigLoader from '../shared/BigLoader';
 import { toast } from 'react-toastify';
+import { addEvent } from '../../lib/appwrite/api';
+
 
 const CreateEventForms = ({ formData, action }) => {
    const [formState, setFormState] = useState(formData);
@@ -11,9 +13,9 @@ const CreateEventForms = ({ formData, action }) => {
    const [userName, setUserName] = useState("");
    const [userId, setUserId] = useState("");
    const [error, setError] = useState("");
+   const [isAddingEvent, setIsAddingEvent] = useState(false);
 
    const { mutate: findUser, isLoading } = useFindUserByEmail();
-   const { mutate: addEvent, isPending: isAddingEvent, isSuccess, isError, } = useAddEvent();
 
    if (isAddingEvent) {
       return (
@@ -21,13 +23,6 @@ const CreateEventForms = ({ formData, action }) => {
             <BigLoader />
          </div>
       );
-   }
-
-   if (isSuccess) {
-      console.log('Event added successfully');
-   }
-   if (isError) {
-      toast.error('An error occurred while adding event');
    }
 
    const togglePopup = () => {
@@ -89,34 +84,32 @@ const CreateEventForms = ({ formData, action }) => {
       }
    };
 
-
    const handleSubmit = async (e) => {
       e.preventDefault();
-      // Handle form submission logic here
+      setIsAddingEvent(true);
       console.log(action, 'Event data:', formState);
 
-      if (action == 'Create') {
+      if (action === 'Create') {
          try {
-            const addingEvent = addEvent(formState);
-
-            if (!addingEvent) {
-               return;
+            const addingEventRes = await addEvent(formState);
+            if (!addingEventRes) {
+               toast.error('Failed to add event. Please try again.');
             }
 
-            toast.success('Event added successfully');
-
+            toast.success('Event added successfully.');
+            setIsAddingEvent(false);
             setFormState(formData);
             setPreview(null);
-
          } catch (error) {
             console.error('Error adding event:', error);
-            toast.error('Failed to add event');
+            toast.error(error.message || 'Failed to add event. Please try again.');
+            setIsAddingEvent(false);
          }
-      } else if (action == 'Update') {
-         // Update event logic here
-         console.log("update logic is here");
+      } else if (action === 'Update') {
+         console.log("Update logic is here");
       }
    };
+
 
 
 
@@ -262,7 +255,7 @@ const CreateEventForms = ({ formData, action }) => {
             <div>
                <label className="block text-gray-700 font-medium">Event Length (in hours)</label>
                <input
-                  type="number"
+                  type="text"
                   name="eventLength"
                   value={formState.eventLength}
                   onChange={handleChange}
@@ -274,7 +267,7 @@ const CreateEventForms = ({ formData, action }) => {
             <div>
                <label className="block text-gray-700 font-medium">max Capacity</label>
                <input
-                  type="number"
+                  type="text"
                   name="maxCapacity"
                   value={formState.maxCapacity}
                   onChange={handleChange}

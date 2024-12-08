@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 
 const TicketGenerateForm = (
-   { togglePopup, setFormLoading, setRegisterForm, registerForm, eventId }
+   { togglePopup, setFormLoading, setRegisterForm, registerForm, eventId, registerationEndsAt }
 ) => {
 
    const { mutateAsync: generateEntryPass, isPending } = useGenerateEntryPass();
@@ -22,6 +22,10 @@ const TicketGenerateForm = (
       e.preventDefault();
       setFormLoading(true);
 
+      if (!isAuthenticated) {
+         return;
+      }
+
       const passData = {
          users: user.$id,
          events: eventId,
@@ -31,18 +35,19 @@ const TicketGenerateForm = (
          phone: registerForm.phone,
          institute: registerForm.institute,
          year: registerForm.year,
-         specialization: registerForm.specialization
+         specialization: registerForm.specialization,
+         registerationEndsAt: registerationEndsAt,
       };
 
       try {
-         await generateEntryPass(passData);
+         const res = await generateEntryPass(passData);
+         toast.error(res)
       } catch (error) {
          console.error("Error registering event:", error);
-         toast.error("Error registering event");
+         toast.error(error);
       } finally {
          setFormLoading(false);
          togglePopup();
-         toast.success("Registered successfully");
       }
    };
 

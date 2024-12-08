@@ -157,6 +157,10 @@ export async function generateEntryPass(passData) {
 
    try {
       // Generate a valid entryId (UUID ensures uniqueness and validity)
+      const isRegistrationOpen = Date.now() < new Date(passData?.registerationEndsAt).getTime();
+      if (!isRegistrationOpen) {
+         return "Unauthorized activity"
+      }
       const entryId = ID.unique();
       // push entry id to passData
 
@@ -189,6 +193,7 @@ export async function generateEntryPass(passData) {
       return entryPass;
    } catch (error) {
       console.error("Error generating entry pass:", error);
+      return error.message;
    }
 }
 
