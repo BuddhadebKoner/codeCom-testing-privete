@@ -17,7 +17,7 @@ const UpcomingEvents = () => {
     }
   }, [inView, hasNextPage]);
 
-  if (isLoading && !events) {
+  if (isLoading && !events) { 
     return (
       <div className="w-full h-fit flex justify-center items-center">
         <BigLoader />

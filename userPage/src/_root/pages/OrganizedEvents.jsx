@@ -14,7 +14,7 @@ const OrganizedEvents = () => {
       (event) => !isPastEvent(event.eventTime)
    );
 
-   const pastEvents = organizedEvents.filter((event) =>
+   const HoldEvents = organizedEvents.filter((event) =>
       isPastEvent(event.eventTime)
    );
 
@@ -60,9 +60,9 @@ const OrganizedEvents = () => {
          {/* Past Events Section */}
          <div>
             <h2 className="text-2xl font-bold mb-4">Attended Events</h2>
-            {pastEvents.length > 0 ? (
+            {HoldEvents.length > 0 ? (
                <ul className="space-y-4">
-                  {pastEvents.map((event) => (
+                  {HoldEvents.map((event) => (
                      <li
                         key={event.eventId}
                         className="p-4 border border-gray-600 rounded-lg flex justify-between items-start"

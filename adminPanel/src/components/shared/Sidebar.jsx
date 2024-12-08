@@ -6,8 +6,6 @@ import { useSignOutUser } from '../../lib/react-query/queriesAndMutation';
 import { toast } from 'react-toastify';
 import BigLoader from './BigLoader';
 
-
-
 const Sidebar = () => {
   const [openSections, setOpenSections] = useState({});
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -45,7 +43,7 @@ const Sidebar = () => {
 
 
   return (
-    <div className="h-screen w-[20vw] bg-gray-800 text-gray-200 overflow-y-auto overflow-x-hidden pb-20 relative">
+    <div className="h-screen w-[20vw] bg-gray-800 text-gray-200 overflow-y-auto overflow-x-hidden pb-20 ">
       {/* Header */}
       <div className="p-4 text-xl font-bold text-white">
         Admin Dashboard
@@ -93,7 +91,7 @@ const Sidebar = () => {
             Loading...
           </div>
         ) : (
-          <div className="absolute bottom-0 left-0 w-full bg-gray-900 p-4 flex justify-between items-center">
+          <div className="absolute bottom-0 left-0 w-[20vw] bg-gray-900 p-4 flex justify-between items-center">
             <div className="flex items-center gap-2">
               <img
                 width={30}

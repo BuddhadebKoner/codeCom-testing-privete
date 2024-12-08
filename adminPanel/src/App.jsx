@@ -25,6 +25,8 @@ import {
   GeneralSettings,
   AssetsUpdate,
   NotFound,
+  UpcommingEvents,
+  HoldEvents,
 } from './_root/pages/index';
 
 function App() {
@@ -40,7 +42,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="not-found" element={<NotFound />} />
           {/* Event Management */}
-          <Route path="/events/view-all" element={<ViewAllEvents />} />
+          <Route path="/events/view-all" element={<ViewAllEvents />} >
+            <Route index element={<UpcommingEvents />} />
+            <Route path="past" element={<HoldEvents />} />
+          </Route>
           <Route path="/events/create" element={<CreateNewEvents />} />
           <Route path="/events/edit/:id" element={<EditEvents />} />
           <Route path="/events/details/:id" element={<EventDetails />} />
