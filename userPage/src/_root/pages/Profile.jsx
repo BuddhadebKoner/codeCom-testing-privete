@@ -114,19 +114,7 @@ const Profile = () => {
         >
           Attended Events
         </NavLink>
-        {
-          user.events.length !== 0 ? (
-            <NavLink
-              to={`/profile/${userId}/organized`}
-              className={({ isActive }) =>
-                `px-4 py-2 rounded-lg ${isActive ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
-                }`
-              }
-            >
-              Organized Events
-            </NavLink>
-          ) : (null)
-        }
+        
         {
           isAuthenticated && currentUser?.$id === userIdFromData && (
             <NavLink

@@ -158,12 +158,13 @@ export async function generateEntryPass(passData) {
    try {
       // Generate a valid entryId (UUID ensures uniqueness and validity)
       const entryId = ID.unique();
+      // push entry id to passData
 
       const entryPassData = {
          entryId,
          users: passData.users,
          events: passData.events,
-         purpus: passData.purpus,
+         purpose: passData.purpose,
          stream: passData.stream,
          department: passData.department,
          phone: passData.phone,
@@ -248,7 +249,10 @@ export async function getEntryPassById(id) {
 
 // get infinte events
 export async function getInfiniteEvents({ pageParam }) {
-   const queries = [Query.orderDesc('$updatedAt'), Query.limit(5)];
+   const queries = [
+      Query.orderDesc('$updatedAt'), Query.limit(10),
+      Query.equal('isActive', true)
+   ];
    if (pageParam) {
       queries.push(Query.cursorAfter(pageParam.toString()));
    }
@@ -404,7 +408,6 @@ export async function getUpdateUserProfile(user) {
       throw error; // Ensure the error propagates for the UI to handle
    }
 }
-
 
 // search events
 export async function searchEvents(searchTerm) {

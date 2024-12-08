@@ -100,7 +100,6 @@ const CreateEventForms = ({ formData, action }) => {
             const addingEvent = addEvent(formState);
 
             if (!addingEvent) {
-               toast.error('Failed to add event');
                return;
             }
 

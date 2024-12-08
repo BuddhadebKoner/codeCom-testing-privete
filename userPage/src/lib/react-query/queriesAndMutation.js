@@ -93,7 +93,7 @@ export const useGenerateEntryPass = () => {
 
    return useMutation({
       mutationKey: [QUERY_KEYS.GENERATE_ENTRY_PASS],
-      mutationFn: async ({ passData, }) => {
+      mutationFn: async (passData) => {
          if (!passData) {
             throw new Error("Missing passData or event for generating entry pass.");
          }

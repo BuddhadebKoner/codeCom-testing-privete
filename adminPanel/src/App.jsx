@@ -38,7 +38,7 @@ function App() {
         {/* Public routes */}
         <Route element={<RootLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="not-found" element={<NotFound/>} />
+          <Route path="not-found" element={<NotFound />} />
           {/* Event Management */}
           <Route path="/events/view-all" element={<ViewAllEvents />} />
           <Route path="/events/create" element={<CreateNewEvents />} />
