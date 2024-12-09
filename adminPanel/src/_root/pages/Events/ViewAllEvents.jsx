@@ -3,7 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 
 const ViewAllEvents = () => {
   return (
-    <div className='w-full h-full'>
+    <div className='w-full h-full '>
       <div className='w-full h-fit flex gap-10'>
         <NavLink
           to="/events/view-all"

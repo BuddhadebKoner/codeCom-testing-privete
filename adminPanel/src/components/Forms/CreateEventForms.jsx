@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useFindUserByEmail } from '../../lib/react-query/queriesAndMutation';
 import BigLoader from '../shared/BigLoader';
 import { toast } from 'react-toastify';
 import { addEvent } from '../../lib/appwrite/api';
 
+const formatDateForInput = (isoString) => {
+   if (!isoString) return "";
+   return isoString.slice(0, 16);
+};
 
 const CreateEventForms = ({ formData, action }) => {
-   const [formState, setFormState] = useState(formData);
+   const processedFormData = useMemo(() => ({
+      ...formData,
+      eventTime: formatDateForInput(formData.eventTime),
+      registerationEndsAt: formatDateForInput(formData.registerationEndsAt),
+   }), [formData]);
+
+
+   const [formState, setFormState] = useState(processedFormData);
+   const [originalState, setOriginalState] = useState(processedFormData);
    const [preview, setPreview] = useState(null);
    const [showPopup, setShowPopup] = useState(false);
    const [email, setEmail] = useState("");
@@ -84,31 +96,58 @@ const CreateEventForms = ({ formData, action }) => {
       }
    };
 
+   useEffect(() => {
+      if (action === "Update" && JSON.stringify(originalState) !== JSON.stringify(processedFormData)) {
+         setOriginalState(processedFormData);
+      }
+   }, [action, processedFormData]);
+
+
+   const getChanges = () => {
+      const changes = {};
+      for (const key in formState) {
+         if (formState[key] !== originalState[key]) {
+            changes[key] = formState[key];
+         }
+      }
+      return changes;
+   };
+
    const handleSubmit = async (e) => {
       e.preventDefault();
-      setIsAddingEvent(true);
-      console.log(action, 'Event data:', formState);
 
-      if (action === 'Create') {
+      if (action === "Update") {
+         const changes = getChanges();
+         console.log("Changed Fields:", changes);
+         if (Object.keys(changes).length === 0) {
+            console.log("No changes detected.");
+            return;
+         }
+
+         try {
+            // const updateEventRes = await updateEvent(changes);
+            console.log(changes);
+            toast.success("Event updated successfully.");
+         } catch (error) {
+            console.error("Error updating event:", error);
+            toast.error(error.message || "Failed to update event. Please try again.");
+         }
+      } else if (action === "Create") {
          try {
             const addingEventRes = await addEvent(formState);
-            if (!addingEventRes) {
-               toast.error('Failed to add event. Please try again.');
-            }
-
-            toast.success('Event added successfully.');
-            setIsAddingEvent(false);
-            setFormState(formData);
-            setPreview(null);
+            toast.success("Event created successfully.");
          } catch (error) {
-            console.error('Error adding event:', error);
-            toast.error(error.message || 'Failed to add event. Please try again.');
-            setIsAddingEvent(false);
+            console.error("Error creating event:", error);
+            toast.error(error.message || "Failed to create event. Please try again.");
          }
-      } else if (action === 'Update') {
-         console.log("Update logic is here");
       }
    };
+
+   const resetForm = () => {
+      setFormState(formData); // Reset to initial form data
+      setPreview(null); // Clear preview
+   };
+
 
 
 
@@ -303,6 +342,20 @@ const CreateEventForms = ({ formData, action }) => {
                />
             </div>
 
+            {/* venue */}
+            <div>
+               <label className="block text-gray-700 font-medium">Venue</label>
+               <input
+                  type="text"
+                  name="venue"
+                  value={formState.venue}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter venue"
+                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+               />
+            </div>
+
             {/* Location URL */}
             <div>
                <label className="block text-gray-700 font-medium">Location URL</label>
@@ -317,24 +370,29 @@ const CreateEventForms = ({ formData, action }) => {
                />
             </div>
             {/* event banner */}
-            <div>
-               <label className="block text-gray-700 font-medium">Event Banner</label>
-               <input
-                  type="file"
-                  name="banner"
-                  onChange={handleChange}
-                  required
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
-               />
-
-               {preview && (
-                  <div className="mt-4">
+            <label className="block text-gray-700 font-medium">Event Banner</label>
+            <input
+               type="file"
+               name="banner"
+               onChange={handleChange}
+               accept="image/*"
+               className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+            />
+            <div className="mt-2">
+               {preview ? (
+                  <img
+                     src={preview}
+                     alt="Banner Preview"
+                     className="w-full h-64 object-cover rounded-md"
+                  />
+               ) : (
+                  formState.imageUrl && (
                      <img
-                        src={preview}
-                        alt="Event Banner Preview"
-                        className="w-full h-auto rounded-md border"
+                        src={formState.imageUrl}
+                        alt="Existing Banner"
+                        className="w-full h-64 object-cover rounded-md"
                      />
-                  </div>
+                  )
                )}
             </div>
 

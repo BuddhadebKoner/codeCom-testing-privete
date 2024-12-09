@@ -102,8 +102,7 @@ export async function getRecentEvents() {
          appwriteConfig.eventCollectionId,
          [
             Query.orderAsc("eventTime"),
-            Query.equal("isActive", true),
-            Query.limit(3) // Adjusted to fetch only the three most recent events
+            Query.equal("IsShowingInHomePage", true),
          ]
       );
 

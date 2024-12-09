@@ -4,8 +4,7 @@ export const sections = [
       links: [
          { path: '/events/view-all', label: 'View All Events' },
          { path: '/events/create', label: 'Create New Event' },
-         { path: '/events/edit/:id', label: 'Edit Event' },
-         { path: '/events/details/:id', label: 'Event Details' },
+         // { path: '/events/details/:id', label: 'Event Details' },
       ],
    },
    {

@@ -17,8 +17,12 @@ export const QUERY_KEYS = {
    GET_UPCOMMING_EVENTS: "getUpcommingEvents",
    SEARCH_EVENTS: "searchEvents",
    GET_PAST_EVENTS: "getPastEvents",
+   TOGGLE_EVENTS: "toggleEvents",
+   DELETE_EVENT: "deleteEvent",
+   TOGGLE_SHOW_ON_HOME_PAGE: "toggleShowOnHomePage",
 
    // ENTRY PASS 
    GENERATE_ENTRY_PASS: "generateEntryPass",
    GET_ENTRY_PASS: "getEntryPass",
+   TOGGLE_TICKET_RELEASE: "toggleTicketRelease",
 };

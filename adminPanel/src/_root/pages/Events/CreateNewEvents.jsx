@@ -12,6 +12,7 @@ const CreateNewEvents = () => {
     eventLength: '',
     eventPlace: '',
     city: '',
+    venue: '',
     locationUrl: '',
     imageUrl: '',
   }
