@@ -20,6 +20,7 @@ export const QUERY_KEYS = {
    TOGGLE_EVENTS: "toggleEvents",
    DELETE_EVENT: "deleteEvent",
    TOGGLE_SHOW_ON_HOME_PAGE: "toggleShowOnHomePage",
+   UPDATE_EVENTS: "getEventUpdate",
 
    // ENTRY PASS 
    GENERATE_ENTRY_PASS: "generateEntryPass",

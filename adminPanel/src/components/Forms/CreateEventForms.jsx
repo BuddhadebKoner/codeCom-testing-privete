@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useFindUserByEmail } from '../../lib/react-query/queriesAndMutation';
+import { useFindUserByEmail, useUpdateEvent } from '../../lib/react-query/queriesAndMutation';
 import BigLoader from '../shared/BigLoader';
 import { toast } from 'react-toastify';
 import { addEvent } from '../../lib/appwrite/api';
+import { useParams } from 'react-router-dom';
 
 const formatDateForInput = (isoString) => {
    if (!isoString) return "";
@@ -17,6 +18,8 @@ const CreateEventForms = ({ formData, action }) => {
    }), [formData]);
 
 
+   const { id: eventId } = useParams();
+
    const [formState, setFormState] = useState(processedFormData);
    const [originalState, setOriginalState] = useState(processedFormData);
    const [preview, setPreview] = useState(null);
@@ -28,6 +31,8 @@ const CreateEventForms = ({ formData, action }) => {
    const [isAddingEvent, setIsAddingEvent] = useState(false);
 
    const { mutate: findUser, isLoading } = useFindUserByEmail();
+   const { mutate: updateEvent, mutateAsync: updateEventAsync, isLoading: isUpdatingEvent, isSuccess, } = useUpdateEvent();
+
 
    if (isAddingEvent) {
       return (
@@ -119,14 +124,15 @@ const CreateEventForms = ({ formData, action }) => {
       if (action === "Update") {
          const changes = getChanges();
          console.log("Changed Fields:", changes);
+
          if (Object.keys(changes).length === 0) {
-            console.log("No changes detected.");
+            toast.warn("No changes detected.");
             return;
          }
 
          try {
-            // const updateEventRes = await updateEvent(changes);
-            console.log(changes);
+            const updateEventRes = await updateEventAsync({ event: changes, eventId });
+            console.log("Update Event Response:", updateEventRes);
             toast.success("Event updated successfully.");
          } catch (error) {
             console.error("Error updating event:", error);
@@ -142,6 +148,7 @@ const CreateEventForms = ({ formData, action }) => {
          }
       }
    };
+
 
    const resetForm = () => {
       setFormState(formData); // Reset to initial form data

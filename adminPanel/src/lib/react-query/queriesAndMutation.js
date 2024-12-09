@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createUserAccount, deleteEvent, findUserByEmail, getPastInfiniteEvents, getUpcommingInfiniteEvents, signInUser, signOutUser, toggleIsActive, toggleShowOnHomePage, toggleTicketRelease } from "../appwrite/api";
+import { createUserAccount, deleteEvent, findUserByEmail, getPastInfiniteEvents, getUpcommingInfiniteEvents, getUpdateEvent, signInUser, signOutUser, toggleIsActive, toggleShowOnHomePage, toggleTicketRelease } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
 // Hook for creating a new user account
@@ -111,7 +111,7 @@ export const useDeactiveEvent = () => {
    });
 };
 
-export const useToggleShowOnHomePage = () => { 
+export const useToggleShowOnHomePage = () => {
    const queryClient = useQueryClient();
 
    return useMutation({
@@ -160,3 +160,19 @@ export const useDeleteEvent = () => {
 
 
 //  update event by id
+export const useUpdateEvent = () => {
+   const queryClient = useQueryClient();
+
+   return useMutation({
+      mutationKey: [QUERY_KEYS.UPDATE_EVENTS],
+      mutationFn: ({ event, eventId }) => getUpdateEvent(event, eventId),
+      onSuccess: () => {
+         queryClient.invalidateQueries({
+            queryKey: [QUERY_KEYS.GET_UPCOMMING_EVENTS],
+         });
+      },
+      onError: (error) => {
+         console.error("Event not updating:", error);
+      },
+   });
+};

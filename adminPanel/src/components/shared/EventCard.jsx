@@ -128,6 +128,7 @@ const EventCard = ({ event }) => {
                   to={`/events/edit/${event.$id}`}
                   className="px-3 py-1 text-xs bg-blue-500 text-white rounded-full shadow hover:bg-blue-600 transition"
                   state={{
+                     eventId: event.$id,
                      eventData: {
                         organizers: event?.organizers
                            ?.map(organizer => organizer.$id)
