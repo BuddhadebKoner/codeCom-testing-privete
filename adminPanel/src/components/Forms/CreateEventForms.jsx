@@ -31,10 +31,10 @@ const CreateEventForms = ({ formData, action }) => {
    const [isAddingEvent, setIsAddingEvent] = useState(false);
 
    const { mutate: findUser, isLoading } = useFindUserByEmail();
-   const { mutate: updateEvent, mutateAsync: updateEventAsync, isLoading: isUpdatingEvent, isSuccess, } = useUpdateEvent();
+   const { mutateAsync: updateEventAsync, isPending: isUpdatingEvent } = useUpdateEvent();
 
 
-   if (isAddingEvent) {
+   if (isAddingEvent || isUpdatingEvent) {
       return (
          <div className="fixed w-screen h-screen bg-gray-800 text-gray-200 flex items-center justify-center z-50">
             <BigLoader />
