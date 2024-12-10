@@ -1,5 +1,5 @@
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createUserAccount, deleteEvent, findUserByEmail, getPastInfiniteEvents, getUpcommingInfiniteEvents, getUpdateEvent, signInUser, signOutUser, toggleIsActive, toggleShowOnHomePage, toggleTicketRelease } from "../appwrite/api";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createUserAccount, deleteEvent, findUserByEmail, getPastInfiniteEvents, getSearchUsers, getUpcommingInfiniteEvents, getUpdateEvent, getUserById, signInUser, signOutUser } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
 // Hook for creating a new user account
@@ -53,6 +53,17 @@ export const useSignOutUser = () => {
       },
    });
 };
+// get user by id
+// get user details by id
+export const useUserById = (id) => {
+   return useQuery({
+      queryKey: [QUERY_KEYS.GET_USER_BY_ID, id],
+      queryFn: () => getUserById(id),
+      staleTime: 1000 * 60 * 2,
+      refetchOnWindowFocus: true,
+      enabled: !!id,
+   });
+};
 
 export const useFindUserByEmail = () => {
    return useMutation({
@@ -96,52 +107,6 @@ export const useGetPastEvents = () => {
    })
 };
 
-export const useDeactiveEvent = () => {
-   const queryClient = useQueryClient();
-
-   return useMutation({
-      mutationKey: [QUERY_KEYS.TOGGLE_EVENTS],
-      mutationFn: ({ eventId, isActive }) => toggleIsActive(eventId, isActive),
-      onSuccess: () => {
-         queryClient.invalidateQueries([QUERY_KEYS.GET_UPCOMMING_EVENTS]);
-      },
-      onError: (error) => {
-         console.error("Error toggling event:", error);
-      },
-   });
-};
-
-export const useToggleShowOnHomePage = () => {
-   const queryClient = useQueryClient();
-
-   return useMutation({
-      mutationKey: [QUERY_KEYS.TOGGLE_SHOW_ON_HOME_PAGE],
-      mutationFn: ({ eventId, isShowingInHomePage }) => toggleShowOnHomePage(eventId, isShowingInHomePage),
-      onSuccess: () => {
-         queryClient.invalidateQueries([QUERY_KEYS.GET_UPCOMMING_EVENTS]);
-      },
-      onError: (error) => {
-         console.error("Error toggling event:", error);
-      },
-   });
-}
-
-// is toggle is ticket relesed
-export const useToggleTicketRelease = () => {
-   const queryClient = useQueryClient();
-
-   return useMutation({
-      mutationKey: [QUERY_KEYS.TOGGLE_TICKET_RELEASE],
-      mutationFn: ({ eventId, isTicketReleased }) => toggleTicketRelease(eventId, isTicketReleased),
-      onSuccess: () => {
-         queryClient.invalidateQueries([QUERY_KEYS.GET_UPCOMMING_EVENTS]);
-      },
-      onError: (error) => {
-         console.error("Error toggling event:", error);
-      },
-   });
-}
-
 // delete event by id
 export const useDeleteEvent = () => {
    const queryClient = useQueryClient();
@@ -176,3 +141,13 @@ export const useUpdateEvent = () => {
       },
    });
 };
+
+
+// search post useSearchPost
+export const useSearchUsers = (searchTurm) => {
+   return useQuery({
+      queryKey: [QUERY_KEYS.SEARCH_USERS, searchTurm],
+      queryFn: () => getSearchUsers(searchTurm),
+      enabled: !!searchTurm
+   })
+}

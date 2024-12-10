@@ -23,8 +23,8 @@ const SignIn = () => {
       {
         onSuccess: () => {
           toast.success("Successfully signed in!");
-          checkAuthUser();
           navigate("/");
+          checkAuthUser();
         },
         onError: (error) => {
           const errorMessage = error?.response?.data?.message || error?.message || "An unknown error occurred. Please try again.";
@@ -132,10 +132,6 @@ const SignIn = () => {
             {isSignInLoading ? "Signing In..." : "Sign In"}
           </button>
         </form>
-        <p className="small-regular text-center mt-2">
-          Don’t have an account?
-          <Link to="/sign-up" className="text-primary-500 ml-2">Sign up</Link>
-        </p>
       </div>
     </div>
   );

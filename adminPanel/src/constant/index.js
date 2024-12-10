@@ -11,8 +11,6 @@ export const sections = [
       title: 'Users',
       links: [
          { path: '/users/view-all', label: 'View All Users' },
-         { path: '/users/manage-roles', label: 'Manage Roles' },
-         { path: '/users/manage-profiles', label: 'Manage Profiles' },
       ],
    },
    {

@@ -420,6 +420,7 @@ export async function searchEvents(searchTerm) {
          appwriteConfig.databaseId,
          appwriteConfig.eventCollectionId,
          [
+            Query.equal('isActive', true),
             Query.search('title', searchTerm),
             Query.limit(10)
          ]

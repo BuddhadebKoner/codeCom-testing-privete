@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { sections } from '../../constant';
 import { useAuth } from '../../context/AuthContext';
@@ -23,6 +23,19 @@ const Sidebar = () => {
     }));
   };
 
+  // Handle navigation based on success or error in sign out
+  useEffect(() => {
+    if (isError) {
+      toast.error("Error signing out. Please try again.");
+      navigate('/sign-in');
+    }
+
+    if (isSuccess) {
+      toast.success("User signed out successfully");
+      navigate('/sign-in');
+    }
+  }, [isError, isSuccess, navigate]);
+
   if (isPending) {
     return (
       <div className="fixed w-screen h-screen bg-gray-800 text-gray-200 flex items-center justify-center z-50">
@@ -30,17 +43,6 @@ const Sidebar = () => {
       </div>
     );
   }
-
-  if (isError) {
-    toast.error("Error signing out. Please try again.");
-    navigate('/sign-in');
-  }
-
-  if (isSuccess) {
-    toast.success("User signed out successfully");
-    navigate('/sign-in');
-  }
-
 
   return (
     <div className="h-screen w-[20vw] bg-gray-800 text-gray-200 overflow-y-auto overflow-x-hidden pb-20 ">

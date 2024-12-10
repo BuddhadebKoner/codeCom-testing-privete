@@ -3,7 +3,7 @@ import { useFindUserByEmail, useUpdateEvent } from '../../lib/react-query/querie
 import BigLoader from '../shared/BigLoader';
 import { toast } from 'react-toastify';
 import { addEvent } from '../../lib/appwrite/api';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const formatDateForInput = (isoString) => {
    if (!isoString) return "";
@@ -32,6 +32,8 @@ const CreateEventForms = ({ formData, action }) => {
 
    const { mutate: findUser, isLoading } = useFindUserByEmail();
    const { mutateAsync: updateEventAsync, isPending: isUpdatingEvent } = useUpdateEvent();
+
+   const navigate = useNavigate();
 
 
    if (isAddingEvent || isUpdatingEvent) {
@@ -139,12 +141,19 @@ const CreateEventForms = ({ formData, action }) => {
             toast.error(error.message || "Failed to update event. Please try again.");
          }
       } else if (action === "Create") {
+         setIsAddingEvent(true);
+
          try {
             const addingEventRes = await addEvent(formState);
+            if (!addingEventRes) {
+               return;
+            }
             toast.success("Event created successfully.");
+            setIsAddingEvent(false);
          } catch (error) {
             console.error("Error creating event:", error);
             toast.error(error.message || "Failed to create event. Please try again.");
+            setIsAddingEvent(false);
          }
       }
    };
@@ -200,12 +209,18 @@ const CreateEventForms = ({ formData, action }) => {
          )}
 
          <form onSubmit={handleSubmit} className="space-y-6">
-            <h1 className='text-xl font-bold flex gap-2'>
+            <button
+               className='text-xl font-bold flex gap-2'>
                <img
+                  onClick={(e) => {
+                     // prevent default
+                     e.preventDefault();
+                     navigate(-1)
+                  }}
                   src="/assets/icons/arrow_back.svg"
                   alt="arrow-back" />
                {action} Event
-            </h1>
+            </button>
             {/* enter organizers ids comma separate */}
             <div>
                <label className="block text-gray-700 font-medium">Organizers Profile Id</label>

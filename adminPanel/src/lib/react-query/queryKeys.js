@@ -10,6 +10,7 @@ export const QUERY_KEYS = {
    GET_USER_BY_ID: "getUserById",
    GET_CLUB_MEMBERS: "getClubMembers",
    FIND_USER_BY_EMAIL: "findUserByEmail",
+   SEARCH_USERS: "searchUsers",
 
    // EVENT KEYS
    GET_ALL_EVENTS: "getAllEvents",
@@ -17,10 +18,11 @@ export const QUERY_KEYS = {
    GET_UPCOMMING_EVENTS: "getUpcommingEvents",
    SEARCH_EVENTS: "searchEvents",
    GET_PAST_EVENTS: "getPastEvents",
-   TOGGLE_EVENTS: "toggleEvents",
    DELETE_EVENT: "deleteEvent",
+   // toogle evnts
+   TOGGLE_EVENTS: "toggleEvents",
    TOGGLE_SHOW_ON_HOME_PAGE: "toggleShowOnHomePage",
-   UPDATE_EVENTS: "getEventUpdate",
+   TOGGLE_TICKET_RELEASE: "toggleTicketRelease",
 
    // ENTRY PASS 
    GENERATE_ENTRY_PASS: "generateEntryPass",

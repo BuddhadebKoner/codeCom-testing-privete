@@ -13,7 +13,6 @@ import {
   EditEvents,
   EventDetails,
   ViewAllUsers,
-  ManageUserRoles,
   ManageProfiles,
   ViewParticipation,
   DownloadParticipateList,
@@ -51,8 +50,7 @@ function App() {
           <Route path="/events/details/:id" element={<EventDetails />} />
           {/* User Management */}
           <Route path="/users/view-all" element={<ViewAllUsers />} />
-          <Route path="/users/manage-roles" element={<ManageUserRoles />} />
-          <Route path="/users/manage-profiles" element={<ManageProfiles />} />
+          <Route path="/users/manage-profiles/:id" element={<ManageProfiles />} />
           {/* Participation Management */}
           <Route path="/participation/view" element={<ViewParticipation />} />
           <Route path="/participation/download-list" element={<DownloadParticipateList />} />
