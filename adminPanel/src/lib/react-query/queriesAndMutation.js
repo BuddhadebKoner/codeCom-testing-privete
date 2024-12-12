@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createUserAccount, deleteEvent, findUserByEmail, getPastInfiniteEvents, getSearchUsers, getUpcommingInfiniteEvents, getUpdateEvent, getUserById, signInUser, signOutUser } from "../appwrite/api";
+import { activateUser, createUserAccount, deactivateUser, deleteEvent, findUserByEmail, getPastInfiniteEvents, getSearchUsers, getUpcommingInfiniteEvents, getUpdateEvent, getUserById, signInUser, signOutUser } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
 // Hook for creating a new user account
@@ -149,5 +149,37 @@ export const useSearchUsers = (searchTurm) => {
       queryKey: [QUERY_KEYS.SEARCH_USERS, searchTurm],
       queryFn: () => getSearchUsers(searchTurm),
       enabled: !!searchTurm
+   })
+}
+
+// deactivate user
+export const useDeactivateUser = () => {
+   const queryClient = useQueryClient();
+
+   return useMutation({
+      mutationKey: [QUERY_KEYS.DEACTIVATE_USER],
+      mutationFn: (userId) => deactivateUser(userId),
+      onSuccess: () => {
+         queryClient.invalidateQueries([QUERY_KEYS.GET_USER_BY_ID, id]);
+      },
+      onError: (error) => { 
+         console.error("Error deactivating user:", error);
+      }
+   })
+}
+
+// make active user
+export const useActivateUser = () => {
+   const queryClient = useQueryClient();
+
+   return useMutation({
+      mutationKey: [QUERY_KEYS.ACTIVATE_USER],
+      mutationFn: (userId) => activateUser(userId),
+      onSuccess: () => {
+         queryClient.invalidateQueries([QUERY_KEYS.GET_USER_BY_ID, id]);
+      },
+      onError: (error) => { 
+         console.error("Error activating user:", error);
+      }
    })
 }

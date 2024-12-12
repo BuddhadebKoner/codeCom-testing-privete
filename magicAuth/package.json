@@ -1,0 +1,19 @@
+{
+  "name": "magicauth",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "author": "Your Name",
+  "license": "ISC",
+  "description": "A simple authentication project using Node.js and Express.",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

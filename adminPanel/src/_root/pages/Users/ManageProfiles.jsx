@@ -1,6 +1,6 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { useUserById } from '../../../lib/react-query/queriesAndMutation';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useActivateUser, useDeactivateUser, useUserById } from '../../../lib/react-query/queriesAndMutation';
 
 const ManageProfiles = () => {
   const { id } = useParams();
@@ -9,6 +9,37 @@ const ManageProfiles = () => {
   const { data: user, isLoading: userLoading, isError } = useUserById(id, {
     refetchOnWindowFocus: true,
   });
+
+  const { mutateAsync: deactivateUser, isLoading: deactivating } = useDeactivateUser();
+  const { mutateAsync: activateUser, isLoading: activating } = useActivateUser();
+
+  const [isActive, setIsActive] = useState(user?.isActive);
+
+
+  // Handle Suspend/Unsuspend
+  const handleSuspend = async () => {
+    try {
+      if (isActive) {
+        await deactivateUser(user.$id);
+      } else {
+        await activateUser(user.$id);
+      }
+      setIsActive((prev) => !prev); // Toggle active state
+    } catch (error) {
+      console.error('Error toggling user active state:', error);
+    }
+  };
+
+  const handleBan = (e) => {
+    e.preventDefault();
+    // Add logic for banning the user
+    console.log('Ban user');
+  };
+
+  const handleRoleChange = (newRole) => {
+    // Add logic for changing user role
+    console.log(`Change role to ${newRole}`);
+  };
 
   // Handle loading and error states
   if (userLoading) {
@@ -19,26 +50,25 @@ const ManageProfiles = () => {
     return <div>Error loading user data.</div>;
   }
 
-  // Handler functions for admin actions (suspend, ban, change role)
-  const handleSuspend = () => {
-    // Add logic for suspending the user
-    console.log('Suspend user');
-  };
-
-  const handleBan = () => {
-    // Add logic for banning the user
-    console.log('Ban user');
-  };
-
-  const handleRoleChange = (newRole) => {
-    // Add logic for changing user role
-    console.log(`Change role to ${newRole}`);
-  };
+  console.log('User:', user);
 
   return (
     <div className="w-full mx-auto p-6 space-y-6">
       {/* User Details Section */}
-      <h1 className="text-2xl font-bold mb-4">User Profile</h1>
+      <div className='w-fit h-fit flex gap-2'>
+        <button
+          className='text-xl font-bold flex gap-2'>
+          <img
+            onClick={(e) => {
+              // prevent default
+              e.preventDefault();
+              navigate(-1)
+            }}
+            src="/assets/icons/arrow_back.svg"
+            alt="arrow-back" />
+        </button>
+        <h1 className='text-xl'>User Profile</h1>
+      </div>
 
       {/* Profile Section */}
       <div className="w-full h-fit flex items-start gap-10">
@@ -102,12 +132,16 @@ const ManageProfiles = () => {
         <h2 className="text-xl font-semibold mb-4">Admin Controls</h2>
 
         <div className="flex items-center space-x-4">
-          {/* Suspend User */}
+          {/* Suspend/Unsuspend User */}
           <button
             onClick={handleSuspend}
-            className="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600"
+            className={`py-2 px-4 rounded text-white ${isActive
+              ? 'bg-yellow-500 hover:bg-yellow-600'
+              : 'bg-green-500 hover:bg-green-600'
+              }`}
+            disabled={deactivating || activating}
           >
-            Suspend User
+            {deactivating || activating ? 'Processing...' : isActive ? 'Suspend User' : 'Unsuspend User'}
           </button>
 
           {/* Ban User */}
