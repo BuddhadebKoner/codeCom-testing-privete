@@ -11,7 +11,9 @@
   "license": "ISC",
   "description": "A simple authentication project using Node.js and Express.",
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "mailtrap": "^3.4.0",
+    "nodemailer": "^6.9.16"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
