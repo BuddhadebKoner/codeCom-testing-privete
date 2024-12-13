@@ -1,17 +1,20 @@
+import dotenv from 'dotenv';``
+dotenv.config();
+
 import nodemailer from 'nodemailer';
 
 var transport = nodemailer.createTransport({
-   host: "sandbox.smtp.mailtrap.io",
-   port: 2525,
+   host: process.env.MAILTRAP_HOST,
+   port: parseInt(process.env.MAILTRAP_PORT),
    auth: {
-      user: "db45e5dce9f0ee",
-      pass: "dbbcc9955976e1"
+      user: process.env.MAILTRAP_USER,
+      pass: process.env.MAILTRAP_PASS,
    }
 });
 
 export const sendMail = async (to, subject, text) => {
    const mailOptions = {
-      from: '"MagicAuth" <jeetkoner36@gmail.com>',
+      from: `"MagicAuth" <${process.env.MAIL_TRAP_MAIL_SENDER}>`,
       to,
       subject,
       text,

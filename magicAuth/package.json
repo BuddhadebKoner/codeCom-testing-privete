@@ -11,11 +11,14 @@
   "license": "ISC",
   "description": "A simple authentication project using Node.js and Express.",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mailtrap": "^3.4.0",
-    "nodemailer": "^6.9.16"
+    "nodemailer": "^6.9.16",
+    "node-appwrite": "^12.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "prettier": "^3.2.5"
   }
 }
