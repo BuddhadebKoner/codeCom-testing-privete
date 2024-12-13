@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import NotFound from "./NotFound";
 import BigLoader from "../../components/shared/BigLoader";
 import ProfileModel from "../../components/shared/ProfileModel";
+import { Helmet } from "react-helmet";
 
 const Profile = () => {
   const { isAuthenticated, user: currentUser, isLoading: authLoading } = useAuth();
@@ -44,6 +45,10 @@ const Profile = () => {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{user?.name}</title>
+      </Helmet>
       {/* Profile Header */}
       <div className="w-full h-fit flex flex-col justify-center items-center bg-gray-700 py-10 gap-2 rounded-lg relative">
         {imageUrl && (
@@ -114,7 +119,7 @@ const Profile = () => {
         >
           Attended Events
         </NavLink>
-        
+
         {
           isAuthenticated && currentUser?.$id === userIdFromData && (
             <NavLink

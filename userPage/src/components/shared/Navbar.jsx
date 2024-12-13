@@ -7,6 +7,7 @@ import { useInView } from "react-intersection-observer";
 import useDebounce from "../../hooks/useDbounce";
 import Loader from "./Loader";
 import SearchEventcard from "./SearchEventcard";
+import { Helmet } from "react-helmet";
 
 const Navbar = () => {
    const { user, isAuthenticated, isLoading, checkAuthUser } = useAuth();
@@ -51,56 +52,69 @@ const Navbar = () => {
          if (e.key === "Escape") {
             toggleSearch();
          }
-      });   
+      });
    }
 
    return (
-      <nav className="bg-black text-white w-full flex justify-between items-center py-5 px-4">
+      <nav className="bg-black text-white w-full flex justify-between items-center py-5">
          {/* Search Overlay */}
          {isSearchOpen && (
-            <div
-               className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-start justify-center z-50"
-               onClick={toggleSearch}
-            >
+            <>
+               <Helmet>
+                  <meta charSet="utf-8" />
+                  <title>Search Events</title>
+               </Helmet>
                <div
-                  className="w-full max-w-4xl mt-20 bg-black rounded-lg shadow-lg p-6 relative overflow-hidden border-2 border-white"
-                  onClick={(e) => e.stopPropagation()}
-               >
-                  <button className="w-fit h-fit bg-white text-black m-2 px-2 rounded-sm"
+                  className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-start justify-center z-50"
                   onClick={toggleSearch}
+               >
+                  <div
+                     className="w-full max-w-4xl mt-20 bg-black rounded-lg shadow-lg p-6 relative overflow-hidden border-2 border-white"
+                     onClick={(e) => e.stopPropagation()}
                   >
-                     Esc
-                  </button>
-                  {/* Search Input */}
-                  <input
-                     type="text"
-                     placeholder="Search by event title"
-                     value={searchQuery}
-                     onChange={(e) => setSearchQuery(e.target.value)}
-                     className="w-full px-4 py-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-                     aria-label="Search Events"
-                  />
+                     <button className="w-fit h-fit bg-white text-black m-2 px-2 rounded-sm"
+                        onClick={toggleSearch}
+                     >
+                        Esc
+                     </button>
+                     {/* Search Input */}
+                     <input
+                        type="text"
+                        placeholder="Search by event title"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full px-4 py-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                        aria-label="Search Events"
+                     />
 
-                  {/* Results Section */}
-                  <div className="overflow-y-auto max-h-[60vh]">
-                     {isSearchFetching ? (
-                        <div className="text-center text-gray-500">Searching...</div>
-                     ) : documents.length > 0 ? (
-                        documents.map((doc, index) => (
-                           <SearchEventcard key={index} event={doc} toggleSearch={toggleSearch} />
-                        ))
-                     ) : (
-                        <div className="flex flex-col items-center justify-center space-y-4 text-gray-500">
-                           <h2>No results found.</h2>
-                           <p>Try a different search term or browse recent events.</p>
-                        </div>
-                     )}
+                     {/* Results Section */}
+                     <div className="overflow-y-auto max-h-[60vh]">
+                        {isSearchFetching ? (
+                           <div className="text-center text-gray-500">Searching...</div>
+                        ) : documents.length > 0 ? (
+                           documents.map((doc, index) => (
+                              <SearchEventcard key={index} event={doc} toggleSearch={toggleSearch} />
+                           ))
+                        ) : (
+                           <div className="flex flex-col items-center justify-center space-y-4 text-gray-500">
+                              <h2>No results found.</h2>
+                              <p>Try a different search term or browse recent events.</p>
+                           </div>
+                        )}
+                     </div>
                   </div>
                </div>
-            </div>
+            </>
          )}
 
-         <Link className="lg:text-2xl font-normal" to={"/"}>&lt;/&gt; CodeComm</Link>
+         <Link className="lg:text-2xl font-normal" to={"/"}>
+            <div className="flex w-fit h-fit justify-center items-center">
+               <img
+                  className="w-20"
+                  src="/codecommLogo.svg" alt="" />
+               <p>CodeComm</p>
+            </div>
+         </Link>
          <div className="flex gap-10">
             <div className="flex items-center gap-2 lg:gap-10">
                <Link className="lg:text-xl text-sm" to={"/about"}>About</Link>

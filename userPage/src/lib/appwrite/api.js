@@ -103,6 +103,7 @@ export async function getRecentEvents() {
          [
             Query.orderAsc("eventTime"),
             Query.equal("IsShowingInHomePage", true),
+            Query.equal("isActive", true),
          ]
       );
 

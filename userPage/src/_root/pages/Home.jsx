@@ -62,7 +62,11 @@ const Home = () => {
                 <EventCard key={index} event={event} />
               ))
             ) : (
-              !isLoading && <p>No upcoming events available.</p>
+              !isLoading && (
+                <div className="w-full flex justify-center items-center">
+                  <p>No upcoming events available.</p>
+                </div>
+              )
             )}
           </div>
         </div>

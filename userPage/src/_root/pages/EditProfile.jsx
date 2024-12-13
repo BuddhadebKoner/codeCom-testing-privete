@@ -5,6 +5,7 @@ import { useUpdateProfile } from '../../lib/react-query/queriesAndMutation';
 import { useNavigate, useParams } from 'react-router-dom';
 import BigLoader from '../../components/shared/BigLoader';
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet';
 
 const EditProfile = () => {
   const { user, isAuthenticated, isLoading, checkAuthUser } = useAuth();
@@ -75,73 +76,79 @@ const EditProfile = () => {
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto p-6">
-      <div className="flex flex-col items-center">
-        <label htmlFor="imageUpload" className="cursor-pointer">
-          <img
-            src={formData.imageUrl || '/placeholder.jpg'}
-            alt={formData.name}
-            className="w-32 h-32 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600"
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{user?.name}</title>
+      </Helmet>
+      <div className="w-full max-w-lg mx-auto p-6">
+        <div className="flex flex-col items-center">
+          <label htmlFor="imageUpload" className="cursor-pointer">
+            <img
+              src={formData.imageUrl || '/placeholder.jpg'}
+              alt={formData.name}
+              className="w-32 h-32 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600"
+            />
+          </label>
+          <input
+            type="file"
+            id="imageUpload"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageChange}
           />
-        </label>
-        <input
-          type="file"
-          id="imageUpload"
-          accept="image/*"
-          className="hidden"
-          onChange={handleImageChange}
-        />
-      </div>
+        </div>
 
-      <div className="mt-6">
-        {["name", "city", "linkedin", "x", "aboutMe"].map((field, idx) => (
-          <div key={idx} className="mb-4">
-            <label
-              htmlFor={field}
-              className="block text-sm font-medium text-white mb-2 capitalize"
-            >
-              {field === "x" ? "Twitter" : field}
-            </label>
-            {field === "aboutMe" ? (
-              <textarea
-                id={field}
-                name={field}
-                value={formData[field]}
-                onChange={handleInputChange}
-                rows="4"
-                className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none text-white"
-              />
-            ) : (
-              <input
-                type="text"
-                id={field}
-                name={field}
-                value={formData[field]}
-                onChange={handleInputChange}
-                className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none text-white"
-              />
-            )}
-          </div>
-        ))}
-      </div>
+        <div className="mt-6">
+          {["name", "city", "linkedin", "x", "aboutMe"].map((field, idx) => (
+            <div key={idx} className="mb-4">
+              <label
+                htmlFor={field}
+                className="block text-sm font-medium text-white mb-2 capitalize"
+              >
+                {field === "x" ? "Twitter" : field}
+              </label>
+              {field === "aboutMe" ? (
+                <textarea
+                  id={field}
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleInputChange}
+                  rows="4"
+                  className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none text-white"
+                />
+              ) : (
+                <input
+                  type="text"
+                  id={field}
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-lg border border-gray-600 bg-gray-700 focus:ring-2 focus:outline-none text-white"
+                />
+              )}
+            </div>
+          ))}
+        </div>
 
-      <div className="flex justify-between mt-6">
-        <button
-          className="px-6 py-2 rounded-lg text-white bg-red-500 hover:bg-red-600"
-          onClick={() => navigate(-1)}
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleFormSubmit}
-          disabled={isUpdateLoading}
-          className={`px-6 py-2 rounded-lg text-white ${isUpdateLoading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
-            }`}
-        >
-          {isUpdateLoading ? "Updating..." : "Update Profile"}
-        </button>
+        <div className="flex justify-between mt-6">
+          <button
+            className="px-6 py-2 rounded-lg text-white bg-red-500 hover:bg-red-600"
+            onClick={() => navigate(-1)}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleFormSubmit}
+            disabled={isUpdateLoading}
+            className={`px-6 py-2 rounded-lg text-white ${isUpdateLoading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
+              }`}
+          >
+            {isUpdateLoading ? "Updating..." : "Update Profile"}
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
