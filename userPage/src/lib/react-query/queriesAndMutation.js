@@ -12,6 +12,7 @@ import {
    getClubMembers,
    getUpdateUserProfile,
    searchEvents,
+   getInfiniteConductedEvents,
 } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
@@ -125,6 +126,22 @@ export const useGetUpcommingEvents = () => {
    return useInfiniteQuery({
       queryKey: [QUERY_KEYS.GET_UPCOMMING_EVENTS],
       queryFn: getInfiniteEvents,
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+      getNextPageParam: (lastPage) => {
+         if (lastPage && lastPage.documents.length === 0) return null;
+         const lastId = lastPage?.documents[lastPage.documents.length - 1].$id;
+         return lastId ?? null;
+      },
+      initialPageParam: null,
+   })
+};
+
+// get upcomming events infinte
+export const useGetConductedEvents = () => {
+   return useInfiniteQuery({
+      queryKey: [QUERY_KEYS.GET_CONDUCTED_EVENTS],
+      queryFn: getInfiniteConductedEvents,
       staleTime: 1000 * 60 * 5,
       refetchOnWindowFocus: false,
       getNextPageParam: (lastPage) => {

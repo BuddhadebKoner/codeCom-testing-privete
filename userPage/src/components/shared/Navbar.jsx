@@ -118,7 +118,7 @@ const Navbar = () => {
          <div className="flex gap-10">
             <div className="flex items-center gap-2 lg:gap-10">
                <Link className="lg:text-xl text-sm" to={"/about"}>About</Link>
-               <Link className="lg:text-xl text-sm" to={"/upcoming-events"}>Events</Link>
+               <Link className="lg:text-xl text-sm" to={"/events/upcomming-events"}>Events</Link>
                <button onClick={toggleSearch} aria-label="Open Search">
                   <img src="/assets/icons/search_icon.svg" alt="search-icon" />
                </button>

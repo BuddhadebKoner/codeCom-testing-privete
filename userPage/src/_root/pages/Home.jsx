@@ -25,7 +25,7 @@ const Home = () => {
         <meta charSet="utf-8" />
         <title>Home</title>
       </Helmet>
-      <div className="w-full flex flex-col pb-5">
+      <div className="w-full flex flex-col pb-5 text-white">
         <img
           className="w-full lg:h-[350px] object-cover lg:rounded-3xl"
           src="/assets/event-default-banner.webp"
@@ -50,7 +50,7 @@ const Home = () => {
         <div className="w-full">
           <div className="flex justify-between bg-[#D9D9D9] text-black px-6 lg:py-5 py-2 lg:rounded-xl">
             <h1>Upcoming Events</h1>
-            <Link to="/upcoming-events">View all</Link>
+            <Link to="/events">View all</Link>
           </div>
 
           {/* Display events */}

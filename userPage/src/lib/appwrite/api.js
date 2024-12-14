@@ -1,5 +1,6 @@
 import { ID, ImageGravity, Query } from "appwrite";
 import { account, appwriteConfig, avatar, database, storage } from "./config";
+import { toast } from "react-toastify";
 
 export async function createUserAccount(user) {
    try {
@@ -45,7 +46,8 @@ export async function signInUser(user) {
    try {
       const currentAccount = await getCurrentUser();
       if (currentAccount) {
-         console.log("User already signed in");
+         // console.log("User already signed in");
+         toast.warn("Allready Signed in");
          return currentAccount;
       }
 
@@ -54,11 +56,17 @@ export async function signInUser(user) {
          user.password
       );
 
+      if (!session) {
+         toast.error("Session creation failed");
+         throw new Error("Session creation failed");
+      }
+
+      toast.success("Welcome back!");
       // console.log("New session created:", session);
       return session;
    } catch (error) {
       console.error("Error in signInUser:", error);
-
+      toast.error("Try after sometime !");
       throw error;
    }
 }
@@ -257,6 +265,31 @@ export async function getInfiniteEvents({ pageParam }) {
    const queries = [
       Query.orderDesc('$updatedAt'), Query.limit(10),
       Query.equal('isActive', true)
+   ];
+   if (pageParam) {
+      queries.push(Query.cursorAfter(pageParam.toString()));
+   }
+   try {
+      const events = await database.listDocuments(
+         appwriteConfig.databaseId,
+         appwriteConfig.eventCollectionId,
+         queries
+      )
+      if (!events) throw Error;
+
+      return events;
+   } catch (error) {
+      console.error("Error fetching infinite events:", error);
+      throw error;
+   }
+}
+
+// get infinte events
+export async function getInfiniteConductedEvents({ pageParam }) {
+   const queries = [
+      Query.orderDesc('$updatedAt'), Query.limit(10),
+      Query.equal('isActive', false),
+      Query.equal('isTicketReleased', false),
    ];
    if (pageParam) {
       queries.push(Query.cursorAfter(pageParam.toString()));

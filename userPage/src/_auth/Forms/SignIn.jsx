@@ -21,7 +21,6 @@ const SignIn = () => {
       { email, password },
       {
         onSuccess: () => {
-          toast.success("Successfully signed in!");
           checkAuthUser();
           navigate("/");
         },

@@ -1,13 +1,13 @@
 import { Route, Routes } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';  // Import ToastContainer
-import 'react-toastify/dist/ReactToastify.css';  // Import toast styles
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import AuthLayout from './_auth/AuthLayout';
 import RootLayout from './_root/RootLayout';
 import SignIn from './_auth/Forms/SignIn';
 import SignUp from './_auth/Forms/SignUp';
 
-import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo, EditProfile, ActiveTickets } from './_root/pages/index';
+import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo, EditProfile, ActiveTickets, LiveEvents, ConductedEvents } from './_root/pages/index';
 import EntryPass from "./_protected/EntryPass";
 
 function App() {
@@ -33,10 +33,13 @@ function App() {
             <Route index element={<ProfileInfo />} />
             <Route path="attended" element={<AttendedEvents />} />
             <Route path="organized" element={<OrganizedEvents />} />
-            <Route path="active-tickets" element={<ActiveTickets />}/>
+            <Route path="active-tickets" element={<ActiveTickets />} />
           </Route>
           <Route path="/events/:id" element={<EventDetails />} />
-          <Route path="/upcoming-events" element={<UpcomingEvents />} />
+          <Route path="/events" element={<UpcomingEvents />}>
+            <Route path="upcomming-events" element={<LiveEvents />} />
+            <Route path="conducted-events" element={<ConductedEvents />} />
+          </Route>
           <Route path="/not-found-page" element={<NotFound />} />
         </Route>
 
