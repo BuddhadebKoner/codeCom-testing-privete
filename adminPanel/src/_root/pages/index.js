@@ -7,6 +7,7 @@ export { default as EditEvents } from './Events/EditEvents'
 export { default as EventDetails } from './Events/EventDetails'
 export { default as UpcommingEvents } from './Events/UpcommingEvents'
 export { default as HoldEvents } from './Events/HoldEvents'
+export { default as AddExtraDetails } from './Events/AddExtraDetails'
 // User pages
 export { default as ViewAllUsers } from './Users/ViewAllUsers'
 export { default as ManageUserRoles } from './Users/ManageUserRoles'

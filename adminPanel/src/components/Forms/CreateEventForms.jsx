@@ -11,16 +11,27 @@ const formatDateForInput = (isoString) => {
 };
 
 const CreateEventForms = ({ formData, action }) => {
-   const processedFormData = useMemo(() => ({
-      ...formData,
-      eventTime: formatDateForInput(formData.eventTime),
-      registerationEndsAt: formatDateForInput(formData.registerationEndsAt),
-   }), [formData]);
-
+   const { mutate: findUser, isLoading } = useFindUserByEmail();
+   const { mutateAsync: updateEventAsync, isPending: isUpdatingEvent } = useUpdateEvent();
 
    const { id: eventId } = useParams();
 
-   const [formState, setFormState] = useState(processedFormData);
+   const processedFormData = useMemo(() => ({
+      title: formData?.title || "",
+      organizers: formData?.organizers || "",
+      eventTime: formatDateForInput(formData?.eventTime) || "",
+      registerationEndsAt: formatDateForInput(formData?.registerationEndsAt) || "",
+      banner: formData?.banner || null,
+      // Add other fields as necessary
+   }), [formData]);
+
+   const [formState, setFormState] = useState(() => ({
+      ...processedFormData
+   }));
+
+
+
+
    const [originalState, setOriginalState] = useState(processedFormData);
    const [preview, setPreview] = useState(null);
    const [showPopup, setShowPopup] = useState(false);
@@ -30,8 +41,6 @@ const CreateEventForms = ({ formData, action }) => {
    const [error, setError] = useState("");
    const [isAddingEvent, setIsAddingEvent] = useState(false);
 
-   const { mutate: findUser, isLoading } = useFindUserByEmail();
-   const { mutateAsync: updateEventAsync, isPending: isUpdatingEvent } = useUpdateEvent();
 
    const navigate = useNavigate();
 
@@ -89,7 +98,7 @@ const CreateEventForms = ({ formData, action }) => {
       const { name, value, files } = e.target;
 
       if (name === 'banner' && files[0]) {
-         const file = files[0];
+         const file = files[0] || null;
          setPreview(URL.createObjectURL(file));
          setFormState((prevData) => ({
             ...prevData,
@@ -123,48 +132,37 @@ const CreateEventForms = ({ formData, action }) => {
    const handleSubmit = async (e) => {
       e.preventDefault();
 
-      if (action === "Update") {
-         const changes = getChanges();
-         console.log("Changed Fields:", changes);
+      try {
+         if (action === "Update") {
+            const changes = getChanges();
+            console.log("Changed Fields:", changes);
 
-         if (Object.keys(changes).length === 0) {
-            toast.warn("No changes detected.");
-            return;
-         }
-
-         try {
-            const updateEventRes = await updateEventAsync({ event: changes, eventId });
-            console.log("Update Event Response:", updateEventRes);
-            toast.success("Event updated successfully.");
-         } catch (error) {
-            console.error("Error updating event:", error);
-            toast.error(error.message || "Failed to update event. Please try again.");
-         }
-      } else if (action === "Create") {
-         setIsAddingEvent(true);
-
-         try {
-            const addingEventRes = await addEvent(formState);
-            if (!addingEventRes) {
+            if (Object.keys(changes).length === 0) {
+               toast.warn("No changes detected.");
                return;
             }
+
+            const updateEventRes = await updateEventAsync({ event: changes, eventId });
+            console.log("Update Event Response:", updateEventRes);
+
+            toast.success("Event updated successfully.");
+            navigate(-1);
+         } else if (action === "Create") {
+            setIsAddingEvent(true);
+
+            const res = await addEvent(formState);
+            console.log("Add Event Response:", res);
             toast.success("Event created successfully.");
-            setIsAddingEvent(false);
-         } catch (error) {
-            console.error("Error creating event:", error);
-            toast.error(error.message || "Failed to create event. Please try again.");
+         }
+      } catch (error) {
+         console.error("Error during event operation:", error);
+         toast.error(error.message || "An error occurred. Please try again.");
+      } finally {
+         if (action === "Create") {
             setIsAddingEvent(false);
          }
       }
    };
-
-
-   const resetForm = () => {
-      setFormState(formData); // Reset to initial form data
-      setPreview(null); // Clear preview
-   };
-
-
 
 
 

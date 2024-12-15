@@ -1,23 +1,16 @@
-import React from 'react'
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 import CreateEventForms from '../../../components/Forms/CreateEventForms';
 
 const EditEvents = () => {
   const location = useLocation();
-  const { eventData } = location.state || {};
+  const eventData = location.state?.eventData;
 
-  if (!eventData) {
-    return <p>No event data available.</p>;
-  }
+  return eventData ? (
+    <CreateEventForms action="Update" formData={eventData} />
+  ) : (
+    <p>No event data available. Please try again.</p>
+  );
+};
 
-  return (
-    <>
-      <CreateEventForms
-        action="Update"
-        formData={eventData}
-      />
-    </>
-  )
-}
-
-export default EditEvents
+export default EditEvents;

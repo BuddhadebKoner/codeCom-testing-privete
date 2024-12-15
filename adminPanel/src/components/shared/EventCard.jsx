@@ -32,13 +32,13 @@ const EventCard = ({ event }) => {
             <div className="mt-4 text-sm">
                <p>
                   <strong>Date: </strong>
-                  {new Date(event.eventTime).toLocaleDateString()} at{" "}
-                  {new Date(event.eventTime).toLocaleTimeString()} | {event.eventLength} hours
+                  {new Date(event.eventTime).toLocaleDateString('en-IN')} at{" "}
+                  {new Date(event.eventTime).toLocaleTimeString('en-IN')} | {event.eventLength} hours
                </p>
                <p>
                   <strong>Registration Ends: </strong>
-                  {new Date(event.registerationEndsAt).toLocaleDateString()} at{" "}
-                  {new Date(event.registerationEndsAt).toLocaleTimeString()}
+                  {new Date(event.registerationEndsAt).toLocaleDateString('en-IN')} at{" "}
+                  {new Date(event.registerationEndsAt).toLocaleTimeString('en-IN')}
                </p>
                <p>
                   <strong>Location: </strong>
@@ -67,17 +67,25 @@ const EventCard = ({ event }) => {
             <div className="w-full h-fit mt-10 flex items-center justify-start gap-4">
                <Link
                   to={`/events/edit/${event.$id}`}
-                  className="px-3 py-1 text-xs bg-blue-500 text-white rounded-full shadow hover:bg-blue-600 transition"
+                  className="px-3 py-1 text-xs bg-blue-500 text-white rounded-sm shadow hover:bg-blue-600 transition"
                   state={{ eventId: event.$id, eventData: event }}
                >
                   Edit
                </Link>
                <button
                   onClick={() => setIsDeletePopupOpen(true)}
-                  className="px-3 py-1 text-xs bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition"
+                  className="px-3 py-1 text-xs bg-red-500 text-white rounded-sm shadow hover:bg-red-600 transition"
                >
                   Delete
                </button>
+
+               <Link
+                  to={`/events/add-extra-details/${event.$id}`}
+                  className="px-3 py-1 text-xs bg-blue-500 text-white rounded-sm shadow hover:bg-blue-600 transition"
+                  state={{ eventId: event.$id, eventData: event }}
+               >
+                  Add Event Data
+               </Link>
             </div>
          </div>
          {isDeletePopupOpen && (
