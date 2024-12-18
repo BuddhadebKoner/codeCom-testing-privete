@@ -4,7 +4,6 @@ import EventCard from "../../components/shared/EventCard";
 import { useGetRecentEvents } from "../../lib/react-query/queriesAndMutation";
 import Loader from "../../components/shared/Loader";
 import { Helmet } from "react-helmet";
-import { useAuth } from "../../context/AuthContext";
 
 const Home = () => {
   // Using the custom hook from React Query
@@ -50,7 +49,7 @@ const Home = () => {
         <div className="w-full">
           <div className="flex justify-between bg-[#D9D9D9] text-black px-6 lg:py-5 py-2 lg:rounded-xl">
             <h1>Upcoming Events</h1>
-            <Link to="/events">View all</Link>
+            <Link to="/events/upcomming-events">View all</Link>
           </div>
 
           {/* Display events */}

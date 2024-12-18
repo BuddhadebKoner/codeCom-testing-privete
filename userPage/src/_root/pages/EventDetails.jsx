@@ -13,7 +13,7 @@ import { Helmet } from "react-helmet";
 const EventDetails = () => {
   const { id } = useParams();
   const { data: event, isLoading: isPending } = useEventById(id || "");
-  const { isAuthenticated, user, isLoading } = useAuth();
+  const { isLoading } = useAuth();
 
   const [showPopup, setShowPopup] = useState(false);
   const [formLoading, setFormLoading] = useState(false);

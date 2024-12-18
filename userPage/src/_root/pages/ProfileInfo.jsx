@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const ProfileInfo = () => {
    const { userInfo } = useOutletContext();
-   const { user, isAuthenticated } = useAuth();
+   const { user } = useAuth();
 
    // Check if the logged-in user is the same as the profile being viewed
    const isOwnProfile = user?.$id === userInfo.$id;

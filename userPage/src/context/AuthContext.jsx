@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
    const [isAuthenticated, setIsAuthenticated] = useState(false);
    const [isLoading, setIsLoading] = useState(true);
    // 3 recent event data 
-   const [recentEvents, setRecentEvents] = useState([]);
 
 
    // Function to check if the user is authenticated

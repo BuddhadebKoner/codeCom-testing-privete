@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 
 const EventButtons = ({ event, togglePopup }) => {
-   const { isAuthenticated, user } = useAuth();
+   const { isAuthenticated } = useAuth();
 
    const isRegistrationOpen = Date.now() < new Date(event?.registerationEndsAt).getTime();
    const isRegistrationClosed = Date.now() > new Date(event?.registerationEndsAt).getTime() && Date.now() < new Date(event?.eventTime).getTime();
