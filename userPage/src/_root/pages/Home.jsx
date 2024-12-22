@@ -5,6 +5,12 @@ import { useGetRecentEvents } from "../../lib/react-query/queriesAndMutation";
 import Loader from "../../components/shared/Loader";
 import { Helmet } from "react-helmet";
 
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
 const Home = () => {
   // Using the custom hook from React Query
   const { data: events = [], isLoading, isError } = useGetRecentEvents();
@@ -25,11 +31,39 @@ const Home = () => {
         <title>Home</title>
       </Helmet>
       <div className="w-full flex flex-col pb-5 text-white">
-        <img
-          className="w-full lg:h-[350px] object-cover lg:rounded-3xl"
-          src="/assets/event-default-banner.webp"
-          alt="Event Banner"
-        />
+        {/* Swiper Banner Section */}
+        <Swiper
+          modules={[Navigation, Pagination]}
+          navigation
+          pagination={{ clickable: true }}
+          loop={true}
+          spaceBetween={30}
+          slidesPerView={1}
+          className="w-full lg:h-[350px] object-cover lg:rounded-2xl"
+        >
+          <SwiperSlide>
+            <img
+              className="w-full lg:h-[350px] object-cover lg:rounded-2xl"
+              src="/assets/event-default-banner.webp"
+              alt="Event Banner 1"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="w-full lg:h-[350px] object-cover lg:rounded-2xl"
+              src="/assets/event-default-banner.webp"
+              alt="Event Banner 2"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="w-full lg:h-[350px] object-cover lg:rounded-2xl"
+              src="/assets/event-default-banner.webp"
+              alt="Event Banner 3"
+            />
+          </SwiperSlide>
+        </Swiper>
+
         <div className="flex flex-col py-8 gap-3">
           <h1 className="lg:text-3xl text-xl font-medium">Welcome to our Coding Club : CodeComm</h1>
           <a

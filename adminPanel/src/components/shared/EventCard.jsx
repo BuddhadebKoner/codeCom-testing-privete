@@ -65,13 +65,6 @@ const EventCard = ({ event }) => {
                ))}
             </div>
             <div className="w-full h-fit mt-10 flex items-center justify-start gap-4">
-               <Link
-                  to={`/events/edit/${event.$id}`}
-                  className="px-3 py-1 text-xs bg-blue-500 text-white rounded-sm shadow hover:bg-blue-600 transition"
-                  state={{ eventId: event.$id, eventData: event }}
-               >
-                  Edit
-               </Link>
                <button
                   onClick={() => setIsDeletePopupOpen(true)}
                   className="px-3 py-1 text-xs bg-red-500 text-white rounded-sm shadow hover:bg-red-600 transition"
@@ -79,13 +72,17 @@ const EventCard = ({ event }) => {
                   Delete
                </button>
 
-               <Link
-                  to={`/events/add-extra-details/${event.$id}`}
-                  className="px-3 py-1 text-xs bg-blue-500 text-white rounded-sm shadow hover:bg-blue-600 transition"
-                  state={{ eventId: event.$id, eventData: event }}
-               >
-                  Add Event Data
-               </Link>
+               {
+                  !event.imageIDs.length > 0 && (
+                     <Link
+                        to={`/events/add-extra-details/${event.$id}`}
+                        className="px-3 py-1 text-xs bg-blue-500 text-white rounded-sm shadow hover:bg-blue-600 transition"
+                        state={{ eventId: event.$id, eventData: event }}
+                     >
+                        Add Event Data
+                     </Link>
+                  )
+               }
             </div>
          </div>
          {isDeletePopupOpen && (

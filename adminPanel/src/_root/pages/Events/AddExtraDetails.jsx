@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { addEventExtraDetails } from '../../../lib/appwrite/api';
 import { toast } from 'react-toastify';
 
@@ -7,12 +7,20 @@ const AddExtraDetails = () => {
   const [images, setImages] = useState([]);
   const [pdf, setPdf] = useState(null);
   const { id } = useParams();
+  const [isUploading, setIsUploading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const validateFileType = (file, type) => file.type.startsWith(type);
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
 
-    // Filter files by size (less than or equal to 1 MB)
     const validImages = files.filter((file) => {
+      if (!validateFileType(file, 'image')) {
+        toast.error(`"${file.name}" is not a valid image.`);
+        return false;
+      }
       if (file.size > 1024 * 1024) {
         toast.warn(`"${file.name}" exceeds the size limit of 1 MB.`);
         return false;
@@ -25,18 +33,18 @@ const AddExtraDetails = () => {
       return;
     }
 
-    setImages((prevImages) => [...prevImages, ...validImages]);
+    setImages((prev) => [...prev, ...validImages]);
     toast.success(`${validImages.length} image(s) added successfully.`);
   };
 
   const handleImageRemove = (index) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setImages((prev) => prev.filter((_, i) => i !== index));
     toast.info("Image removed.");
   };
 
   const handlePdfUpload = (e) => {
     const file = e.target.files[0];
-    if (file && file.type === "application/pdf") {
+    if (file && validateFileType(file, 'application/pdf')) {
       setPdf(file);
       toast.success("PDF uploaded successfully.");
     } else {
@@ -50,6 +58,12 @@ const AddExtraDetails = () => {
   };
 
   const handleSubmit = async () => {
+    if (!id || (images.length === 0 && !pdf)) {
+      toast.error("Please provide all required details.");
+      return;
+    }
+
+    setIsUploading(true);
 
     const formData = new FormData();
     formData.append("eventId", id);
@@ -62,17 +76,28 @@ const AddExtraDetails = () => {
 
     try {
       const res = await addEventExtraDetails(formData);
+      if (!res) throw new Error("Failed to add extra details.");
       toast.success("Details added successfully!");
-      console.log(res);
+      navigate(`/events/view-all/past`);
+      setImages([]);
+      setPdf(null);
     } catch (error) {
       console.error("Error adding extra details:", error);
       toast.error("Failed to add details. Please try again later.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md font-sans">
+    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-center mb-6">Add Extra Details</h2>
+
+      {isUploading && (
+        <div className="flex items-center justify-center mb-4">
+          <div className="w-6 h-6 border-2 border-t-2 border-gray-900 rounded-full animate-spin"></div>
+        </div>
+      )}
 
       {/* Image Upload Section */}
       <div className="mb-6">
@@ -82,10 +107,9 @@ const AddExtraDetails = () => {
           accept="image/*"
           multiple
           onChange={handleImageUpload}
-          className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          disabled={isUploading}
+          className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-
-        {/* Image Preview Section */}
         {images.length > 0 && (
           <div className="mt-4 grid grid-cols-2 gap-4">
             {images.map((image, index) => (
@@ -115,10 +139,9 @@ const AddExtraDetails = () => {
           type="file"
           accept="application/pdf"
           onChange={handlePdfUpload}
-          className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          disabled={isUploading}
+          className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-
-        {/* PDF Preview Section */}
         {pdf && (
           <div className="mt-4 flex items-center justify-between bg-gray-100 p-2 rounded-lg border">
             <span className="text-sm text-gray-700">{pdf.name}</span>
@@ -138,9 +161,11 @@ const AddExtraDetails = () => {
         <button
           type="button"
           onClick={handleSubmit}
-          className="px-6 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          disabled={isUploading}
+          className={`px-6 py-2 text-white bg-blue-500 rounded-lg ${isUploading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
+            } focus:outline-none focus:ring-2 focus:ring-blue-500`}
         >
-          Submit
+          {isUploading ? "Uploading..." : "Submit"}
         </button>
       </div>
     </div>

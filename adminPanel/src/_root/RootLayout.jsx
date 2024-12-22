@@ -17,7 +17,9 @@ const RootLayout = () => {
   if (isLoading) {
     return (
       <div className="fixed w-screen h-screen bg-gray-800 text-gray-200 flex items-center justify-center z-50">
-        <BigLoader />
+        <img
+          className='w-25 h-25'
+          src="codecommLogo.svg" alt="codecomm-logo" />
       </div>
     );
   }
@@ -27,7 +29,7 @@ const RootLayout = () => {
       {/* Sidebar */}
       <Sidebar />
       {/* Main Content */}
-      <div className="w-[80vw] h-screen flex-1 p-6 bg-gray-100 overflow-auto">
+      <div className="w-[80vw] h-screen flex-1 p-6 bg-[#213555] overflow-auto">
         <Outlet />
       </div>
     </div>

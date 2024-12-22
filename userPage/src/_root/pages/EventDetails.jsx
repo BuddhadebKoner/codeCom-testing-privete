@@ -9,27 +9,41 @@ import TicketGenerateForm from "../../components/shared/TicketGenerateForm";
 import { initialFormState } from "../../lib/utils";
 import RegisterBtn from "../../components/shared/RegisterBtn";
 import { Helmet } from "react-helmet";
+import ImagePopup from "../../components/popup/ImagePopup";
 
 const EventDetails = () => {
   const { id } = useParams();
   const { data: event, isLoading: isPending } = useEventById(id || "");
   const { isLoading } = useAuth();
 
-  const [showPopup, setShowPopup] = useState(false);
+  const [showImagePopup, setShowImagePopup] = useState(false);
+  const [popupImage, setPopupImage] = useState(null);
+  const [showRegisterPopup, setShowRegisterPopup] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
-
   const [registerForm, setRegisterForm] = useState(initialFormState);
 
+  // Handle image popup
+  const handleImageClick = (url) => {
+    setPopupImage(url);
+    setShowImagePopup(true);
+    document.body.style.overflow = "hidden";
+  };
 
-  const togglePopup = () => {
-    document.body.style.overflow = showPopup ? "auto" : "hidden";
-    setShowPopup(!showPopup);
+  const closeImagePopup = () => {
+    setPopupImage(null);
+    setShowImagePopup(false);
+    document.body.style.overflow = "auto";
+  };
 
-    if (!showPopup) {
+  // Handle registration popup
+  const toggleRegisterPopup = () => {
+    setShowRegisterPopup((prev) => !prev);
+    document.body.style.overflow = showRegisterPopup ? "auto" : "hidden";
+
+    if (!showRegisterPopup) {
       setRegisterForm(initialFormState);
     }
   };
-
 
   if (isPending || formLoading || isLoading) {
     return (
@@ -38,7 +52,6 @@ const EventDetails = () => {
       </div>
     );
   }
-
 
   return (
     <>
@@ -58,11 +71,7 @@ const EventDetails = () => {
               <h1 className="text-2xl font-semibold">{event?.title || "Event Title"}</h1>
               <p className="text-xl">{event?.subtitle || "Event Subtitle"}</p>
             </div>
-            {/* register notification */}
-            <RegisterBtn
-              event={event}
-              togglePopup={togglePopup}
-            />
+            <RegisterBtn event={event} togglePopup={toggleRegisterPopup} />
           </div>
           <p className="text-xl font-semibold mt-10">
             {event?.eventPlace || "Event Place"}, {event?.city || "City"}
@@ -70,7 +79,7 @@ const EventDetails = () => {
         </div>
         <div className="bg-white px-5 py-2">
           <p className="text-black text-xl font-bold flex justify-between">
-            {new Date(event?.eventTime).toLocaleString('en-IN')}
+            {new Date(event?.eventTime).toLocaleString("en-IN")}
           </p>
         </div>
         <section className="my-16">
@@ -89,14 +98,52 @@ const EventDetails = () => {
             )}
           </div>
         </section>
-        {showPopup && (
+        <section className="my-16">
+          {event?.pptUrl && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold">Presentation</h2>
+              <a
+                href={event.pptUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline"
+              >
+                View or Download Event Presentation
+              </a>
+            </div>
+          )}
+          {event?.imageURLs?.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">Event Photos</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {event.imageURLs.map((url, index) => (
+                  <img
+                    key={index}
+                    className="w-full object-cover rounded-lg shadow-md cursor-pointer"
+                    src={url}
+                    alt={`Event Image ${index + 1}`}
+                    onClick={() => handleImageClick(url)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Image Popup */}
+        {showImagePopup && (
+          <ImagePopup imageUrl={popupImage} onClose={closeImagePopup} />
+        )}
+
+        {/* Register Popup */}
+        {showRegisterPopup && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white w-[90%] max-w-[500px] rounded-lg shadow-lg p-8">
               <h2 className="text-2xl font-bold text-center mb-6 text-black">
                 Register for Event
               </h2>
               <TicketGenerateForm
-                togglePopup={togglePopup}
+                togglePopup={toggleRegisterPopup}
                 setFormLoading={setFormLoading}
                 setRegisterForm={setRegisterForm}
                 registerForm={registerForm}

@@ -17,7 +17,7 @@ const PastEvents = () => {
 
   if (isLoading && !events) {
     return (
-      <div className="fixed w-screen h-screen bg-gray-800 text-gray-200 flex items-center justify-center z-50">
+      <div className="fixed text-gray-200 flex items-center justify-center z-50">
         <BigLoader />
       </div>
     );

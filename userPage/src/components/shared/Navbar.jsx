@@ -2,10 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect } from "react";
 import { signOutUser } from "../../lib/appwrite/api";
-import { useGetRecentEvents, useSearchEvents } from "../../lib/react-query/queriesAndMutation";
+import { useSearchEvents } from "../../lib/react-query/queriesAndMutation";
 import { useInView } from "react-intersection-observer";
 import useDebounce from "../../hooks/useDbounce";
-import Loader from "./Loader";
 import SearchEventcard from "./SearchEventcard";
 import { Helmet } from "react-helmet";
 
@@ -17,18 +16,23 @@ const Navbar = () => {
    const [searchQuery, setSearchQuery] = useState("");
    const navigate = useNavigate();
 
+   // Debounced search query
    const deBouncedValue = useDebounce(searchQuery, 1000);
+
+   // Search events hook
    const { data: searchEvents, isFetching: isSearchFetching, isError: searchError } = useSearchEvents(deBouncedValue);
    const documents = searchEvents?.documents || [];
 
+   // Intersection observer for pagination
    const { ref, inView } = useInView();
 
    useEffect(() => {
-      if (inView && !searchQuery) {
-         // Implement pagination if needed.
+      if (inView && searchQuery && !isSearchFetching) {
+         // Trigger pagination or fetch additional results
       }
-   }, [inView, searchQuery]);
+   }, [inView, searchQuery, isSearchFetching]);
 
+   // Handle sign out logic
    const handleSignOut = async () => {
       setIsSignOutLoading(true);
       try {
@@ -42,18 +46,45 @@ const Navbar = () => {
       }
    };
 
-   const toggleSearch = () => {
-      setIsSearchOpen((prev) => !prev);
-      document.body.style.overflow = isSearchOpen ? "auto" : "hidden";
-   };
-   if (isSearchOpen) {
-      // then i press the esc key in keybord
-      document.addEventListener("keydown", (e) => {
-         if (e.key === "Escape") {
-            toggleSearch();
+   // Handle clicking outside of the dropdown to close it
+   useEffect(() => {
+      const handleClickOutside = (e) => {
+         if (isDropdownOpen && !e.target.closest(".dropdown-menu")) {
+            setIsDropdownOpen(false);
          }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+   }, [isDropdownOpen]);
+
+   // Toggle the search overlay and body overflow
+   const toggleSearch = () => {
+      setIsSearchOpen((prev) => {
+         document.body.style.overflow = prev ? "auto" : "hidden";
+         return !prev;
       });
-   }
+   };
+
+   // Handle keyboard event for escape key
+   useEffect(() => {
+      if (isSearchOpen || isDropdownOpen) {
+         const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+               toggleSearch();
+               setIsDropdownOpen(false);
+            }
+         };
+         document.addEventListener("keydown", handleKeyDown);
+         return () => document.removeEventListener("keydown", handleKeyDown);
+      }
+   }, [isSearchOpen, isDropdownOpen]);
+
+   // Reset body overflow on component unmount
+   useEffect(() => {
+      return () => {
+         document.body.style.overflow = "auto";
+      };
+   }, []);
 
    return (
       <nav className="bg-black text-white w-full flex justify-between items-center py-5">
@@ -83,10 +114,9 @@ const Navbar = () => {
                         placeholder="Search by event title"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full px-4 py-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                        className="w-full px-4 py-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-black"
                         aria-label="Search Events"
                      />
-
                      {/* Results Section */}
                      <div className="overflow-y-auto max-h-[60vh]">
                         {isSearchFetching ? (
@@ -108,11 +138,12 @@ const Navbar = () => {
          )}
 
          <Link className="lg:text-2xl font-normal" to={"/"}>
-            <div className="flex w-fit h-fit justify-center items-center">
+            <div className="flex w-fit h-fit justify-center items-center gap-2">
                <img
                   className="w-20"
                   src="/codecommLogo.svg" alt="" />
-               <p>CodeComm</p>
+               <p className="text-2xl font-semibold">CodeComm</p>
+
             </div>
          </Link>
          <div className="flex gap-10">
@@ -123,6 +154,7 @@ const Navbar = () => {
                   <img src="/assets/icons/search_icon.svg" alt="search-icon" />
                </button>
             </div>
+
             {/* Profile Section */}
             {isAuthenticated ? (
                <div className="relative flex items-center">
@@ -130,6 +162,7 @@ const Navbar = () => {
                      className="rounded-full"
                      onClick={() => setIsDropdownOpen((prev) => !prev)}
                      aria-label="Toggle Dropdown"
+                     aria-expanded={isDropdownOpen}
                   >
                      <img
                         className="rounded-full"

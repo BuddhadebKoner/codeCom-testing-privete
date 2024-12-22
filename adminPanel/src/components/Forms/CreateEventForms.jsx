@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useFindUserByEmail, useUpdateEvent } from '../../lib/react-query/queriesAndMutation';
+import { useAddEvent, useFindUserByEmail, useUpdateEvent } from '../../lib/react-query/queriesAndMutation';
 import BigLoader from '../shared/BigLoader';
 import { toast } from 'react-toastify';
-import { addEvent } from '../../lib/appwrite/api';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const formatDateForInput = (isoString) => {
@@ -10,44 +9,28 @@ const formatDateForInput = (isoString) => {
    return isoString.slice(0, 16);
 };
 
-const CreateEventForms = ({ formData, action }) => {
+const CreateEventForms = ({ formData }) => {
    const { mutate: findUser, isLoading } = useFindUserByEmail();
-   const { mutateAsync: updateEventAsync, isPending: isUpdatingEvent } = useUpdateEvent();
-
-   const { id: eventId } = useParams();
-
-   const processedFormData = useMemo(() => ({
+   const { mutateAsyn: addEvent, isLoading: isAddingEvent } = useAddEvent();
+   const [formState, setFormState] = useState(() => ({
       title: formData?.title || "",
       organizers: formData?.organizers || "",
       eventTime: formatDateForInput(formData?.eventTime) || "",
       registerationEndsAt: formatDateForInput(formData?.registerationEndsAt) || "",
       banner: formData?.banner || null,
-      // Add other fields as necessary
-   }), [formData]);
-
-   const [formState, setFormState] = useState(() => ({
-      ...processedFormData
    }));
-
-
-
-
-   const [originalState, setOriginalState] = useState(processedFormData);
    const [preview, setPreview] = useState(null);
    const [showPopup, setShowPopup] = useState(false);
    const [email, setEmail] = useState("");
    const [userName, setUserName] = useState("");
    const [userId, setUserId] = useState("");
    const [error, setError] = useState("");
-   const [isAddingEvent, setIsAddingEvent] = useState(false);
-
 
    const navigate = useNavigate();
 
-
-   if (isAddingEvent || isUpdatingEvent) {
+   if (isAddingEvent) {
       return (
-         <div className="fixed w-screen h-screen bg-gray-800 text-gray-200 flex items-center justify-center z-50">
+         <div className="fixed text-gray-200 flex items-center justify-center z-50">
             <BigLoader />
          </div>
       );
@@ -55,9 +38,6 @@ const CreateEventForms = ({ formData, action }) => {
 
    const togglePopup = () => {
       document.body.style.overflow = showPopup ? "auto" : "hidden";
-      if (!showPopup) {
-         setFormState(formData);
-      }
       setShowPopup(!showPopup);
    };
 
@@ -92,8 +72,6 @@ const CreateEventForms = ({ formData, action }) => {
       });
    };
 
-
-
    const handleChange = (e) => {
       const { name, value, files } = e.target;
 
@@ -112,59 +90,23 @@ const CreateEventForms = ({ formData, action }) => {
       }
    };
 
-   useEffect(() => {
-      if (action === "Update" && JSON.stringify(originalState) !== JSON.stringify(processedFormData)) {
-         setOriginalState(processedFormData);
-      }
-   }, [action, processedFormData]);
-
-
-   const getChanges = () => {
-      const changes = {};
-      for (const key in formState) {
-         if (formState[key] !== originalState[key]) {
-            changes[key] = formState[key];
-         }
-      }
-      return changes;
-   };
-
    const handleSubmit = async (e) => {
       e.preventDefault();
 
       try {
-         if (action === "Update") {
-            const changes = getChanges();
-            console.log("Changed Fields:", changes);
 
-            if (Object.keys(changes).length === 0) {
-               toast.warn("No changes detected.");
-               return;
-            }
-
-            const updateEventRes = await updateEventAsync({ event: changes, eventId });
-            console.log("Update Event Response:", updateEventRes);
-
-            toast.success("Event updated successfully.");
-            navigate(-1);
-         } else if (action === "Create") {
-            setIsAddingEvent(true);
-
-            const res = await addEvent(formState);
-            console.log("Add Event Response:", res);
-            toast.success("Event created successfully.");
-         }
+         const res = await addEvent(formState);
+         console.log("Add Event Response:", res);
+         toast.success("Event created successfully.");
+         navigate(-1);
       } catch (error) {
-         console.error("Error during event operation:", error);
+         console.error("Error during event creation:", error);
          toast.error(error.message || "An error occurred. Please try again.");
       } finally {
-         if (action === "Create") {
-            setIsAddingEvent(false);
-         }
+         setFormState({});
+         setPreview(null);
       }
    };
-
-
 
    return (
       <>
@@ -178,7 +120,7 @@ const CreateEventForms = ({ formData, action }) => {
                         placeholder="Enter email address"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="border border-gray-300 rounded-lg p-2 flex-grow"
+                        className="border  rounded-lg p-2 flex-grow"
                      />
                      <button
                         onClick={handleSearch}
@@ -208,7 +150,7 @@ const CreateEventForms = ({ formData, action }) => {
 
          <form onSubmit={handleSubmit} className="space-y-6">
             <button
-               className='text-xl font-bold flex gap-2'>
+               className='text-xl font-bold flex gap-2 text-white'>
                <img
                   onClick={(e) => {
                      // prevent default
@@ -217,11 +159,11 @@ const CreateEventForms = ({ formData, action }) => {
                   }}
                   src="/assets/icons/arrow_back.svg"
                   alt="arrow-back" />
-               {action} Event
+               Create Event
             </button>
             {/* enter organizers ids comma separate */}
             <div>
-               <label className="block text-gray-700 font-medium">Organizers Profile Id</label>
+               <label className="block text-white font-medium">Organizers Profile Id</label>
                <div className='flex justify-center items-center gap-5'>
                   <input
                      type="text"
@@ -230,7 +172,7 @@ const CreateEventForms = ({ formData, action }) => {
                      onChange={handleChange}
                      required
                      placeholder="Enter organizers IDs comma separated"
-                     className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                     className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                   />
                   <p
                      onClick={togglePopup}
@@ -245,7 +187,7 @@ const CreateEventForms = ({ formData, action }) => {
             </div>
             {/* Event Title */}
             <div>
-               <label className="block text-gray-700 font-medium">Event Title</label>
+               <label className="block text-white font-medium">Event Title</label>
                <input
                   type="text"
                   name="title"
@@ -253,13 +195,13 @@ const CreateEventForms = ({ formData, action }) => {
                   onChange={handleChange}
                   required
                   placeholder="Enter event title"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                />
             </div>
 
             {/* Subtitle */}
             <div>
-               <label className="block text-gray-700 font-medium">Subtitle</label>
+               <label className="block text-white font-medium">Subtitle</label>
                <input
                   type="text"
                   name="subtitle"
@@ -267,76 +209,76 @@ const CreateEventForms = ({ formData, action }) => {
                   onChange={handleChange}
                   required
                   placeholder="Enter event subtitle"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                />
             </div>
 
             {/* Description */}
             <div>
-               <label className="block text-gray-700 font-medium">Event Description</label>
+               <label className="block text-white font-medium">Event Description</label>
                <textarea
                   name="desc"
                   value={formState.desc}
                   onChange={handleChange}
                   required
                   placeholder="Enter event description"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                ></textarea>
             </div>
 
             {/* Event Time */}
             <div>
-               <label className="block text-gray-700 font-medium">Event Time</label>
+               <label className="block text-white font-medium">Event Time</label>
                <input
                   type="datetime-local"
                   name="eventTime"
                   value={formState.eventTime}
                   onChange={handleChange}
                   required
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                />
             </div>
 
             {/* Registration End Time */}
             <div>
-               <label className="block text-gray-700 font-medium">Registration Ends At</label>
+               <label className="block text-white font-medium">Registration Ends At</label>
                <input
                   type="datetime-local"
                   name="registerationEndsAt"
                   value={formState.registerationEndsAt}
                   onChange={handleChange}
                   required
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                />
             </div>
 
             {/* Event Length */}
             <div>
-               <label className="block text-gray-700 font-medium">Event Length (in hours)</label>
+               <label className="block text-white font-medium">Event Length (in hours)</label>
                <input
                   type="text"
                   name="eventLength"
                   value={formState.eventLength}
                   onChange={handleChange}
                   placeholder="Event Length in hours"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                />
             </div>
             {/* max Capacity */}
             <div>
-               <label className="block text-gray-700 font-medium">max Capacity</label>
+               <label className="block text-white font-medium">max Capacity</label>
                <input
                   type="text"
                   name="maxCapacity"
                   value={formState.maxCapacity}
                   onChange={handleChange}
                   placeholder="Maximum Capacity"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                />
             </div>
             {/* Event Place */}
             <div>
-               <label className="block text-gray-700 font-medium">Event Place</label>
+               <label className="block text-white font-medium">Event Place</label>
                <input
                   type="text"
                   name="eventPlace"
@@ -344,13 +286,13 @@ const CreateEventForms = ({ formData, action }) => {
                   onChange={handleChange}
                   required
                   placeholder="Enter event place"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                />
             </div>
 
             {/* City */}
             <div>
-               <label className="block text-gray-700 font-medium">City</label>
+               <label className="block text-white font-medium">City</label>
                <input
                   type="text"
                   name="city"
@@ -358,13 +300,13 @@ const CreateEventForms = ({ formData, action }) => {
                   onChange={handleChange}
                   required
                   placeholder="Enter city"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                />
             </div>
 
             {/* venue */}
             <div>
-               <label className="block text-gray-700 font-medium">Venue</label>
+               <label className="block text-white font-medium">Venue</label>
                <input
                   type="text"
                   name="venue"
@@ -372,13 +314,13 @@ const CreateEventForms = ({ formData, action }) => {
                   onChange={handleChange}
                   required
                   placeholder="Enter venue"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                />
             </div>
 
             {/* Location URL */}
             <div>
-               <label className="block text-gray-700 font-medium">Location URL</label>
+               <label className="block text-white font-medium">Location URL</label>
                <input
                   type="url"
                   name="locationUrl"
@@ -386,17 +328,17 @@ const CreateEventForms = ({ formData, action }) => {
                   onChange={handleChange}
                   required
                   placeholder="Enter event location URL"
-                  className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                  className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                />
             </div>
             {/* event banner */}
-            <label className="block text-gray-700 font-medium">Event Banner</label>
+            <label className="block text-white font-medium">Event Banner</label>
             <input
                type="file"
                name="banner"
                onChange={handleChange}
                accept="image/*"
-               className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+               className="mt-1 w-full px-4 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
             />
             <div className="mt-2">
                {preview ? (
@@ -422,7 +364,7 @@ const CreateEventForms = ({ formData, action }) => {
                   type="submit"
                   className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md"
                >
-                  {action === 'Create' ? 'Create Event' : 'Update Event'}
+                  Create Event
                </button>
             </div>
          </form>

@@ -31,7 +31,7 @@ export function formatDateToIST(dateString) {
 
 // Example usage
 const input = "2025-01-02T11:11:00.000+00:00";
-console.log(formatDateToIST(input));
+// console.log(formatDateToIST(input));
 // Output: 2 JAN 2025 4:41 PM
 
 

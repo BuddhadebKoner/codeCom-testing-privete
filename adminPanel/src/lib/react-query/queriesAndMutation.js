@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { activateUser, createUserAccount, deactivateUser, deleteEvent, findUserByEmail, getPastInfiniteEvents, getSearchUsers, getUpcommingInfiniteEvents, getUpdateEvent, getUserById, signInUser, signOutUser } from "../appwrite/api";
+import { activateUser, addEvent, createUserAccount, deactivateUser, deleteEvent, findUserByEmail, getPastInfiniteEvents, getSearchUsers, getUpcommingInfiniteEvents, getUpdateEvent, getUserById, signInUser, signOutUser } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
 // Hook for creating a new user account
@@ -19,6 +19,23 @@ export const useCreateUserAccount = () => {
       },
    });
 };
+
+// add event
+export const useAddEvent = () => {
+   const queryClient = useQueryClient();
+
+   return useMutation({
+      mutationKey: [QUERY_KEYS.ADD_EVENT],
+      mutationFn: (event) => addEvent(event),
+      onSuccess: () => {
+         queryClient.invalidateQueries([QUERY_KEYS.GET_UPCOMMING_EVENTS]);
+      },
+      onError: (error) => {
+         console.error("Error adding event:", error);
+      },
+   });
+}
+
 
 export const useSignInUser = () => {
    const queryClient = useQueryClient();
@@ -107,6 +124,23 @@ export const useGetPastEvents = () => {
    })
 };
 
+// refresh events
+export const useRefreshEvents = () => {
+   const queryClient = useQueryClient();
+
+   return useMutation({
+      mutationKey: [QUERY_KEYS.REFRESH_EVENTS],
+      mutationFn: () => {
+         queryClient.invalidateQueries([QUERY_KEYS.GET_UPCOMMING_EVENTS]);
+         queryClient.invalidateQueries([QUERY_KEYS.GET_PAST_EVENTS]);
+      },
+      onError: (error) => {
+         console.error("Error refreshing events:", error);
+      },
+   });
+};
+
+
 // delete event by id
 export const useDeleteEvent = () => {
    const queryClient = useQueryClient();
@@ -162,7 +196,7 @@ export const useDeactivateUser = () => {
       onSuccess: () => {
          queryClient.invalidateQueries([QUERY_KEYS.GET_USER_BY_ID, id]);
       },
-      onError: (error) => { 
+      onError: (error) => {
          console.error("Error deactivating user:", error);
       }
    })
@@ -178,7 +212,7 @@ export const useActivateUser = () => {
       onSuccess: () => {
          queryClient.invalidateQueries([QUERY_KEYS.GET_USER_BY_ID, id]);
       },
-      onError: (error) => { 
+      onError: (error) => {
          console.error("Error activating user:", error);
       }
    })

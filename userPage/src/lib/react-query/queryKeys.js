@@ -16,6 +16,7 @@ export const QUERY_KEYS = {
    GET_UPCOMMING_EVENTS: "getUpcommingEvents",
    SEARCH_EVENTS: "searchEvents",
    GET_CONDUCTED_EVENTS: "getConductedEvents",
+   REFRESH_EVENTS: "refreshEvents",
 
    // ENTRY PASS 
    GENERATE_ENTRY_PASS: "generateEntryPass",

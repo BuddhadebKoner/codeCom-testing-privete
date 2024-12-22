@@ -10,7 +10,6 @@ import {
   Home,
   ViewAllEvents,
   CreateNewEvents,
-  EditEvents,
   EventDetails,
   ViewAllUsers,
   ManageProfiles,
@@ -47,7 +46,6 @@ function App() {
             <Route path="past" element={<HoldEvents />} />
           </Route>
           <Route path="/events/create" element={<CreateNewEvents />} />
-          <Route path="/events/edit/:id" element={<EditEvents />} />
           <Route path="/events/add-extra-details/:id" element={<AddExtraDetails />} />
           <Route path="/events/details/:id" element={<EventDetails />} />
           {/* User Management */}

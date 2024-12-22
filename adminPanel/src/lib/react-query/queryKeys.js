@@ -16,11 +16,13 @@ export const QUERY_KEYS = {
 
    // EVENT KEYS
    GET_ALL_EVENTS: "getAllEvents",
+   ADD_EVENT: "addEvent",
    GET_EVENT_BY_ID: "getEventById",
    GET_UPCOMMING_EVENTS: "getUpcommingEvents",
    SEARCH_EVENTS: "searchEvents",
    GET_PAST_EVENTS: "getPastEvents",
    DELETE_EVENT: "deleteEvent",
+
    // toogle evnts
    TOGGLE_EVENTS: "toggleEvents",
    TOGGLE_SHOW_ON_HOME_PAGE: "toggleShowOnHomePage",
