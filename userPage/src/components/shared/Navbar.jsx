@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { signOutUser } from "../../lib/appwrite/api";
 import { useSearchEvents } from "../../lib/react-query/queriesAndMutation";
 import { useInView } from "react-intersection-observer";
@@ -14,6 +14,7 @@ const Navbar = () => {
    const [isSignOutLoading, setIsSignOutLoading] = useState(false);
    const [isSearchOpen, setIsSearchOpen] = useState(false);
    const [searchQuery, setSearchQuery] = useState("");
+   const dropdownRef = useRef(null);  // Ref for the dropdown
    const navigate = useNavigate();
 
    // Debounced search query
@@ -49,7 +50,7 @@ const Navbar = () => {
    // Handle clicking outside of the dropdown to close it
    useEffect(() => {
       const handleClickOutside = (e) => {
-         if (isDropdownOpen && !e.target.closest(".dropdown-menu")) {
+         if (isDropdownOpen && dropdownRef.current && !dropdownRef.current.contains(e.target)) {
             setIsDropdownOpen(false);
          }
       };
@@ -85,6 +86,12 @@ const Navbar = () => {
          document.body.style.overflow = "auto";
       };
    }, []);
+
+   // Handle profile link click and close dropdown after navigation
+   const handleProfileClick = () => {
+      setIsDropdownOpen(false);
+      navigate(`/profile/${user.$id}`);
+   };
 
    return (
       <nav className="bg-black text-white w-full flex justify-between items-center py-5">
@@ -137,15 +144,16 @@ const Navbar = () => {
             </>
          )}
 
-         <Link className="lg:text-2xl font-normal" to={"/"}>
+         <div className="lg:text-2xl font-normal no-select ">
             <div className="flex w-fit h-fit justify-center items-center gap-2">
-               <img
-                  className="w-20"
-                  src="/codecommLogo.svg" alt="" />
+               <Link to={"/"}>
+                  <img
+                     className="w-20 no-drag"
+                     src="/codecommLogo.svg" alt="" />
+               </Link>
                <p className="text-2xl font-semibold">CodeComm</p>
-
             </div>
-         </Link>
+         </div>
          <div className="flex gap-10">
             <div className="flex items-center gap-2 lg:gap-10">
                <Link className="lg:text-xl text-sm" to={"/about"}>About</Link>
@@ -172,11 +180,11 @@ const Navbar = () => {
                      />
                   </button>
                   {isDropdownOpen && (
-                     <div className="absolute top-10 right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-md z-50">
+                     <div ref={dropdownRef} className="absolute top-10 right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-md z-50">
                         <Link
                            to={`/profile/${user.$id}`}
                            className="block px-4 py-2 text-sm hover:bg-gray-200"
-                           onClick={() => setIsDropdownOpen(false)}
+                           onClick={handleProfileClick} // Handle profile click to navigate
                         >
                            Profile
                         </Link>

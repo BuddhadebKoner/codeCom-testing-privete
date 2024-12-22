@@ -5,7 +5,7 @@ import LeftNavbar from "../components/shared/LeftNavbar";
 const RootLayout = () => {
   return (
     <>
-      <main className="w-[100vw] lg:px-[15vw] md:px-[5rem] px-1">
+      <main className="w-[100vw] lg:px-[10vw] md:px-[5rem] px-1">
         {/* Show Navbar only on large screens and hide it on medium screens */}
         <div className="md:block hidden">
           <Navbar />

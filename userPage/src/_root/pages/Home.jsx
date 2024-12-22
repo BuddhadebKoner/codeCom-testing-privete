@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import EventCard from "../../components/shared/EventCard";
 import { useGetRecentEvents } from "../../lib/react-query/queriesAndMutation";
@@ -30,7 +30,7 @@ const Home = () => {
         <meta charSet="utf-8" />
         <title>Home</title>
       </Helmet>
-      <div className="w-full flex flex-col pb-5 text-white">
+      <div className="w-full flex flex-col pb-5 text-white lg:px-[2vw] md:px-[1rem]">
         {/* Swiper Banner Section */}
         <Swiper
           modules={[Navigation, Pagination]}
@@ -70,7 +70,7 @@ const Home = () => {
             className="underline lg:text-xl text-sm w-fit"
             target="_blank"
             rel="noopener noreferrer"
-            href="https://icampus.setgoi.ac.in/"
+            href="https://icampus.setgoi.ac.in"
           >
             Sanaka Educational Trust's Group of Institutions, Malandighi, Durgapur
           </a>
