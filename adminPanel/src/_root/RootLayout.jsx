@@ -16,10 +16,16 @@ const RootLayout = () => {
 
   if (isLoading) {
     return (
-      <div className="fixed w-screen h-screen bg-gray-800 text-gray-200 flex items-center justify-center z-50">
+      <div className="relative w-screen h-screen bg-gray-800 text-gray-200 flex flex-col items-center justify-between z-50 p-10">
         <img
-          className='w-25 h-25'
-          src="codecommLogo.svg" alt="codecomm-logo" />
+          width={150}
+          className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
+          src="codecommLogo.svg" alt="codecomm-logo"
+        />
+        <div className='w-fit h-fit flex flex-col items-center justify-center mt-auto'>
+          <p>Form</p>
+          <p className='text-xl font-semibold text-blue-400'>CodeComm</p>
+        </div>
       </div>
     );
   }

@@ -19,3 +19,4 @@ const ProfileModel = ({ imageUrl, onClose }) => {
 };
 
 export default ProfileModel;
+

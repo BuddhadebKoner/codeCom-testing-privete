@@ -7,6 +7,7 @@ import { useInView } from "react-intersection-observer";
 import useDebounce from "../../hooks/useDbounce";
 import SearchEventcard from "./SearchEventcard";
 import { Helmet } from "react-helmet";
+import gsap from "gsap";
 
 const Navbar = () => {
    const { user, isAuthenticated, isLoading, checkAuthUser } = useAuth();
@@ -14,17 +15,14 @@ const Navbar = () => {
    const [isSignOutLoading, setIsSignOutLoading] = useState(false);
    const [isSearchOpen, setIsSearchOpen] = useState(false);
    const [searchQuery, setSearchQuery] = useState("");
-   const dropdownRef = useRef(null);  // Ref for the dropdown
+   const dropdownRef = useRef(null);
    const navigate = useNavigate();
 
-   // Debounced search query
    const deBouncedValue = useDebounce(searchQuery, 1000);
 
-   // Search events hook
    const { data: searchEvents, isFetching: isSearchFetching, isError: searchError } = useSearchEvents(deBouncedValue);
    const documents = searchEvents?.documents || [];
 
-   // Intersection observer for pagination
    const { ref, inView } = useInView();
 
    useEffect(() => {
@@ -33,7 +31,6 @@ const Navbar = () => {
       }
    }, [inView, searchQuery, isSearchFetching]);
 
-   // Handle sign out logic
    const handleSignOut = async () => {
       setIsSignOutLoading(true);
       try {
@@ -47,7 +44,6 @@ const Navbar = () => {
       }
    };
 
-   // Handle clicking outside of the dropdown to close it
    useEffect(() => {
       const handleClickOutside = (e) => {
          if (isDropdownOpen && dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -58,7 +54,6 @@ const Navbar = () => {
       return () => document.removeEventListener("mousedown", handleClickOutside);
    }, [isDropdownOpen]);
 
-   // Toggle the search overlay and body overflow
    const toggleSearch = () => {
       setIsSearchOpen((prev) => {
          document.body.style.overflow = prev ? "auto" : "hidden";
@@ -66,7 +61,6 @@ const Navbar = () => {
       });
    };
 
-   // Handle keyboard event for escape key
    useEffect(() => {
       if (isSearchOpen || isDropdownOpen) {
          const handleKeyDown = (e) => {
@@ -80,22 +74,40 @@ const Navbar = () => {
       }
    }, [isSearchOpen, isDropdownOpen]);
 
-   // Reset body overflow on component unmount
    useEffect(() => {
       return () => {
          document.body.style.overflow = "auto";
       };
    }, []);
 
-   // Handle profile link click and close dropdown after navigation
    const handleProfileClick = () => {
       setIsDropdownOpen(false);
       navigate(`/profile/${user.$id}`);
    };
 
+   useEffect(() => {
+      // GSAP Animations for Navbar
+      gsap.fromTo(
+         ".navbar-link",
+         { opacity: 0, y: -20 },
+         { opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: "power2.out" }
+      );
+
+      gsap.fromTo(
+         ".navbar-logo",
+         { opacity: 0, x: -20 },
+         { opacity: 1, x: 0, duration: 1, ease: "power2.out" }
+      );
+
+      gsap.fromTo(
+         ".navbar-item",
+         { opacity: 0, scale: 0.8 },
+         { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.7)", delay: 0.5 }
+      );
+   }, []);
+
    return (
-      <nav className="bg-black text-white w-full flex justify-between items-center py-5">
-         {/* Search Overlay */}
+      <nav className="bg-black text-white w-full flex justify-between items-center py-5 z-50">
          {isSearchOpen && (
             <>
                <Helmet>
@@ -103,7 +115,7 @@ const Navbar = () => {
                   <title>Search Events</title>
                </Helmet>
                <div
-                  className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-start justify-center z-50"
+                  className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-start justify-center "
                   onClick={toggleSearch}
                >
                   <div
@@ -115,7 +127,6 @@ const Navbar = () => {
                      >
                         Esc
                      </button>
-                     {/* Search Input */}
                      <input
                         type="text"
                         placeholder="Search by event title"
@@ -124,7 +135,6 @@ const Navbar = () => {
                         className="w-full px-4 py-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-black"
                         aria-label="Search Events"
                      />
-                     {/* Results Section */}
                      <div className="overflow-y-auto max-h-[60vh]">
                         {isSearchFetching ? (
                            <div className="text-center text-gray-500">Searching...</div>
@@ -144,28 +154,29 @@ const Navbar = () => {
             </>
          )}
 
-         <div className="lg:text-2xl font-normal no-select ">
+         <div className="navbar-logo lg:text-2xl font-normal no-select">
             <div className="flex w-fit h-fit justify-center items-center gap-2">
-               <Link to={"/"}>
+               <Link to="/">
                   <img
                      className="w-20 no-drag"
-                     src="/codecommLogo.svg" alt="" />
+                     src="/codecommLogo.svg"
+                     alt="CodeComm Logo"
+                  />
                </Link>
                <p className="text-2xl font-semibold">CodeComm</p>
             </div>
          </div>
          <div className="flex gap-10">
             <div className="flex items-center gap-2 lg:gap-10">
-               <Link className="lg:text-xl text-sm" to={"/about"}>About</Link>
-               <Link className="lg:text-xl text-sm" to={"/events/upcomming-events"}>Events</Link>
+               <Link className="navbar-link lg:text-xl text-sm" to="/about">About</Link>
+               <Link className="navbar-link lg:text-xl text-sm" to="/events/upcomming-events">Events</Link>
                <button onClick={toggleSearch} aria-label="Open Search">
-                  <img src="/assets/icons/search_icon.svg" alt="search-icon" />
+                  <img className="navbar-link" src="/assets/icons/search_icon.svg" alt="search-icon" />
                </button>
             </div>
 
-            {/* Profile Section */}
             {isAuthenticated ? (
-               <div className="relative flex items-center">
+               <div className="relative flex items-center navbar-item">
                   <button
                      className="rounded-full"
                      onClick={() => setIsDropdownOpen((prev) => !prev)}
@@ -184,7 +195,7 @@ const Navbar = () => {
                         <Link
                            to={`/profile/${user.$id}`}
                            className="block px-4 py-2 text-sm hover:bg-gray-200"
-                           onClick={handleProfileClick} // Handle profile click to navigate
+                           onClick={handleProfileClick}
                         >
                            Profile
                         </Link>
@@ -201,7 +212,7 @@ const Navbar = () => {
             ) : isLoading ? (
                <img width={40} src="/loader.svg" alt="Loading" />
             ) : (
-               <Link className="lg:text-xl text-sm" to={"/sign-in"}>Sign In</Link>
+               <Link className="navbar-link lg:text-xl text-sm" to="/sign-in">Sign In</Link>
             )}
          </div>
       </nav>
