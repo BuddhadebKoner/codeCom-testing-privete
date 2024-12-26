@@ -10,7 +10,7 @@ const UpcomingEvents = () => {
         <meta charSet="utf-8" />
         <title>Upcoming Events</title>
       </Helmet>
-      <div className="w-full text-white">
+      <div className="w-full text-white px-5 lg:px-10">
         <header className="mb-10">
           <div className='w-fit h-fit flex items-center justify-center gap-2 border-b-4 border-indigo-500'>
             <img

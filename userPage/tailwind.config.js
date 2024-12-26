@@ -12,6 +12,15 @@ export default {
         'light-2': '#9CA3AF',
         'primary-500': '#2563EB',
       },
+        perspective: {
+        1000: '1000px', 
+      },
+      transformStyle: {
+        '3d': 'preserve-3d',
+      },
+      rotate: {
+        'y': 'rotateY(45deg)', 
+      },
     },
   },
   plugins: [],

@@ -83,7 +83,7 @@ const About = () => {
         <meta charSet="utf-8" />
         <title>About CodeComm</title>
       </Helmet>
-      <div className="w-full h-fit text-gray-800 dark:text-gray-200 pb-10">
+      <div className="w-full h-fit text-gray-800 dark:text-gray-200 pb-10 px-5 lg:px-10">
         <div className="max-w-full">
           {/* Header */}
           <header className="mb-10">

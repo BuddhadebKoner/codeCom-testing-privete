@@ -59,7 +59,7 @@ const EventDetails = () => {
         <meta charSet="utf-8" />
         <title>{event?.title}</title>
       </Helmet>
-      <div className="w-full h-full text-white">
+      <div className="w-full h-full text-white px-5 lg:px-10">
         <img
           className="w-full max-h-[500px] object-cover rounded-lg"
           src={event?.imageUrl || "/default-image.jpg"}

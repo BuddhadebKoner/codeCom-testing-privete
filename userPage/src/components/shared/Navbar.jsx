@@ -11,7 +11,6 @@ import gsap from "gsap";
 
 const Navbar = () => {
    const { user, isAuthenticated, isLoading, checkAuthUser } = useAuth();
-   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
    const [isSignOutLoading, setIsSignOutLoading] = useState(false);
    const [isSearchOpen, setIsSearchOpen] = useState(false);
    const [searchQuery, setSearchQuery] = useState("");
@@ -20,22 +19,16 @@ const Navbar = () => {
 
    const deBouncedValue = useDebounce(searchQuery, 1000);
 
-   const { data: searchEvents, isFetching: isSearchFetching, isError: searchError } = useSearchEvents(deBouncedValue);
+   const { data: searchEvents, isFetching: isSearchFetching } = useSearchEvents(deBouncedValue);
    const documents = searchEvents?.documents || [];
 
    const { ref, inView } = useInView();
 
-   useEffect(() => {
-      if (inView && searchQuery && !isSearchFetching) {
-         // Trigger pagination or fetch additional results
-      }
-   }, [inView, searchQuery, isSearchFetching]);
 
    const handleSignOut = async () => {
       setIsSignOutLoading(true);
       try {
          await signOutUser();
-         setIsDropdownOpen(false);
          checkAuthUser();
       } catch (err) {
          console.error("Sign out failed", err);
@@ -44,16 +37,6 @@ const Navbar = () => {
       }
    };
 
-   useEffect(() => {
-      const handleClickOutside = (e) => {
-         if (isDropdownOpen && dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-            setIsDropdownOpen(false);
-         }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-   }, [isDropdownOpen]);
-
    const toggleSearch = () => {
       setIsSearchOpen((prev) => {
          document.body.style.overflow = prev ? "auto" : "hidden";
@@ -61,53 +44,20 @@ const Navbar = () => {
       });
    };
 
-   useEffect(() => {
-      if (isSearchOpen || isDropdownOpen) {
-         const handleKeyDown = (e) => {
-            if (e.key === "Escape") {
-               toggleSearch();
-               setIsDropdownOpen(false);
-            }
-         };
-         document.addEventListener("keydown", handleKeyDown);
-         return () => document.removeEventListener("keydown", handleKeyDown);
-      }
-   }, [isSearchOpen, isDropdownOpen]);
-
-   useEffect(() => {
-      return () => {
-         document.body.style.overflow = "auto";
-      };
-   }, []);
-
    const handleProfileClick = () => {
-      setIsDropdownOpen(false);
       navigate(`/profile/${user.$id}`);
    };
 
    useEffect(() => {
-      // GSAP Animations for Navbar
-      gsap.fromTo(
-         ".navbar-link",
-         { opacity: 0, y: -20 },
-         { opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: "power2.out" }
-      );
-
-      gsap.fromTo(
-         ".navbar-logo",
-         { opacity: 0, x: -20 },
-         { opacity: 1, x: 0, duration: 1, ease: "power2.out" }
-      );
-
       gsap.fromTo(
          ".navbar-item",
-         { opacity: 0, scale: 0.8 },
-         { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.7)", delay: 0.5 }
+         { opacity: 0, y: -10 },
+         { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }
       );
    }, []);
 
    return (
-      <nav className="bg-black text-white w-full flex justify-between items-center py-5 z-50">
+      <nav className="text-white w-full flex justify-between items-center py-4 px-1 lg:px-10 z-50 relative">
          {isSearchOpen && (
             <>
                <Helmet>
@@ -115,38 +65,35 @@ const Navbar = () => {
                   <title>Search Events</title>
                </Helmet>
                <div
-                  className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-start justify-center "
+                  className="fixed inset-0 bg-gray-900 bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-40"
                   onClick={toggleSearch}
                >
                   <div
-                     className="w-full max-w-4xl mt-20 bg-black rounded-lg shadow-lg p-6 relative overflow-hidden border-2 border-white"
+                     className="w-full max-w-4xl bg-gray-800 text-gray-100 rounded-lg shadow-lg p-6 relative z-50"
                      onClick={(e) => e.stopPropagation()}
                   >
-                     <button className="w-fit h-fit bg-white text-black m-2 px-2 rounded-sm"
+                     <button
+                        className="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white rounded-full px-2 py-1 transition duration-200"
                         onClick={toggleSearch}
                      >
-                        Esc
+                        Close
                      </button>
                      <input
                         type="text"
                         placeholder="Search by event title"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full px-4 py-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-black"
-                        aria-label="Search Events"
+                        className="w-full px-4 py-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                      />
-                     <div className="overflow-y-auto max-h-[60vh]">
+                     <div className="mt-4 max-h-[60vh] overflow-y-auto">
                         {isSearchFetching ? (
-                           <div className="text-center text-gray-500">Searching...</div>
+                           <p className="text-center text-gray-400">Searching...</p>
                         ) : documents.length > 0 ? (
                            documents.map((doc, index) => (
                               <SearchEventcard key={index} event={doc} toggleSearch={toggleSearch} />
                            ))
                         ) : (
-                           <div className="flex flex-col items-center justify-center space-y-4 text-gray-500">
-                              <h2>No results found.</h2>
-                              <p>Try a different search term or browse recent events.</p>
-                           </div>
+                           <p className="text-center text-gray-400">No results found.</p>
                         )}
                      </div>
                   </div>
@@ -154,65 +101,74 @@ const Navbar = () => {
             </>
          )}
 
-         <div className="navbar-logo lg:text-2xl font-normal no-select">
-            <div className="flex w-fit h-fit justify-center items-center gap-2">
-               <Link to="/">
-                  <img
-                     className="w-20 no-drag"
-                     src="/codecommLogo.svg"
-                     alt="CodeComm Logo"
-                  />
-               </Link>
-               <p className="text-2xl font-semibold">CodeComm</p>
-            </div>
+
+         <div className="navbar-item">
+            <Link to="/" className="flex items-center gap-5 group relative">
+               <img
+                  src="/codecommLogo.svg"
+                  alt="CodeComm"
+                  className="w-16 hidden lg:block"
+               />
+               <div className="text-xl font-bold relative overflow-hidden px-2">
+                  <div className="absolute inset-0 bg-[#FF7A00] rounded-lg translate-x-full transition-transform duration-300 group-hover:translate-x-0"></div>
+                  <span className="relative z-10">CodeComm</span>
+               </div>
+            </Link>
          </div>
-         <div className="flex gap-10">
-            <div className="flex items-center gap-2 lg:gap-10">
-               <Link className="navbar-link lg:text-xl text-sm" to="/about">About</Link>
-               <Link className="navbar-link lg:text-xl text-sm" to="/events/upcomming-events">Events</Link>
-               <button onClick={toggleSearch} aria-label="Open Search">
-                  <img className="navbar-link" src="/assets/icons/search_icon.svg" alt="search-icon" />
-               </button>
-            </div>
+
+
+         <div className="flex items-center space-x-6">
+            <Link
+               className="hidden lg:block text-lg font-semibold relative group overflow-hidden px-2"
+               to="/about"
+            >
+               <div className="absolute inset-0 bg-[#FF7A00] rounded-lg translate-x-full transition-transform duration-300 group-hover:translate-x-0"></div>
+               <span className="relative z-10">About</span>
+            </Link>
+            <Link
+               className="hidden lg:block text-lg font-semibold relative group overflow-hidden px-2"
+               to="/events/upcomming-events"
+            >
+               <div className="absolute inset-0 bg-[#FF7A00] rounded-lg translate-x-full transition-transform duration-300 group-hover:translate-x-0"></div>
+               <span className="relative z-10">Events</span>
+            </Link>
+            <Link
+               className="hidden lg:block text-lg font-semibold relative group overflow-hidden px-2"
+               to="/event-calender"
+            >
+               <div className="absolute inset-0 bg-[#FF7A00] rounded-lg translate-x-full transition-transform duration-300 group-hover:translate-x-0"></div>
+               <span className="relative z-10">Calender</span>
+            </Link>
+
+            <button onClick={toggleSearch} aria-label="Search">
+               <img src="/assets/icons/search_icon.svg" alt="Search" className="w-6 h-6" />
+            </button>
 
             {isAuthenticated ? (
-               <div className="relative flex items-center navbar-item">
-                  <button
-                     className="rounded-full"
-                     onClick={() => setIsDropdownOpen((prev) => !prev)}
-                     aria-label="Toggle Dropdown"
-                     aria-expanded={isDropdownOpen}
+               <div className="relative">
+                  <Link
+                     to={'/learn'}
+                     className="rounded-full focus:outline-none"
                   >
                      <img
-                        className="rounded-full"
-                        width={40}
                         src={user.imageUrl}
-                        alt={user.fullName || "Profile Picture"}
+                        alt="Profile"
+                        className="w-10 h-10 rounded-full"
                      />
-                  </button>
-                  {isDropdownOpen && (
-                     <div ref={dropdownRef} className="absolute top-10 right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-md z-50">
-                        <Link
-                           to={`/profile/${user.$id}`}
-                           className="block px-4 py-2 text-sm hover:bg-gray-200"
-                           onClick={handleProfileClick}
-                        >
-                           Profile
-                        </Link>
-                        <button
-                           className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
-                           onClick={handleSignOut}
-                           disabled={isSignOutLoading}
-                        >
-                           {isSignOutLoading ? "Signing Out..." : "Sign Out"}
-                        </button>
-                     </div>
-                  )}
+                  </Link>
                </div>
-            ) : isLoading ? (
-               <img width={40} src="/loader.svg" alt="Loading" />
             ) : (
-               <Link className="navbar-link lg:text-xl text-sm" to="/sign-in">Sign In</Link>
+               isLoading ? (
+                  <img src="/loader.svg" alt="Loading" className="w-6 h-6" />
+               ) : (
+                  <Link className="text-sm font-medium" to="/learn">
+                     <img
+                        src="/assets/icons/account_none.svg"
+                        alt="account"
+                        className="w-10 h-10 rounded-full"
+                     />
+                  </Link>
+               )
             )}
          </div>
       </nav>

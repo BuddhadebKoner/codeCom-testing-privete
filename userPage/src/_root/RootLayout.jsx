@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/shared/Navbar";
-import LeftNavbar from "../components/shared/LeftNavbar";
 import { useAuth } from "../context/AuthContext";
 
 const RootLayout = () => {
@@ -44,15 +43,9 @@ const RootLayout = () => {
     <>
       <main className="w-[100vw] h-full lg:px-[10vw] md:px-[5rem] px-1 bg-black">
         {/* Show Navbar only on large screens and hide it on medium screens */}
-        <div className="md:block hidden">
+        <div>
           <Navbar />
         </div>
-
-        {/* Hide LeftNavbar on large screens, only show on medium screens */}
-        <div className="md:hidden lg:hidden block">
-          <LeftNavbar />
-        </div>
-
         <section >
           <Outlet />
         </section>

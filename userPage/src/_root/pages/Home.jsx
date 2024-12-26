@@ -41,16 +41,16 @@ const Home = () => {
         {/* Swiper Banner Section */}
         <Swiper
           modules={[Navigation, Pagination]}
-          navigation
           pagination={{ clickable: true }}
           loop={true}
           spaceBetween={30}
           slidesPerView={1}
-          className="w-full lg:h-[350px] object-cover lg:rounded-2xl"
+          className="w-full h-fit object-cover lg:rounded-2xl"
+
         >
           <SwiperSlide>
             <img
-              className="w-full lg:h-[350px] object-cover lg:rounded-2xl"
+              className="w-full lg:h-[350px] object-cover lg:rounded-2xl md:rounded-xl"
               src="/assets/event-default-banner.webp"
               alt="Event Banner 1"
             />

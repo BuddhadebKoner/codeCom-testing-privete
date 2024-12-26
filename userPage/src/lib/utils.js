@@ -1,3 +1,5 @@
+
+
 export function formatDateToIST(dateString) {
    // Parse the input date string
    const date = new Date(dateString);
@@ -28,13 +30,6 @@ export function formatDateToIST(dateString) {
 
    return `${day} ${month} ${year} ${time}`;
 }
-
-// Example usage
-const input = "2025-01-02T11:11:00.000+00:00";
-// console.log(formatDateToIST(input));
-// Output: 2 JAN 2025 4:41 PM
-
-
 
 export const initialFormState = {
    purpose: "",
@@ -69,3 +64,6 @@ export const formData = {
       'B.Tech',
    ]
 }
+
+
+// otp, from , to
