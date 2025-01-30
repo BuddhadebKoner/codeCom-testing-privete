@@ -7,7 +7,7 @@ import RootLayout from './_root/RootLayout';
 import SignIn from './_auth/Forms/SignIn';
 import SignUp from './_auth/Forms/SignUp';
 
-import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo, ActiveTickets, LiveEvents, ConductedEvents, LeftNavbar, EventCalendar } from './_root/pages/index';
+import { Home, About, UpcomingEvents, EventDetails, NotFound, Profile, AttendedEvents, OrganizedEvents, ProfileInfo, ActiveTickets, LiveEvents, ConductedEvents, LeftNavbar, ResumeBuilder } from './_root/pages/index';
 import EntryPass from "./_protected/EntryPass";
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/learn" element={<LeftNavbar />} />
-          <Route path="/event-calender" element={<EventCalendar />} />
+          <Route path="/resume-builder" element={<ResumeBuilder />} />
           <Route path="/profile/:userId" element={<Profile />}>
             <Route index element={<ProfileInfo />} />
             <Route path="attended" element={<AttendedEvents />} />

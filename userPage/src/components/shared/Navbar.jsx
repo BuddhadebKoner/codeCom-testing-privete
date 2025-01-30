@@ -134,10 +134,10 @@ const Navbar = () => {
             </Link>
             <Link
                className="hidden lg:block text-lg font-semibold relative group overflow-hidden px-2"
-               to="/event-calender"
+               to="/resume-builder"
             >
                <div className="absolute inset-0 bg-[#FF7A00] rounded-lg translate-x-full transition-transform duration-300 group-hover:translate-x-0"></div>
-               <span className="relative z-10">Calender</span>
+               <span className="relative z-10">Resume Builder</span>
             </Link>
 
             <button onClick={toggleSearch} aria-label="Search">
@@ -161,7 +161,7 @@ const Navbar = () => {
                isLoading ? (
                   <img src="/loader.svg" alt="Loading" className="w-6 h-6" />
                ) : (
-                  <Link className="text-sm font-medium" to="/learn">
+                  <Link className="text-sm font-medium" to="/sign-in">
                      <img
                         src="/assets/icons/account_none.svg"
                         alt="account"

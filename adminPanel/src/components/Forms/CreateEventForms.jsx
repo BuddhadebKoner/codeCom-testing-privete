@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useAddEvent, useFindUserByEmail, useUpdateEvent } from '../../lib/react-query/queriesAndMutation';
+import React, { useState } from 'react';
+import { useFindUserByEmail } from '../../lib/react-query/queriesAndMutation';
 import BigLoader from '../shared/BigLoader';
 import { toast } from 'react-toastify';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { addEvent } from '../../lib/appwrite/api';
 
 const formatDateForInput = (isoString) => {
    if (!isoString) return "";
@@ -10,8 +11,7 @@ const formatDateForInput = (isoString) => {
 };
 
 const CreateEventForms = ({ formData }) => {
-   const { mutate: findUser, isLoading } = useFindUserByEmail();
-   const { mutateAsyn: addEvent, isLoading: isAddingEvent } = useAddEvent();
+   const { mutate: findUser } = useFindUserByEmail();
    const [formState, setFormState] = useState(() => ({
       title: formData?.title || "",
       organizers: formData?.organizers || "",
@@ -25,10 +25,12 @@ const CreateEventForms = ({ formData }) => {
    const [userName, setUserName] = useState("");
    const [userId, setUserId] = useState("");
    const [error, setError] = useState("");
+   const [loading, setLoading] = useState(false); // Loading state for event creation
 
    const navigate = useNavigate();
 
-   if (isAddingEvent) {
+   // Show loader if the form is being submitted
+   if (loading) {
       return (
          <div className="fixed text-gray-200 flex items-center justify-center z-50">
             <BigLoader />
@@ -93,8 +95,9 @@ const CreateEventForms = ({ formData }) => {
    const handleSubmit = async (e) => {
       e.preventDefault();
 
-      try {
+      setLoading(true); // Set loading to true when submitting the form
 
+      try {
          const res = await addEvent(formState);
          console.log("Add Event Response:", res);
          toast.success("Event created successfully.");
@@ -103,10 +106,12 @@ const CreateEventForms = ({ formData }) => {
          console.error("Error during event creation:", error);
          toast.error(error.message || "An error occurred. Please try again.");
       } finally {
+         setLoading(false); // Set loading to false after the API call completes
          setFormState({});
          setPreview(null);
       }
    };
+
 
    return (
       <>

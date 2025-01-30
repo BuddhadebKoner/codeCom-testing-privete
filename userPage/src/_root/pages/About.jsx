@@ -1,81 +1,9 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-// Register the ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
 
 const About = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Apply GSAP ScrollTrigger animations on page load
-    const animateOnScroll = () => {
-      // Animate the header text on scroll
-      gsap.from('.header-text', {
-        opacity: 0,
-        y: 50,
-        duration: 1,
-        ease: 'power4.out',
-        scrollTrigger: {
-          trigger: '.header-text',
-          start: 'top 80%',
-          end: 'bottom top',
-          scrub: true,
-        },
-      });
-
-      // Animate each section title
-      gsap.from('.section-title', {
-        opacity: 0,
-        y: 50,
-        duration: 1.5,
-        stagger: 0.2,
-        ease: 'power4.out',
-        scrollTrigger: {
-          trigger: '.section-title',
-          start: 'top 75%',
-          end: 'bottom top',
-          scrub: true,
-        },
-      });
-
-      // Animate list items with a fade-in and slide-up effect
-      gsap.from('.list-item', {
-        opacity: 0,
-        y: 30,
-        duration: 1,
-        stagger: 0.1,
-        ease: 'power4.out',
-        scrollTrigger: {
-          trigger: '.list-item',
-          start: 'top 80%',
-          end: 'bottom top',
-          scrub: true,
-        },
-      });
-
-      // Animate card-like components with rotation and scaling effects
-      gsap.from('.card', {
-        opacity: 0,
-        scale: 0.8,
-        rotationX: 90,
-        duration: 1.5,
-        stagger: 0.2,
-        ease: 'power4.out',
-        scrollTrigger: {
-          trigger: '.card',
-          start: 'top 85%',
-          end: 'bottom top',
-          scrub: true,
-        },
-      });
-    };
-
-    animateOnScroll();
-  }, []);
 
   return (
     <>

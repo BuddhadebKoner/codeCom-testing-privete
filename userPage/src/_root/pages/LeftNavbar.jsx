@@ -36,7 +36,7 @@ const LeftNavbar = () => {
                <Link to="/terms" className="text-lg font-medium hover:text-gray-400 transition-all">Terms </Link>
                <Link to="/membership" className="text-lg font-medium hover:text-gray-400 transition-all">Membership</Link>
                <Link to="/contact" className="text-lg font-medium hover:text-gray-400 transition-all">Contact</Link>
-               <Link to="/event-calender" className="text-lg font-medium hover:text-gray-400 transition-all">Calendar</Link>
+               <Link to="/resume-builder" className="text-lg font-medium hover:text-gray-400 transition-all">Resume Builder</Link>
             </nav>
 
             {/* Profile Section */}

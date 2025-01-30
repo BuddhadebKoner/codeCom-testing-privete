@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/shared/Navbar";
 import { useAuth } from "../context/AuthContext";
+import Footer from "../components/shared/Footer";
 
 const RootLayout = () => {
   const { isLoading: isDataLoading } = useAuth();
   const [isBrowserLoading, setIsBrowserLoading] = useState(true);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   // Detect when the browser finishes loading
   useEffect(() => {
@@ -20,6 +22,23 @@ const RootLayout = () => {
     return () => window.removeEventListener("load", handleBrowserLoad);
   }, []);
 
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    document.body.style.overflow = isOnline ? "auto" : "hidden";
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      document.body.style.overflow = "auto";
+    };
+  }, [isOnline]);
+
+
   const isLoading = isDataLoading || isBrowserLoading;
 
   if (isLoading) {
@@ -32,7 +51,7 @@ const RootLayout = () => {
           alt="codecomm-logo"
         />
         <div className="w-fit h-fit flex flex-col items-center justify-center mt-auto">
-          <p>Form</p>
+          <p>Loading...</p>
           <p className="text-xl font-semibold text-blue-400">CodeComm</p>
         </div>
       </div>
@@ -41,14 +60,23 @@ const RootLayout = () => {
 
   return (
     <>
-      <main className="w-[100vw] h-full lg:px-[10vw] md:px-[5rem] px-1 bg-black">
-        {/* Show Navbar only on large screens and hide it on medium screens */}
-        <div>
-          <Navbar />
+      {!isOnline && (
+        <div className="fixed w-full h-screen bg-gray-900 bg-opacity-75 z-50 flex flex-col items-center justify-center">
+          <p className="text-2xl font-bold text-white mb-5">You are Offline</p>
+          <p className="text-white">Please check your internet connection.</p>
         </div>
-        <section >
+      )}
+
+      <main
+        className={` w-[100vw] h-full lg:px-[10vw] md:px-[5rem] px-1 bg-black ${!isOnline ? "pointer-events-none" : ""
+          }`}
+      >
+        {/* Show Navbar */}
+        <Navbar />
+        <section>
           <Outlet />
         </section>
+        <Footer />
       </main>
     </>
   );

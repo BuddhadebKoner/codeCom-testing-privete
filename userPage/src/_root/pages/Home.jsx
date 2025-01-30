@@ -10,7 +10,6 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import gsap from "gsap";
 
 const Home = () => {
   const { data: events = [], isLoading, isError } = useGetRecentEvents();
@@ -20,16 +19,6 @@ const Home = () => {
     .filter((event) => event.isActive)
     .sort((a, b) => new Date(a.eventTime) - new Date(b.eventTime))
     .slice(0, 3);
-
-  // GSAP Animations
-  useEffect(() => {
-    // Subtle text fade-in animations
-    gsap.fromTo(
-      ".fade-text",
-      { opacity: 0 },
-      { opacity: 1, duration: 1.5, stagger: 0.3, ease: "power1.out" }
-    );
-  }, []);
 
   return (
     <>

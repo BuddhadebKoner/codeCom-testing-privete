@@ -50,7 +50,7 @@ export async function signInUser(user) {
          toast.warn("Allready Signed in");
          return currentAccount;
       }
-
+  
       const session = await account.createEmailPasswordSession(
          user.email,
          user.password
